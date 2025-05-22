@@ -1,0 +1,804 @@
+<%- include("../../views/partials/user/header") %>
+<link rel="stylesheet" href="/css/productDetails.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+  /* Reset and General Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Playfair Display', serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .product-details-container {
+    max-width: 1200px;
+    margin: clamp(1rem, 2vw, 2rem) auto;
+    padding: clamp(1rem, 2vw, 2rem);
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+  }
+
+  /* Product Images with Zoom */
+  .product-images {
+    flex: 1;
+    position: relative;
+  }
+
+  .main-image {
+    position: relative;
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .zoom-container {
+    position: relative;
+    width: 100%;
+    height: 83%;
+  }
+
+  .zoom-lens {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid #d4af37;
+    border-radius: 50%;
+    pointer-events: none;
+    display: none;
+  }
+
+  .zoom-result {
+    position: absolute;
+    top: 0;
+    left: 105%;
+    width: 300px;
+    height: 300px;
+    background-size: 200%;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 10;
+  }
+
+  .thumbnail-images {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .thumbnail-images img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s ease;
+  }
+
+  .thumbnail-images img:hover {
+    border: 2px solid #d4af37;
+  }
+
+  /* Product Info */
+  .product-info {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-title {
+    font-size: clamp(1.4rem, 5vw, 2.5rem);
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: uppercase;
+  }
+
+  .brand {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-family: 'Lora', serif;
+    color: #666;
+    font-style: italic;
+  }
+
+  .product-price {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: bold;
+    color: #d4af37;
+  }
+
+  .product-stock {
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    color: #333;
+  }
+
+  .product-stock.out-of-stock {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+
+  .product-description {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-family: 'Lora', serif;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .quantity-btn {
+    padding: clamp(5px, 1vw, 8px) clamp(10px, 1.5vw, 15px);
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    background-color: #ddd;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .quantity-btn:hover {
+    background-color: #ccc;
+  }
+
+  .quantity-btn:disabled {
+    background-color: #eee;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .quantity-input {
+    width: clamp(45px, 5vw, 60px);
+    text-align: center;
+    padding: clamp(5px, 1vw, 8px);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .product-actions {
+    display: flex;
+    gap: clamp(0.5rem, 1vw, 1rem);
+    align-items: center;
+  }
+
+  .add-to-cart, .buy-now {
+    padding: clamp(8px, 1.5vw, 12px) clamp(15px, 2vw, 25px);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .add-to-cart {
+    background-color: #d4af37;
+    color: white;
+  }
+
+  .add-to-cart:hover {
+    background-color: #b89778;
+    transform: scale(1.05);
+  }
+
+  .add-to-cart:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .buy-now {
+    background-color: #1a1a1a;
+    color: white;
+  }
+
+  .buy-now:hover {
+    background-color: #333;
+    transform: scale(1.05);
+  }
+
+  .buy-now:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .wishlist-btn {
+    padding: clamp(8px, 1vw, 10px);
+    cursor: pointer;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: #717070;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    width: 40px;
+    height: 40px;
+  }
+
+  .wishlist-btn:hover {
+    color: #e74c3c;
+    background-color: #e0e0e0;
+  }
+
+  /* Footer Styles */
+  footer {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: clamp(2rem, 5vw, 3rem) 0;
+    font-family: 'Lora', serif;
+    width: 100%;
+  }
+
+  footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .footer-about {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-logo span {
+    color: #d4af37;
+  }
+
+  .footer-about p {
+    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+    color: #ccc;
+    line-height: 1.6;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-icon {
+    color: #fff;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    transition: color 0.3s ease;
+  }
+
+  .social-icon:hover {
+    color: #d4af37;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-links h4 {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #d4af37;
+  }
+
+  .footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+    transition: color 0.3s ease;
+  }
+
+  .footer-links a:hover {
+    color: #d4af37;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+  }
+
+  .contact-icon {
+    color: #d4af37;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 1rem;
+    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    color: #999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .footer-bottom a {
+    color: #ccc;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+  }
+
+  .footer-bottom a:hover {
+    color: #d4af37;
+  }
+
+  /* SweetAlert2 Custom Styles */
+  .swal2-popup {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    font-family: 'Playfair Display', serif !important;
+  }
+
+  .swal2-title {
+    color: #1a1a1a !important;
+    font-size: clamp(1.2rem, 3vw, 1.5rem) !important;
+    font-weight: 700 !important;
+  }
+
+  .swal2-content {
+    color: #666 !important;
+    font-size: clamp(0.9rem, 2vw, 1rem) !important;
+    font-family: 'Lora', serif !important;
+  }
+
+  .swal2-confirm {
+    background: linear-gradient(135deg, #d4af37, #b89778) !important;
+    color: white !important;
+    border-radius: 5px !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
+    transition: transform 0.3s ease !important;
+  }
+
+  .swal2-confirm:hover {
+    transform: scale(1.05) !important;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .product-details-container {
+      padding: clamp(1rem, 1.5vw, 1.5rem);
+    }
+
+    .main-image {
+      max-height: 400px;
+    }
+
+    .zoom-result {
+      width: 250px;
+      height: 250px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .product-details-container {
+      flex-direction: column;
+      padding: clamp(0.5rem, 1vw, 1rem);
+      margin: clamp(0.5rem, 1vw, 1rem);
+    }
+
+    .main-image {
+      max-height: 350px;
+    }
+
+    .zoom-result, .zoom-lens {
+      display: none !important;
+    }
+
+    .thumbnail-images {
+      gap: 0.4rem;
+    }
+
+    .thumbnail-images img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .product-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .add-to-cart, .buy-now {
+      width: 100%;
+      text-align: center;
+    }
+
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-details-container {
+      padding: clamp(0.3rem, 0.5vw, 0.5rem);
+      margin: clamp(0.3rem, 0.5vw, 0.5rem);
+    }
+
+    .main-image {
+      max-height: 250px;
+    }
+
+    .thumbnail-images img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .quantity-btn {
+      padding: clamp(4px, 0.8vw, 5px) clamp(8px, 1vw, 10px);
+    }
+
+    .footer-logo {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+    }
+  }
+
+  @media (max-width: 360px) {
+    .thumbnail-images img {
+      width: 45px;
+      height: 45px;
+    }
+  }
+</style>
+
+<!-- Product Details Container -->
+<div class="product-details-container">
+  <!-- Product Images -->
+  <div class="product-images">
+    <% if (product.productImage && product.productImage.length > 0) { %>
+      <div class="main-image">
+        <div class="zoom-container" id="zoomContainer">
+          <img id="mainImage" src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+          <div class="zoom-lens" id="zoomLens"></div>
+          <div class="zoom-result" id="zoomResult"></div>
+        </div>
+      </div>
+      <div class="thumbnail-images">
+        <% product.productImage.forEach((image, index) => { %>
+          <img src="/<%= image %>" alt="Thumbnail <%= index + 1 %>" onclick="changeMainImage('/<%= image %>')">
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p>No images available for this product.</p>
+    <% } %>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info">
+    <h1 class="product-title"><%= product.productName || 'Product Name Unavailable' %></h1>
+    <div class="brand">Brand: <%= product.brand || 'N/A' %></div>
+    <div class="product-price">$<%= product.salePrice?.toFixed(2) || 'N/A' %></div>
+    <div class="product-stock <%= product.quantity <= 0 ? 'out-of-stock' : '' %>">
+      <%= product.quantity > 0 ? `In Stock: ${ product.quantity } items` : 'Out of Stock' %>
+    </div>
+    <p class="product-description">
+      <%= product.description || 'No description available.' %>
+    </p>
+    <!-- <div class="quantity-selector">
+      <button class="quantity-btn" onclick="updateQuantity(-1)" <%= product.quantity <= 0 ? 'disabled' : '' %>>-</button>
+      <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="<%= product.quantity || 1 %>" <%= product.quantity <= 0 ? 'disabled' : '' %>>
+      <button class="quantity-btn" onclick="updateQuantity(1)" <%= product.quantity <= 0 ? 'disabled' : '' %>>+</button>
+    </div> -->
+    <div class="product-actions">
+      <button class="add-to-cart" onclick="addToCart('<%= product._id %>')" <%= product.quantity <= 0 ? 'disabled' : '' %>>Add to Cart</button>
+
+      <div class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')"><i class="fa-solid fa-heart"></i></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Define productQuantity at the top to avoid reference errors
+  const productQuantity = <%= product.quantity || 0 %>;
+
+  // Image Zoom Functionality
+  const zoomContainer = document.getElementById('zoomContainer');
+  const mainImage = document.getElementById('mainImage');
+  const zoomLens = document.getElementById('zoomLens');
+  const zoomResult = document.getElementById('zoomResult');
+
+  if (mainImage && zoomLens && zoomResult) {
+    mainImage.addEventListener('mousemove', function(e) {
+      zoomLens.style.display = 'block';
+      zoomResult.style.display = 'block';
+      const rect = e.target.getBoundingClientRect();
+      const x = e.clientX - rect.left - zoomLens.offsetWidth / 2;
+      const y = e.clientY - rect.top - zoomLens.offsetHeight / 2;
+
+      zoomLens.style.left = `${x}px`;
+      zoomLens.style.top = `${y}px`;
+
+      zoomResult.style.backgroundImage = `url(${mainImage.src})`;
+      zoomResult.style.backgroundPosition = `-${x * 2}px -${y * 2}px`;
+    });
+
+    mainImage.addEventListener('mouseleave', () => {
+      zoomLens.style.display = 'none';
+      zoomResult.style.display = 'none';
+    });
+  }
+
+  function initializeZoom() {
+    zoomResult.style.backgroundImage = `url('${mainImage.src}')`;
+    zoomContainer.addEventListener('mousemove', moveLens);
+    zoomContainer.addEventListener('touchmove', moveLens);
+    zoomContainer.addEventListener('mouseenter', showZoom);
+    zoomContainer.addEventListener('mouseleave', hideZoom);
+    zoomContainer.addEventListener('touchstart', showZoom);
+    zoomContainer.addEventListener('touchend', hideZoom);
+  }
+
+  function showZoom() {
+    zoomLens.style.display = 'block';
+    zoomResult.style.display = 'block';
+  }
+
+  function hideZoom() {
+    zoomLens.style.display = 'none';
+    zoomResult.style.display = 'none';
+  }
+
+  function moveLens(e) {
+    e.preventDefault();
+    const rect = zoomContainer.getBoundingClientRect();
+    let x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+    let y = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
+
+    x = Math.max(zoomLens.offsetWidth / 2, Math.min(x, rect.width - zoomLens.offsetWidth / 2));
+    y = Math.max(zoomLens.offsetHeight / 2, Math.min(y, rect.height - zoomLens.offsetHeight / 2));
+
+    zoomLens.style.left = `${x - zoomLens.offsetWidth / 2}px`;
+    zoomLens.style.top = `${y - zoomLens.offsetHeight / 2}px`;
+
+    const ratioX = (x / rect.width) * 100;
+    const ratioY = (y / rect.height) * 100;
+    zoomResult.style.backgroundPosition = `${ratioX}% ${ratioY}%`;
+  }
+
+  initializeZoom();
+
+  function changeMainImage(imageSrc) {
+    mainImage.src = imageSrc;
+    zoomResult.style.backgroundImage = `url('${imageSrc}')`;
+  }
+
+  function updateQuantity(change) {
+    const quantityInput = document.getElementById('quantity');
+    let quantity = parseInt(quantityInput.value) + change;
+
+    if (quantity < 1) {
+      quantity = 1;
+    }
+
+    if (quantity > 5) {
+      quantity = 5;
+    }
+
+    if (quantity > productQuantity) {
+      quantity = productQuantity;
+    }
+
+    quantityInput.value = quantity;
+  }
+
+  async function addToCart(productId) {
+        try {
+            const response = await fetch('/addToCart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, quantity: 1 })
+            });
+            const data = await response.json();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart!',
+                    text: 'Product has been successfully added to your cart.',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Add',
+                    text: data.message || 'Failed to add product to cart.',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                });
+            }
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding to cart.',
+                confirmButtonColor: '#d4af37',
+                background: '#f8f8f8',
+            });
+        }
+    }
+  async function addToWishlist(productId) {
+    try {
+      const response = await fetch(`/addToWishlist/${productId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Added to Wishlist!',
+          text: 'Product has been added to your wishlist.',
+          confirmButtonColor: '#d4af37',
+          background: 'rgba(255, 255, 255, 0.9)',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          customClass: {
+            popup: 'swal2-popup',
+            title: 'swal2-title',
+            content: 'swal2-content',
+          },
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Add!',
+          text: data.message || 'Failed to add product to wishlist.',
+          confirmButtonColor: '#d4af37',
+          background: 'rgba(255, 255, 255, 0.9)',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          customClass: {
+            popup: 'swal2-popup',
+            title: 'swal2-title',
+            content: 'swal2-content',
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'An error occurred while adding to wishlist.',
+        confirmButtonColor: '#d4af37',
+        background: 'rgba(255, 255, 255, 0.9)',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'swal2-popup',
+          title: 'swal2-title',
+          content: 'swal2-content',
+        },
+      });
+    }
+  }
+
+  async function buyNow(productId) {
+    const quantity = parseInt(document.getElementById('quantity').value);
+
+    try {
+      const response = await fetch(`/addToCart/${productId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity })
+      });
+      const data = await response.json();
+      if (data.success) {
+        window.location.href = '/cart';
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Add!',
+          text: data.message || 'Failed to add product to cart.',
+          confirmButtonColor: '#d4af37',
+          background: 'rgba(255, 255, 255, 0.9)',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          customClass: {
+            popup: 'swal2-popup',
+            title: 'swal2-title',
+            content: 'swal2-content',
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error during buy now:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'An error occurred while processing your request.',
+        confirmButtonColor: '#d4af37',
+        background: 'rgba(255, 255, 255, 0.9)',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'swal2-popup',
+          title: 'swal2-title',
+          content: 'swal2-content',
+        },
+      });
+    }
+  }
+</script>
+
+<%- include("../../views/partials/user/footer") %>

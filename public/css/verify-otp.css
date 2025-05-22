@@ -1,0 +1,153 @@
+:root {
+  --primary: #1a1a1a;
+  --secondary: #f8f8f8;
+  --accent: #d4af37;
+  --text: #333;
+  --light-text: #777;
+  --border: #e0e0e0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  color: var(--text);
+  background-color: var(--secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.otp-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.otp-subtitle {
+  font-size: 16px;
+  color: var(--light-text);
+  margin-bottom: 30px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.otp-input {
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  font-size: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.otp-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.verify-btn {
+  padding: 15px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.verify-btn:hover {
+  background-color: #c1a033;
+}
+
+.resend-link {
+  text-align: center;
+  font-size: 14px;
+  color: var(--light-text);
+}
+
+.resend-link a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.resend-link a.enabled {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.resend-link a.enabled:hover {
+  text-decoration: underline;
+}
+
+.timer {
+  font-size: 14px;
+  color: var(--light-text);
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .container {
+      padding: 20px;
+  }
+  
+  .otp-title {
+      font-size: 24px;
+  }
+  
+  .otp-subtitle {
+      font-size: 14px;
+  }
+  
+  .otp-input {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+  }
+  
+  .verify-btn {
+      font-size: 14px;
+  }
+  
+  .resend-link, .timer {
+      font-size: 12px;
+  }
+}

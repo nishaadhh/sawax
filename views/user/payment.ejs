@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>SAWAX | Payment</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --accent-dark: #c1a033;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+            --error: #e74c3c;
+            --success: #2ecc71;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #d4af37, #c1a033);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 clamp(20px, 2.5vw, 30px);
+        }
+
+        /* Header (Same as Checkout) */
+        header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(15px, 2vw, 20px) 0;
+        }
+
+        .logo {
+            font-size: clamp(26px, 5vw, 34px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: clamp(25px, 3vw, 35px);
+        }
+
+        nav ul li a {
+            font-weight: 500;
+            font-size: clamp(15px, 2vw, 17px);
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+
+        .header-icons {
+            display: flex;
+            gap: clamp(15px, 2vw, 20px);
+            align-items: center;
+        }
+
+        .header-icon {
+            cursor: pointer;
+            font-size: clamp(20px, 2.5vw, 22px);
+            transition: color 0.3s ease;
+        }
+
+        .header-icon:hover {
+            color: var(--accent);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: clamp(22px, 3vw, 26px);
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .sign-in-link {
+            color: var(--accent);
+            padding: 1px;
+            display: block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            min-width: 180px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            right: 0;
+            border-radius: 8px;
+        }
+
+        .dropdown-content a {
+            color: var(--text);
+            padding: 12px 16px;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--secondary);
+            color: var(--accent);
+            border-radius: 8px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Payment Section */
+        .payment {
+            padding: clamp(60px, 10vw, 100px) 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: clamp(20px, 3vw, 30px);
+            margin-bottom: clamp(40px, 5vw, 60px);
+            flex-wrap: wrap;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-size: clamp(14px, 2vw, 16px);
+            color: var(--light-text);
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .progress-step.active {
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .progress-step .step-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: clamp(40px, 5vw, 60px);
+        }
+
+        .section-title h2 {
+            font-size: clamp(32px, 5vw, 40px);
+            font-weight: 300;
+            margin-bottom: 15px;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .section-title p {
+            color: var(--light-text);
+            font-size: clamp(16px, 2.5vw, 18px);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .payment-content {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: clamp(20px, 3vw, 30px);
+        }
+
+        .payment-main {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: clamp(25px, 3vw, 35px);
+            box-shadow: var(--shadow);
+        }
+
+        .payment-sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: clamp(20px, 3vw, 30px);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 100px;
+        }
+
+        .payment-section {
+            margin-bottom: clamp(25px, 3vw, 35px);
+        }
+
+        .payment-section h3 {
+            font-size: clamp(22px, 3vw, 26px);
+            font-weight: 600;
+            margin-bottom: clamp(15px, 2vw, 20px);
+            color: var(--primary);
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1vw, 12px);
+            padding: clamp(10px, 1.5vw, 12px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: clamp(14px, 2vw, 16px);
+            cursor: pointer;
+            transition: border-color 0.3s ease, background 0.3s ease;
+            margin-bottom: clamp(10px, 1.5vw, 15px);
+        }
+
+        .payment-option:hover {
+            border-color: var(--accent);
+            background: #fffef0;
+        }
+
+        .payment-option input {
+            margin-right: clamp(8px, 1vw, 12px);
+        }
+
+        .payment-option label {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sub-options {
+            display: none;
+            padding-left: clamp(30px, 4vw, 40px);
+            margin-top: clamp(8px, 1vw, 12px);
+        }
+
+        .sub-option {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1vw, 12px);
+            padding: clamp(8px, 1vw, 10px);
+            font-size: clamp(13px, 1.8vw, 15px);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .sub-option:hover {
+            background: #fffef0;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: clamp(12px, 1.5vw, 14px);
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: clamp(12px, 1.8vw, 16px) clamp(30px, 4vw, 40px);
+            background: var(--gradient);
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-size: clamp(14px, 2vw, 16px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-top: 3px solid var(--accent-dark);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .sidebar-section {
+            margin-bottom: clamp(20px, 3vw, 25px);
+        }
+
+        .sidebar-section h4 {
+            font-size: clamp(18px, 2.2vw, 20px);
+            font-weight: 600;
+            margin-bottom: clamp(12px, 1.5vw, 16px);
+            color: var(--primary);
+        }
+
+        .sidebar-breakdown {
+            font-size: clamp(14px, 2vw, 16px);
+            color: var(--text);
+            margin-bottom: clamp(10px, 1.5vw, 15px);
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: clamp(8px, 1vw, 10px) 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-item span:first-child {
+            color: var(--light-text);
+        }
+
+        .breakdown-item .highlight {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .sidebar-total {
+            font-size: clamp(16px, 2.2vw, 18px);
+            font-weight: 600;
+            color: var(--primary);
+            padding-top: clamp(12px, 1.5vw, 16px);
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sidebar-total .highlight {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Responsive Design (Matching Checkout) */
+        @media (max-width: 1200px) {
+            .payment-content {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-sidebar {
+                position: static;
+                margin-top: clamp(20px, 3vw, 30px);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .current-address {
+                padding: clamp(15px, 2vw, 20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .payment {
+                padding: clamp(40px, 8vw, 80px) 0;
+            }
+
+            .progress-bar {
+                flex-wrap: wrap;
+                gap: clamp(15px, 2vw, 20px);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-title h2 {
+                font-size: clamp(28px, 4vw, 32px);
+            }
+
+            .btn {
+                padding: clamp(10px, 1.5vw, 12px);
+                font-size: clamp(13px, 1.8vw, 15px);
+            }
+
+            .progress-step {
+                font-size: clamp(12px, 1.8vw, 14px);
+            }
+
+            .progress-step .step-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .payment-option {
+                font-size: clamp(13px, 1.8vw, 15px);
+            }
+
+            .sub-option {
+                font-size: clamp(12px, 1.5vw, 14px);
+            }
+
+            .sidebar-breakdown {
+                font-size: clamp(13px, 1.8vw, 15px);
+            }
+
+            .sidebar-total {
+                font-size: clamp(15px, 2vw, 17px);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .payment-sidebar {
+                padding: clamp(15px, 2vw, 20px);
+            }
+
+            .sidebar-breakdown {
+                font-size: clamp(12px, 1.5vw, 14px);
+            }
+
+            .sidebar-total {
+                font-size: clamp(14px, 1.8vw, 16px);
+            }
+        }
+
+        /* SweetAlert2 Custom Styles (Matching Checkout) */
+        .swal2-popup {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(10px) !important;
+            border-radius: 12px !important;
+            box-shadow: var(--shadow) !important;
+            font-family: "Helvetica Neue", Arial, sans-serif !important;
+        }
+
+        .swal2-title {
+            color: var(--primary) !important;
+            font-size: clamp(20px, 3vw, 24px) !important;
+            font-weight: 600 !important;
+        }
+
+        .swal2-content {
+            color: var(--light-text) !important;
+            font-size: clamp(14px, 2vw, 16px) !important;
+        }
+
+        .swal2-confirm {
+            background: var(--gradient) !important;
+            color: var(--primary) !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
+            transition: transform 0.3s ease !important;
+        }
+
+        .swal2-confirm:hover {
+            transform: translateY(-2px) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <%- include("../../views/partials/user/header") %>
+
+    <!-- Payment Section -->
+    <section class="payment">
+        <div class="container">
+            <div class="progress-bar">
+                <div class="progress-step active">
+                    <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <span>Cart</span>
+                </div>
+                <div class="progress-step active">
+                    <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <span>Address</span>
+                </div>
+                <div class="progress-step active">
+                    <div class="step-icon"><i class="fas fa-credit-card"></i></div>
+                    <span>Payment</span>
+                </div>
+            </div>
+            <div class="section-title">
+                <h2>Payment</h2>
+                <p>Select your payment method to complete the order.</p>
+            </div>
+            <div class="payment-content">
+                <div class="payment-main">
+                    <div class="payment-section">
+                        <h3>Payment Method</h3>
+                        <p class="error-message" id="payment-error"></p>
+                        <div class="payment-options">
+                            <!-- Razorpay -->
+                            <div class="payment-option">
+                                <input type="radio" name="payment-method" value="razorpay" id="razorpay" onchange="handleMethodChange(this)">
+                                <label for="razorpay">
+                                    Pay with Razorpay (Cards, Netbanking, Wallets & More)
+                                </label>
+                            </div>
+                            <!-- UPI -->
+                            <div class="payment-option">
+                                <input type="radio" name="payment-method" value="upi" id="upi" onchange="handleMethodChange(this)">
+                                <label for="upi">
+                                    Pay with UPI (GPay, PhonePe, Paytm)
+                                </label>
+                            </div>
+                            <div class="sub-options" id="upi-sub-options">
+                                <div class="sub-option">
+                                    <input type="radio" name="upi-method" value="gpay" id="gpay" onchange="handleUpiChange(this)">
+                                    <label for="gpay">Google Pay</label>
+                                </div>
+                                <div class="sub-option">
+                                    <input type="radio" name="upi-method" value="phonepe" id="phonepe" onchange="handleUpiChange(this)">
+                                    <label for="phonepe">PhonePe</label>
+                                </div>
+                                <div class="sub-option">
+                                    <input type="radio" name="upi-method" value="paytm" id="paytm" onchange="handleUpiChange(this)">
+                                    <label for="paytm">Paytm</label>
+                                </div>
+                            </div>
+                            <!-- Cash on Delivery -->
+                            <div class="payment-option">
+                                <input type="radio" name="payment-method" value="cod" id="cod" onchange="handleMethodChange(this)">
+                                <label for="cod">
+                                    Cash on Delivery (Pay when you receive your order)
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn" id="pay-btn" disabled>Pay Now</button>
+                    </div>
+                </div>
+                <div class="payment-sidebar">
+                    <div class="sidebar-section">
+                        <h4>Order Summary</h4>
+                        <div class="sidebar-breakdown">
+                            <div class="breakdown-item">
+                                <span>Product Total</span>
+                                <span>$<%= productTotal %></span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="highlight">Shipping Charge</span>
+                                <span>$<%= shippingCharge %></span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="highlight">GST</span>
+                                <span>$<%= gst %></span>
+                            </div>
+                        </div>
+                        <div class="sidebar-total">
+                            <span>Grand Total</span>
+                            <span class="highlight">$<%= grandTotal %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include("../../views/partials/user/footer") %>
+
+    <script>
+        const paymentErrorElement = document.getElementById("payment-error");
+        const payBtn = document.getElementById("pay-btn");
+        const upiSubOptions = document.getElementById("upi-sub-options");
+
+        let selectedMethod = null;
+        let selectedUpiMethod = null;
+
+        function showError(element, message, persistent = false) {
+            element.textContent = message;
+            element.style.display = "block";
+            if (!persistent) {
+                setTimeout(() => (element.style.display = "none"), 4000);
+            }
+        }
+
+        function handleMethodChange(element) {
+            selectedMethod = element.value;
+            paymentErrorElement.style.display = "none";
+            if (selectedMethod === "upi") {
+                upiSubOptions.style.display = "block";
+                payBtn.disabled = !selectedUpiMethod;
+            } else {
+                upiSubOptions.style.display = "none";
+                selectedUpiMethod = null;
+                payBtn.disabled = false;
+            }
+        }
+
+        function handleUpiChange(element) {
+            selectedUpiMethod = element.value;
+            payBtn.disabled = false;
+        }
+
+        payBtn.addEventListener("click", async () => {
+            if (!selectedMethod) {
+                showError(paymentErrorElement, "Please select a payment method.", true);
+                return;
+            }
+
+            payBtn.classList.add("loading");
+            payBtn.disabled = true;
+
+            try {
+                if (selectedMethod === "cod") {
+                    // Handle Cash on Delivery
+                    const response = await fetch("/checkout/confirm-order", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            paymentMethod: "cod",
+                            addressId: "<%= addressId %>",
+                            productTotal:   productTotal  ,
+                            shippingCharge:  shippingCharge ,
+                            gst: gst ,
+                            grandTotal:  grandTotal 
+                        }),
+                    });
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Order Confirmed!",
+                            text: "Your order has been placed successfully. You'll receive a confirmation soon.",
+                            confirmButtonColor: "#d4af37",
+                            background: "var(--glass-bg)",
+                            timer: 3000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            customClass: {
+                                popup: "swal2-popup",
+                                title: "swal2-title",
+                                content: "swal2-content",
+                            },
+                        }).then(() => {
+                            window.location.href = "/order-confirmation";
+                        });
+                    } else {
+                        const data = await response.json();
+                        showError(paymentErrorElement, data.message || "Failed to confirm order.", true);
+                    }
+                    return;
+                }
+
+                // Load Razorpay script
+                const initializeRazorpay = () => {
+                    return new Promise((resolve) => {
+                        const script = document.createElement("script");
+                        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+                        script.onload = () => resolve(true);
+                        script.onerror = () => resolve(false);
+                        document.body.appendChild(script);
+                    });
+                };
+
+                const res = await initializeRazorpay();
+                if (!res) {
+                    showError(paymentErrorElement, "Failed to load payment gateway. Please try again.", true);
+                    payBtn.classList.remove("loading");
+                    payBtn.disabled = false;
+                    return;
+                }
+
+                // Create order (mocked here, should be a server-side call)
+                const orderResponse = await fetch("/checkout/create-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount:  grandTotal * 100  , // Convert to paise
+                        currency: "INR",
+                        addressId: "<%= addressId %>"
+                    }),
+                });
+
+                if (!orderResponse.ok) {
+                    const data = await orderResponse.json();
+                    showError(paymentErrorElement, data.message || "Failed to create order.", true);
+                    payBtn.classList.remove("loading");
+                    payBtn.disabled = false;
+                    return;
+                }
+
+                const order = await orderResponse.json();
+
+                const options = {
+                    key: "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay Key ID
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "SAWAX",
+                    description: "Payment for your order",
+                    order_id: order.id,
+                    handler: async function (response) {
+                        // Verify payment on the server
+                        const verifyResponse = await fetch("/checkout/verify-payment", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature,
+                                addressId: "<%= addressId %>",
+                                productTotal:  productTotal ,
+                                shippingCharge:  shippingCharge ,
+                                gst:  gst  ,
+                                grandTotal:  grandTotal  
+                            }),
+                        });
+
+                        if (verifyResponse.ok) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Payment Successful!",
+                                text: "Your order has been placed successfully.",
+                                confirmButtonColor: "#d4af37",
+                                background: "var(--glass-bg)",
+                                timer: 3000,
+                                timerProgressBar: true,
+                                showConfirmButton: false,
+                                customClass: {
+                                    popup: "swal2-popup",
+                                    title: "swal2-title",
+                                    content: "swal2-content",
+                                },
+                            }).then(() => {
+                                window.location.href = "/order-confirmation";
+                            });
+                        } else {
+                            const data = await verifyResponse.json();
+                            showError(paymentErrorElement, data.message || "Payment verification failed.", true);
+                        }
+                    },
+                    prefill: {
+                        name: "Customer Name",
+                        email: "customer@example.com",
+                        contact: "9999999999",
+                    },
+                    theme: {
+                        color: "#d4af37",
+                    },
+                };
+
+                if (selectedMethod === "upi" && selectedUpiMethod) {
+                    options.method = "upi";
+                    options["upi"] = { flow: "intent" };
+                    options["upi-intent"] = selectedUpiMethod; // e.g., 'gpay', 'phonepe', 'paytm'
+                }
+
+                const rzp = new Razorpay(options);
+                rzp.on("payment.failed", function (response) {
+                    showError(paymentErrorElement, "Payment failed. Please try again.", true);
+                    payBtn.classList.remove("loading");
+                    payBtn.disabled = false;
+                });
+                rzp.open();
+            } catch (error) {
+                console.error("Error processing payment:", error);
+                showError(paymentErrorElement, "An error occurred while processing the payment.", true);
+                payBtn.classList.remove("loading");
+                payBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

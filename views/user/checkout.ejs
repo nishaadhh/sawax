@@ -1,0 +1,260 @@
+<%- include('../partials/user/header') %>
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+      <div class="col-first">
+        <h1>Checkout</h1>
+        <nav class="d-flex align-items-center">
+          <a href="/">Home / <span class="lnr lnr-arrow-right" style="text-decoration: none; color: #d4af37;"></span></a>
+          <a href="/cart">Cart <span class="lnr lnr-arrow-right" style="text-decoration: none; text-decoration:  #d4af37;"></span></a>
+          <a href="/checkout" style="text-decoration: none; color: #d4af37;">/ Checkout</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  .order-summary {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .order-summary img {
+    width: 50px;
+    height: 50px;
+  }
+  .order-summary .product-name {
+    font-size: 14px;
+  }
+  .order-summary .product-mn {
+    font-size: 12px;
+    color: gray;
+  }
+  .order-summary .product-price {
+    color: #d4af37;
+    font-weight: bold;
+  }
+  .order-summary .total-price {
+    color: #d4af37;
+    font-weight: bold;
+  }
+  .order-summary .apply-btn {
+    background-color: #ffc107;
+    color: white;
+  }
+  .order-summary .place-order-btn {
+    background-color: #ffc107;
+    color: white;
+  }
+  .empty-cart-message {
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+  }
+
+.place-button {
+        
+           font-weight: 400;
+           font-size: small;
+          margin-top: 10px;
+          display: inline-block;
+          padding: 8px 12px;
+          background: #f0b800;
+          color: #ffffff;
+          border-color: #f0b800;
+          border-radius: 5px;
+          text-decoration: none;
+        }
+        .place-button:hover {
+          background: #ffc400;
+        }
+</style>
+
+<div class="container py-5">
+  <div class="row">
+    <!-- Billing Address -->
+    <div class="col-lg-8 mb-4">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <h2 class="h4 mb-4">Shipping Address</h2>
+        
+        <!-- Address Selection Area -->
+        <div class="form-group">
+          <label for="existingAddress">Select Existing Address</label>
+          <select id="existingAddress" name="addressId" class="form-control">
+            <option value="" selected>Select an address</option>
+            <% if (userAddress && userAddress.address.length > 0) { %>
+              <% userAddress.address.forEach((address) => { %>
+                <option value="<%= address._id %>">
+                  <%= address.addressType %> - <%= address.name %>,
+                  <%= address.streetAddress %>, <%= address.city %>, <%= address.state %>, <%= address.country %>,
+                  <%= address.phone %>
+                </option>
+              <% }); %>
+            <% } else { %>
+              <option disabled>No addresses available</option>
+            <% } %>
+          </select>
+        </div>
+        <a href="/addAddress">
+          <button type="button" class="place-button" id="addNewAddressBtn">Add New Address</button>
+        </a>
+        
+        <!-- Add New Address Button -->
+        <% if (!userAddress || userAddress.address.length === 0) { %>
+          <p class="mt-3">No addresses found. Please add a new address.</p>
+        <% } %>
+        
+        <!-- New Address Form (hidden by default) -->
+        <div id="newAddressForm" style="display: none;">
+          <h3 class="h5 mt-4">New Address</h3>
+          <!-- Include new address form fields here if needed -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Order Summary -->
+    <div class="col-lg-4">
+      <div class="order-summary">
+        <h2 class="h4 mb-4">Your Order</h2>
+        <div class="border-bottom pb-3 mb-3">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="font-weight-bold">Products</span>
+            <span class="font-weight-bold">Subtotal</span>
+          </div>
+          <% if (cartItems && cartItems.length > 0) { %>
+            <% cartItems.forEach(function(item) { %>
+              <div class="d-flex justify-content-between mb-2">
+                <div class="d-flex align-items-center">
+                  <a style="all: unset; display: contents;" href="/productDetails?id=<%= item.product._id %>">
+                    <img src="<%= item.product.productImage %>" alt="<%= item.product.productName %>">
+                    <div class="ml-2">
+                      <p class="product-name mb-0">
+                        <%= item.product.productName.split('|')[0].trim() %> (x<%= item.quantity %>)
+                      </p>
+                      <!-- Removed category display since it's not needed -->
+                    </div>
+                  </a>
+                </div>
+                <span class="product-price">₹ <%= item.totalPrice.toFixed(2) %></span>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="empty-cart-message">
+              <p class="lead mb-4"><%= message || 'No items found in Cart' %></p>
+            </div>
+          <% } %>
+        </div>
+        
+        <div class="border-bottom pb-3 mb-3">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span>₹ <%= subtotal.toFixed(2) %></span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Coupon Discount</span>
+            <span>(-) ₹ 0.00</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Shipping</span>
+            <span>$ <%= shippingCharge.toFixed(2) %></span>
+          </div>
+          <div class="text-right text-primary mb-2">
+            <!-- <a href="#" onclick="showShippingCharge(); return false;">View shipping charge</a> -->
+          </div>
+          <div class="d-flex justify-content-between font-weight-bold">
+            <span>Total</span>
+            <span class="total-price">₹ <%= grandTotal.toFixed(2) %></span>
+          </div>
+        </div>
+        <div class="mb-4">
+          <h3 class="h5 mb-3">Payment Method</h3>
+          <!-- Simplified to only show COD since backend only supports COD -->
+          <div class="mb-3">
+            <label class="d-flex align-items-center">
+              <input type="radio" name="payment" value="cod" class="mr-2" checked>
+              <span>Cash on Delivery</span>
+            </label>
+          </div>
+        </div>
+        <button class="btn place-order-btn btn-secondary" <%= cartItems.length === 0 ? 'disabled' : '' %>>Place Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function showShippingCharge() {
+    Swal.fire({
+      title: 'Free Shipping',
+      text: 'Shipping charge is free at the current moment!',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function placeOrder() {
+    const selectedAddress = document.getElementById('existingAddress');
+    const paymentMethod = document.querySelector('input[name="payment"]:checked');
+
+    // Validate address selection
+    if (!selectedAddress || selectedAddress.value === '' || selectedAddress.value === 'Select an address') {
+      Swal.fire('Error', 'Please select a shipping address', 'error');
+      return;
+    }
+
+    // Validate payment method (though only COD is available)
+    if (!paymentMethod || paymentMethod.value !== 'cod') {
+      Swal.fire('Error', 'Only Cash on Delivery is available at the moment', 'error');
+      return;
+    }
+
+    const orderData = {
+      addressId: selectedAddress.value
+    };
+
+    fetch('/placeOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire({
+          title: 'Order Placed Successfully!',
+          text: `Order IDs: ${data.orderIds.join(", ")}`,
+          icon: 'success',
+          confirmButtonText: 'View Orders'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/orders';
+          }
+        });
+      } else {
+        Swal.fire('Error', data.message || 'An error occurred while placing the order', 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Swal.fire('Error', 'An error occurred while placing the order', 'error');
+    });
+  }
+
+  // Attach the placeOrder function to the button
+  document.querySelector('.place-order-btn').onclick = placeOrder;
+</script>
+
+<!-- <%- include('../partials/user/footer') %> -->

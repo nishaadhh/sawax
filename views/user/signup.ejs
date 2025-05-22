@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/usersignup.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <title>Sign Up | SAWAX Premium Timepieces</title>
+</head>
+<body>
+    <!-- Signup Section -->
+    <section class="signup-section">
+        <div class="signup-container">
+            <div class="signup-header">
+                <h2>Create Account</h2>
+                <p>Join the SAWAX community and choose your best</p>
+            </div>
+            <div class="signup-form">
+                <form id="signupform" action="/signup" method="post">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" name="name" placeholder="Enter your full name" required>
+                        <div class="form-error">Please enter your full name</div>
+                        <div id="error1" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        <div class="form-error">Please enter a valid email address</div>
+                        <div id="error2" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+                        <div class="form-error">Password must be at least 8 characters</div>
+                        <div id="error3" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="cPassword" class="form-control" placeholder="Confirm your password" required>
+                        <div class="form-error">Passwords do not match</div>
+                        <div id="error4" class="error-message"></div>
+                    </div>
+                    
+                    <div class="terms-agreement">
+                        By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                    </div>
+                    
+                    <button type="submit" class="btn" style="background-color: #DF8A00;">Create Account</button>
+                </form>
+                
+                <div class="signup-divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="social-signup">
+                    <a href="/auth/google" style="color: black;" class="social-btn">
+                        <span class="social-icon">G</span>
+                        Sign up with Google
+                    </a>
+                </div>
+                
+                <div class="signup-footer">
+                    Already have an account? <a href='/login' class="signin-link">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-simplified">
+                <div>© 2025 SAWAX. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="#" class="footer-link">Help Center</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const nameid = document.getElementById("name");
+        const emailid = document.getElementById("email");
+        const passid = document.getElementById("password");
+        const cpassid = document.getElementById("confirm-password");
+        const error1 = document.getElementById("error1");
+        const error2 = document.getElementById("error2");
+        const error3 = document.getElementById("error3");
+        const error4 = document.getElementById("error4");
+        const signupform = document.getElementById("signupform");
+
+        // Check if all elements are found
+        if (!nameid || !emailid || !passid || !cpassid || !error1 || !error2 || !error3 || !error4 || !signupform) {
+            console.error("One or more DOM elements not found");
+            throw new Error("Required DOM elements missing");
+        }
+
+        // Name Validation (letters and spaces only)
+        function nameValidateChecking() {
+            const nameval = nameid.value.trim();
+            const namepattern = /^[A-Za-z\s]+$/;
+
+            if (!nameval) {
+                error1.style.display = "block";
+                error1.innerHTML = "Please enter your full name";
+                return false;
+            } else if (!namepattern.test(nameval)) {
+                error1.style.display = "block";
+                error1.innerHTML = "Name can only contain letters and spaces";
+                return false;
+            } else {
+                error1.style.display = "none";
+                error1.innerHTML = "";
+                return true;
+            }
+        }
+
+        // Email Validation
+        function emailValidateChecking() {
+            const emailval = emailid.value;
+            const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (!emailval) {
+                error2.style.display = "block";
+                error2.innerHTML = "Please enter an email address";
+                return false;
+            } else if (!emailpattern.test(emailval)) {
+                error2.style.display = "block";
+                error2.innerHTML = "Invalid email format";
+                return false;
+            } else {
+                error2.style.display = "none";
+                error2.innerHTML = "";
+                return true;
+            }
+        }
+
+        // Password Validation
+        function passValidateChecking() {
+            const passval = passid.value;
+            const cpassval = cpassid.value;
+            const alpha = /[a-zA-Z]/;
+            const digit = /\d/;
+            const capital = /[A-Z]/;
+
+            // Password requirements
+            if (!passval) {
+                error3.style.display = "block";
+                error3.innerHTML = "Please enter a password";
+                return false;
+            } else if (passval.length < 8) {
+                error3.style.display = "block";
+                error3.innerHTML = "Password must be at least 8 characters";
+                return false;
+            } else if (!alpha.test(passval) || !digit.test(passval) || !capital.test(passval)) {
+                error3.style.display = "block";
+                error3.innerHTML = "Password must contain letters, numbers, and at least one capital letter";
+                return false;
+            } else {
+                error3.style.display = "none";
+                error3.innerHTML = "";
+            }
+
+            // Confirm password
+            if (!cpassval) {
+                error4.style.display = "block";
+                error4.innerHTML = "Please confirm your password";
+                return false;
+            } else if (passval !== cpassval) {
+                error4.style.display = "block";
+                error4.innerHTML = "Passwords do not match";
+                return false;
+            } else {
+                error4.style.display = "none";
+                error4.innerHTML = "";
+                return true;
+            }
+        }
+
+        // Real-time validation on input
+        nameid.addEventListener("input", nameValidateChecking);
+        emailid.addEventListener("input", emailValidateChecking);
+        passid.addEventListener("input", passValidateChecking);
+        cpassid.addEventListener("input", passValidateChecking);
+
+        // Form submission validation
+        signupform.addEventListener("submit", function(e) {
+            const isNameValid = nameValidateChecking();
+            const isEmailValid = emailValidateChecking();
+            const isPassValid = passValidateChecking();
+
+            if (!isNameValid || !isEmailValid || !isPassValid) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

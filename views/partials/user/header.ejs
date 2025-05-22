@@ -1,0 +1,542 @@
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- <link rel="stylesheet" href="home.css">
+    
+    <title>SAWAX | Premium Watches</title>
+
+    <style>
+        /* .dropdown{
+            position:relative;
+            display: inline-block;
+
+        }
+        .dropdown-content{
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width:160px;
+            box-shadow : 0px 8px 16px 0px black;
+            z-index: 1000;
+            right:0;
+        }
+        .dropdown-content a{
+
+            color:black;
+            padding: 12px 16px ;
+            text-decoration: none;
+            display:block;
+            width:100%;
+
+
+        }
+
+
+        .dropdown-content a:hover{
+            background-color: #f1f1f1;
+        }
+        dropdown:hover .dropdown-content{
+            display: block;
+        }
+        
+        .header{
+            position :relative;
+            z-index: 500;
+        }
+        */
+  .dropdown {
+    position:relative;
+    display: inline-block;
+  }
+  .sign-in-link {
+    color: #DF8A00;
+    text-decoration: none;
+    padding: 1px;
+    display: block;
+  }
+  .dropdown-content {
+    display: none;
+            position: absolute;
+            background-color: white;
+            min-width:160px;
+            box-shadow : 0px 8px 16px 0px black;
+            z-index: 1000;
+            right:0;
+  }
+  .dropdown-content a {
+    
+    color:black;
+            padding: 12px 16px ;
+            text-decoration: none;
+            display:block;
+            width:100%;
+  }
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+    border-radius: 4px;
+  }
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  /* nav ul {
+    padding: 0;
+    margin: 0;
+  }
+  nav ul li a {
+    font-size: 16px;
+  } */
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    
+
+
+
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>SAWAX | Premium Watches</title>
+        <style>
+            :root {
+                --primary: #1a1a1a;
+                --secondary: #f8f8f8;
+                --accent: #d4af37;
+                --text: #333;
+                --light-text: #777;
+                --border: #e0e0e0;
+            }
+    
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+            }
+    
+            body {
+                color: var(--text);
+                background-color: var(--secondary);
+            }
+    
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+    
+            .container {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+    
+            /* Header */
+            header {
+                background-color: white;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+    
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 0;
+            }
+    
+            .logo {
+                font-size: 32px;
+                font-weight: 700;
+                letter-spacing: 3px;
+                color:#000000
+            }
+    
+            .logo span {
+                color: var(--accent);
+            }
+    
+            nav ul {
+                display: flex;
+                list-style: none;
+                gap: 30px;
+                margin: 0;
+                padding: 0;
+                align-items: center;
+            }
+    
+            nav ul li a {
+                font-weight: 500;
+                font-size: 16px;
+                transition: color 0.3s;
+                color: #000000;
+            }
+    
+            nav ul li a:hover {
+                color: var(--accent);
+            }
+    
+            .header-icons {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+    
+            .header-icon {
+                cursor: pointer;
+                font-size: 20px;
+                transition: color 0.3s;
+                color: #000000;
+            }
+    
+            .header-icon:hover {
+                color: var(--accent);
+            }
+    
+            /* Dropdown for Desktop */
+            .dropdown {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+            }
+    
+            .sign-in-link {
+                color: var(--accent);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 16px;
+                transition: color 0.3s;
+            }
+    
+            .sign-in-link:hover {
+                color:#000000;
+            }
+    
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: white;
+                min-width: 160px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+                z-index: 1000;
+                right: 0;
+                border-radius: 4px;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+    
+            .dropdown:hover .dropdown-content {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+    
+            .dropdown-content a {
+                color: var(--text);
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                width: 100%;
+                font-size: 14px;
+                transition: background-color 0.3s;
+            }
+    
+            .dropdown-content a:hover {
+                background-color: var(--secondary);
+                border-radius: 4px;
+            }
+    
+            /* Mobile Menu */
+            .mobile-menu {
+                display: none;
+                font-size: 24px;
+                cursor: pointer;
+                transition: color 0.3s;
+            }
+    
+            .mobile-menu:hover {
+                color: var(--accent);
+            }
+    
+            .mobile-nav {
+                display: none;
+                background-color: white;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                z-index: 999;
+                padding: 20px;
+                transform: translateY(-10px);
+                opacity: 0;
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+    
+            .mobile-nav.active {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+    
+            .mobile-nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+    
+            .mobile-nav ul li {
+                width: 100%;
+            }
+    
+            .mobile-nav ul li a {
+                display: block;
+                padding: 10px;
+                font-size: 16px;
+                color: var(--text);
+                transition: background-color 0.3s, color 0.3s;
+            }
+    
+            .mobile-nav ul li a:hover {
+                background-color: var(--secondary);
+                color: var(--accent);
+                border-radius: 4px;
+            }
+    
+            /* Mobile Dropdown for User */
+            .mobile-dropdown {
+                position: relative;
+            }
+    
+            .mobile-sign-in-link {
+                color: var(--accent);
+                padding: 10px;
+                display: block;
+                font-weight: 500;
+                font-size: 16px;
+            }
+    
+            .mobile-dropdown-content {
+                display: none;
+                background-color: var(--secondary);
+                padding: 10px 20px;
+            }
+    
+            .mobile-dropdown.active .mobile-dropdown-content {
+                display: block;
+            }
+    
+            .mobile-dropdown-content a {
+                display: block;
+                padding: 8px 0;
+                color: var(--text);
+                font-size: 14px;
+                transition: color 0.3s;
+            }
+    
+            .mobile-dropdown-content a:hover {
+                color: var(--accent);
+            }
+    
+            /* Responsive Design */
+            @media (max-width: 992px) {
+                nav ul {
+                    display: none;
+                }
+    
+                .mobile-menu {
+                    display: block;
+                }
+    
+                .header-icons {
+                    gap: 15px;
+                }
+            }
+    
+            @media (max-width: 768px) {
+                .logo {
+                    font-size: 28px;
+                }
+    
+                .header-icon {
+                    font-size: 18px;
+                }
+    
+                .mobile-menu {
+                    font-size: 22px;
+                }
+    
+                .mobile-nav ul li a {
+                    font-size: 14px;
+                    padding: 8px;
+                }
+    
+                .mobile-sign-in-link {
+                    font-size: 14px;
+                    padding: 8px;
+                }
+    
+                .mobile-dropdown-content a {
+                    font-size: 13px;
+                    padding: 6px 0;
+                }
+            }
+    
+            @media (max-width: 576px) {
+                .logo {
+                    font-size: 24px;
+                }
+    
+                .header-content {
+                    padding: 15px 0;
+                }
+    
+                .header-icons {
+                    gap: 10px;
+                }
+    
+                .header-icon {
+                    font-size: 16px;
+                }
+    
+                .mobile-menu {
+                    font-size: 20px;
+                }
+    
+                .mobile-nav {
+                    padding: 15px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">SA<span>WAX</span></div>
+                    <nav>
+                      <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href=" /shop">Shop</a></li>
+                          <!-- <li><a href="/men">Men</a></li>
+                          <li><a href="women">Women</a></li> -->
+                          <li><a href="/about">About</a></li>
+                          <!-- <li><a href="">Contact</a></li>  -->
+  
+                          <% if (user) { %>
+                              <li class="dropdown">
+                                <a href="#" class="sign-in-link"><%= user.name %></a>
+                                <div class="dropdown-content">
+                                  <a href="/profile">Profile</a>
+                                  <a href="#" onclick="confirmLogout()">Logout</a>
+                                </div>
+                              </li>
+                            <% } else { %>
+                              
+                              <li style="color: #DF8A00"><a href="/login">Login</a></li>
+                              <li style="color: #DF8A00"><a href="/signup">Signup</a></li>
+                            <% } %>
+                      
+                              </ul>
+                  </nav>
+                    <div class="header-icons">
+                        <div class="header-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <a class="header-icon" href="/profile"><i class="fa-solid fa-circle-user"></i></a>
+                        <a class="header-icon" href="/wishlist"><i class="fa-solid fa-heart"></i></a>
+                        <a class="header-icon" href="/cart"><i class="fa-solid fa-cart-shopping"></i></a>
+                        <div class="mobile-menu">☰</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Navigation -->
+            <div class="mobile-nav" id="mobile-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/shop">Shop</a></li>
+                    <li><a href="/men">Men</a></li>
+                    <li><a href="/women">Women</a></li>
+                    <li><a href="/about">About</a></li>
+                    <!-- Simulated user logged-in state for mobile -->
+                    <li class="mobile-dropdown">
+                        <a href="#" class="mobile-sign-in-link" onclick="toggleMobileDropdown(event)">YOU</a>
+                        <div class="mobile-dropdown-content">
+                            <a href="/profile">Profile</a>
+                            <a href="#" onclick="confirmLogout()">Logout</a>
+                        </div>
+                    </li>
+                    <!-- Uncomment to simulate logged-out state -->
+                    <!-- 
+                    <li><a href="/login" style="color: #DF8A00">Login</a></li>
+                    <li><a href="/signup" style="color: #DF8A00">Signup</a></li>
+                    -->
+                </ul>
+            </div>
+        </header>
+    
+        <!-- JavaScript for Mobile Menu Toggle -->
+        <script>
+            // Toggle mobile menu
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const mobileNav = document.querySelector('#mobile-nav');
+    
+            mobileMenu.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+            });
+    
+            // Toggle mobile dropdown for user profile
+            function toggleMobileDropdown(event) {
+                event.preventDefault();
+                const dropdown = event.target.closest('.mobile-dropdown');
+                dropdown.classList.toggle('active');
+            }
+    
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!mobileNav.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileNav.classList.remove('active');
+                }
+            });
+        </script>
+    </body>
+    </html>
+
+
+    <script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to logout?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Logout',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Call the /logout endpoint
+            fetch('/logout')
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url; // Redirect to /login
+                    } else {
+                        window.location.reload(); // Fallback reload
+                    }
+                })
+                .catch(error => {
+                    console.error("Logout error:", error);
+                    window.location.reload(); // Fallback reload
+                });
+        }
+    });
+}
+</script>
+

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Men's Collection | SAWAX</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            overflow-x: hidden;
+            background-color: var(--secondary);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icon {
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .header-icon:hover {
+            color: var(--accent);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 15px 0;
+            background-color: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .breadcrumb ul {
+            display: flex;
+            list-style: none;
+            gap: 10px;
+        }
+
+        .breadcrumb ul li {
+            font-size: 14px;
+            color: var(--light-text);
+            display: flex;
+            align-items: center;
+        }
+
+        .breadcrumb ul li:after {
+            content: '/';
+            margin-left: 10px;
+        }
+
+        .breadcrumb ul li:last-child:after {
+            display: none;
+        }
+
+        .breadcrumb ul li a:hover {
+            color: var(--accent);
+        }
+
+        .breadcrumb ul li.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Collection Section */
+        .collection-section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 40px;
+        }
+
+        /* Filters */
+        .filters {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .filter-group select,
+        .filter-group input[type="checkbox"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="checkbox"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+            outline: none;
+        }
+
+        .filter-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .filter-group input[type="checkbox"]:hover {
+            transform: scale(1.1);
+        }
+
+        .filter-group .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .filter-group .checkbox-label:hover {
+            color: var(--accent);
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-image {
+            height: 250px;
+            background-color: var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .product-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--accent);
+            color: var(--primary);
+            padding: 3px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 3px;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .card-category {
+            font-size: 12px;
+            color: var(--light-text);
+            margin-bottom: 10px;
+        }
+
+        .card-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .pagination-btn, .pagination-page {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+            background-color: white;
+            color: var(--primary);
+        }
+
+        .pagination-btn:hover, .pagination-page:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .pagination-page.active {
+            background-color: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .pagination-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-about p {
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .social-icon:hover {
+            background-color: var(--accent);
+        }
+
+        .footer-links h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            opacity: 0.7;
+            transition: opacity 0.3s, color 0.3s;
+        }
+
+        .footer-links ul li a:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .collection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                padding: 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 24px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .card-image {
+                height: 200px;
+            }
+
+            .filter-group label {
+                font-size: 14px;
+            }
+
+            .filter-group select,
+            .filter-group .checkbox-label {
+                font-size: 13px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-title {
+                font-size: 20px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-image {
+                height: 180px;
+            }
+
+            .card-title {
+                font-size: 14px;
+            }
+
+            .card-price {
+                font-size: 16px;
+            }
+
+            .filter-group {
+                margin-bottom: 20px;
+            }
+
+            .filter-group label {
+                font-size: 13px;
+            }
+
+            .filter-group select,
+            .filter-group .checkbox-label {
+                font-size: 12px;
+            }
+
+            .filters {
+                padding: 15px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .pagination-btn, .pagination-page {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <%- include("../../views/partials/user/header") %>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/collections">Collections</a></li>
+                <li class="active">Men's Watches</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Collection Section -->
+    <section class="collection-section">
+        <div class="container">
+            <h2 class="section-title">Men's Watch Collection</h2>
+            <div class="collection-grid">
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="sort">Sort By</label>
+                        <select id="sort" onchange="applyFilters()">
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Price Range</label>
+                        <div class="checkbox-label"><input type="checkbox" id="under-300" onchange="applyFilters()"><label for="under-300">Under $300</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="300-500" onchange="applyFilters()"><label for="300-500">$300 - $500</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="over-500" onchange="applyFilters()"><label for="over-500">Over $500</label></div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Brand</label>
+                        <div class="checkbox-label"><input type="checkbox" id="rolex" onchange="applyFilters()"><label for="rolex">Rolex</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="omega" onchange="applyFilters()"><label for="omega">Omega</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="fossil" onchange="applyFilters()"><label for="fossil">Fossil</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="tag-heuer" onchange="applyFilters()"><label for="tag-heuer">Tag Heuer</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="patek-philippe" onchange="applyFilters()"><label for="patek-philippe">Patek Philippe</label></div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Strap Type</label>
+                        <div class="checkbox-label"><input type="checkbox" id="leather" onchange="applyFilters()"><label for="leather">Leather</label></div>
+                        <div class="checkbox-label"><input type="checkbox" id="steel" onchange="applyFilters()"><label for="steel">Stainless Steel</label></div>
+                    </div>
+                </div>
+                <!-- Products Grid -->
+                <div class="products-grid" id="products-grid">
+                    <% if (products && products.length > 0) { %>
+                        <% products.forEach(product => { %>
+                            <div class="product-card" onclick="goToProductDetails('<%= product._id %>')">
+                                <div class="card-image">
+                                    <% if (product.productImage && product.productImage.length > 0) { %>
+                                        <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                                    <% } else { %>
+                                        <img src="https://via.placeholder.com/300x300?text=No+Image" alt="No Image">
+                                    <% } %>
+                                    <% if (product.badge) { %>
+                                        <span class="card-badge"><%= product.badge %></span>
+                                    <% } %>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-title"><%= product.productName || 'Product Name Unavailable' %></div>
+                                    <div class="card-category"><%= product.category || 'Category Unavailable' %></div>
+                                    <div class="card-price">$<%= product.salePrice?.toFixed(2) || 'N/A' %></div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>No products available in this collection.</p>
+                    <% } %>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <button class="pagination-btn" id="prev-btn" onclick="changePage(-1)">Previous</button>
+                <div id="page-numbers"></div>
+                <button class="pagination-btn" id="next-btn" onclick="changePage(1)">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include("../../views/partials/user/footer") %>
+
+    <!-- JavaScript for Pagination and Filtering -->
+    <script>
+        let productsPerPage = 9;
+        let currentPage = 1;
+        let allProducts = <%- JSON.stringify(products) %> || [];
+        let filteredProducts = [...allProducts];
+        const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+        function applyFilters() {
+            const sortOption = document.getElementById('sort').value;
+            const priceUnder300 = document.getElementById('under-300').checked;
+            const price300to500 = document.getElementById('300-500').checked;
+            const priceOver500 = document.getElementById('over-500').checked;
+            const brandRolex = document.getElementById('rolex').checked;
+            const brandOmega = document.getElementById('omega').checked;
+            const brandFossil = document.getElementById('fossil').checked;
+            const brandTagHeuer = document.getElementById('tag-heuer').checked;
+            const brandPatekPhilippe = document.getElementById('patek-philippe').checked;
+            const strapLeather = document.getElementById('leather').checked;
+            const strapSteel = document.getElementById('steel').checked;
+
+            // Filter products
+            filteredProducts = allProducts.filter(product => {
+                let passesPrice = true;
+                let passesBrand = true;
+                let passesStrap = true;
+
+                // Price filter
+                if (priceUnder300 || price300to500 || priceOver500) {
+                    passesPrice = false;
+                    if (priceUnder300 && product.salePrice < 300) passesPrice = true;
+                    if (price300to500 && product.salePrice >= 300 && product.salePrice <= 500) passesPrice = true;
+                    if (priceOver500 && product.salePrice > 500) passesPrice = true;
+                }
+
+                // Brand filter
+                if (brandRolex || brandOmega || brandFossil || brandTagHeuer || brandPatekPhilippe) {
+                    passesBrand = false;
+                    if (brandRolex && product.brand === 'Rolex') passesBrand = true;
+                    if (brandOmega && product.brand === 'Omega') passesBrand = true;
+                    if (brandFossil && product.brand === 'Fossil') passesBrand = true;
+                    if (brandTagHeuer && product.brand === 'Tag Heuer') passesBrand = true;
+                    if (brandPatekPhilippe && product.brand === 'Patek Philippe') passesBrand = true;
+                }
+
+                // Strap filter
+                if (strapLeather || strapSteel) {
+                    passesStrap = false;
+                    if (strapLeather && product.strapType === 'Leather') passesStrap = true;
+                    if (strapSteel && product.strapType === 'Stainless Steel') passesStrap = true;
+                }
+
+                return passesPrice && passesBrand && passesStrap;
+            });
+
+            // Sort products
+            if (sortOption === 'price-low') {
+                filteredProducts.sort((a, b) => a.salePrice - b.salePrice);
+            } else if (sortOption === 'price-high') {
+                filteredProducts.sort((a, b) => b.salePrice - a.salePrice);
+            } else if (sortOption === 'newest') {
+                filteredProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+
+            currentPage = 1;
+            displayProducts(currentPage);
+        }
+
+        function displayProducts(page) {
+            const productsGrid = document.getElementById('products-grid');
+            const start = (page - 1) * productsPerPage;
+            const end = start + productsPerPage;
+
+            // Clear existing products
+            productsGrid.innerHTML = '';
+
+            // Check if there are filtered products
+            if (filteredProducts.length === 0) {
+                productsGrid.innerHTML = '<p>No products match your filters.</p>';
+                updatePagination(page, 0);
+                return;
+            }
+
+            // Display filtered products for the current page
+            const productsToDisplay = filteredProducts.slice(start, end);
+            productsToDisplay.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.onclick = () => goToProductDetails(product._id);
+                productCard.innerHTML = `
+                    <div class="card-image">
+                        ${product.productImage && product.productImage.length > 0
+                            ? `<img src="/${product.productImage[0]}" alt="${product.productName || 'Product'}">`
+                            : `<img src="https://via.placeholder.com/300x300?text=No+Image" alt="No Image">`}
+                        ${product.badge ? `<span class="card-badge">${product.badge}</span>` : ''}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${product.productName || 'Product Name Unavailable'}</div>
+                        <div class="card-category">${product.category || 'Category Unavailable'}</div>
+                        <div class="card-price">$${product.salePrice?.toFixed(2) || 'N/A'}</div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+
+            updatePagination(page, Math.ceil(filteredProducts.length / productsPerPage));
+        }
+
+        function updatePagination(page, totalPages) {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const pageNumbers = document.getElementById('page-numbers');
+
+            // Update buttons
+            prevBtn.classList.toggle('disabled', page === 1);
+            nextBtn.classList.toggle('disabled', page === totalPages || totalPages === 0);
+
+            // Update page numbers
+            pageNumbers.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'pagination-page';
+                pageBtn.textContent = i;
+                pageBtn.classList.toggle('active', i === page);
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    displayProducts(currentPage);
+                };
+                pageNumbers.appendChild(pageBtn);
+            }
+        }
+
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                displayProducts(currentPage);
+            }
+        }
+
+        function goToProductDetails(productId) {
+            window.location.href = `/product/${productId}`;
+        }
+
+        // Initial display
+        displayProducts(currentPage);
+    </script>
+</body>
+</html>

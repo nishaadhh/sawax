@@ -1,0 +1,206 @@
+<%- include("../../views/partials/user/header") %>
+<link rel="stylesheet" href="/css/home.css">
+<!-- Add SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1><strong>CHOOSE THE BEST</strong></h1>
+        <p>Discover our collection of premium timepieces crafted with precision and designed for distinction.</p>
+        <div class="hero-buttons">
+            <a href="/shop" class="btn">Shop Now</a>
+            <a href="# " class="btn btn-outline">Explore</a>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="/img/banner.png" alt="Hero Banner">
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured">
+    <div class="container">
+        <div class="section-title">
+            <h2>Featured Watches</h2>
+            <p>Discover our selection of exquisite timepieces that blend style, innovation, and craftsmanship.</p>
+        </div>
+        <div class="product-grid">
+            <% if (products && products.length > 0) { %>
+                <% products.forEach(product => { %>
+                    <div class="product-card" onclick="window.location.href='/product/<%= product._id %>'" style="cursor: pointer;">
+                        <div class="product-image">
+                            <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                            <% if (product.createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) { %>
+                                <span class="product-badge">New</span>
+                            <% } else { %>
+                                <span class="product-badge">Bestseller</span>
+                            <% } %>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name"><%= product.productName %></h3>
+                            <div class="product-category"><%= product.category.name %></div>
+                            <div class="product-price">$<%= product.salePrice.toFixed(2) %></div>
+                            <div class="product-actions" onclick="event.stopPropagation();">
+                                <a href="#" class="btn add-to-cart" onclick="addToCart('<%= product._id %>')">Add to Cart</a>
+                                <div class="wishlist" onclick="addToWishlist('<%= product._id %>')"><i class="fa-solid fa-heart"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No products available at the moment.</p>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<!-- Collections -->
+<section class="collections">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Collections</h2>
+            <p>Discover watches for every occasion and style preference.</p>
+        </div>
+        <div class="collection-grid">
+            <div class="collection-card">
+                <div class="collection-image"><img src="/img/newcollectionforMen.jpg" alt="Men's Collection"></div>
+                <div class="collection-overlay"></div>
+                <div class="collection-content">
+                    <h3 class="collection-title">Men's Collection</h3>
+                    <p class="collection-subtitle">Bold designs for the modern gentleman</p>
+                    <a href="/filter?category=681cbcbf63d543710ba5b852" class="btn">Explore</a>
+                </div>
+            </div>
+            <div class="collection-card">
+                <div class="collection-image"><img src="/img/womenCollecionBanner.jpeg" alt="Women's Collection"></div>
+                <div class="collection-overlay"></div>
+                <div class="collection-content">
+                    <h3 class="collection-title">Women's Collection</h3>
+                    <p class="collection-subtitle">Elegant timepieces for every moment</p>
+                    <a href="/filter?category=681cbcd163d543710ba5b86a" class="btn">Explore</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose SAWAX</h2>
+            <p>We are committed to excellence in every aspect of our products and services.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <h3 class="feature-title">Premium Quality</h3>
+                <p class="feature-desc">Each timepiece is crafted with the finest materials and meticulous attention to detail.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <h3 class="feature-title">Free Shipping</h3>
+                <p class="feature-desc">Enjoy complimentary worldwide shipping on all orders over $150.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-people-roof"></i></div>
+                <h3 class="feature-title">2-Year Warranty</h3>
+                <p class="feature-desc">All our watches come with a comprehensive two-year international warranty.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter">
+    <div class="container">
+        <h3>Subscribe to Our Newsletter</h3>
+        <p>Stay updated with our latest collections, exclusive offers, and watch care tips.</p>
+        <form class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="Your email address">
+            <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    async function addToCart(productId) {
+        try {
+            const response = await fetch('/addToCart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, quantity: 1 })
+            });
+            const data = await response.json();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart!',
+                    text: 'Product has been successfully added to your cart.',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Add',
+                    text: data.message || 'Failed to add product to cart.',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                });
+            }
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding to cart.',
+                confirmButtonColor: '#d4af37',
+                background: '#f8f8f8',
+            });
+        }
+    }
+
+    async function addToWishlist(productId) {
+        try {
+            const response = await fetch(`/addToWishlist/${productId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist!',
+                    text: 'Product has been successfully added to your wishlist.',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Add',
+                    text: data.message || 'Failed to add product to wishlist.',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                });
+            }
+        } catch (error) {
+            console.error('Error adding to wishlist:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding to wishlist.',
+                confirmButtonColor: '#d4af37',
+                background: '#f8f8f8',
+            });
+        }
+    }
+</script>
+
+<%- include("../../views/partials/user/footer") %>

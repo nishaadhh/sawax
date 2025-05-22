@@ -1,0 +1,495 @@
+ 
+    <title>Forgot Password | SAWAX</title>
+    <%- include("../../views/partials/user/header") %>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Forgot Password | SAWAX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+            --error: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            overflow-x: hidden;
+            background-color: var(--secondary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icon {
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .header-icon:hover {
+            color: var(--accent);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Forgot Password Section */
+        .forgot-password-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+
+        .forgot-password-container {
+            width: 100%;
+            max-width: 420px;
+            background-color: white;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .forgot-password-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .forgot-password-header h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .forgot-password-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .forgot-password-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        .forgot-password-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .form-error {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent);
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #c1a033;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-to-login {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .login-link {
+            color: var(--accent);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-link:hover {
+            color: #c1a033;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 20px 0;
+            font-size: 14px;
+        }
+
+        .footer-simplified {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.7;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-link {
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .forgot-password-container {
+                max-width: 380px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .forgot-password-container {
+                max-width: 100%;
+                margin: 0 20px;
+            }
+            
+            .forgot-password-section {
+                padding: 40px 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .forgot-password-header {
+                padding: 20px;
+            }
+            
+            .forgot-password-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <%- include("../../views/partials/user/header") %>
+
+    <!-- Forgot Password Section -->
+    <section class="forgot-password-section">
+        <div class="forgot-password-container">
+            <div class="forgot-password-header">
+                <% if (step === 'email') { %>
+                    <h2>Forgot Password</h2>
+                    <p>Enter your email to receive an OTP</p>
+                <% } else if (step === 'otp') { %>
+                    <h2>Verify OTP</h2>
+                    <p>Enter the OTP sent to <%= email %></p>
+                <% } else if (step === 'reset') { %>
+                    <h2>Reset Password</h2>
+                    <p>Create a new password</p>
+                <% } %>
+            </div>
+            <form class="forgot-password-form" id="forgot-password-form" action="<%= step === 'email' ? '/forgot-password' : step === 'otp' ? '/verify-otp' : '/reset-password' %>" method="POST">
+                <% if (step === 'email') { %>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        <div class="form-error" id="email-error">Please enter a valid email.</div>
+                    </div>
+                    <% if (locals.message && message.length > 0) { %>
+                        <p style="color: var(--error); margin-bottom: 20px; text-align: center;"><%= message %></p>
+                    <% } %>
+                    <button type="submit" class="btn" id="submit-btn">Send OTP</button>
+                <% } else if (step === 'otp') { %>
+                    <div class="form-group">
+                        <label for="otp">OTP</label>
+                        <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6" required>
+                        <div class="form-error" id="otp-error">Please enter a valid 6-digit OTP.</div>
+                    </div>
+                    <% if (locals.message && message.length > 0) { %>
+                        <p style="color: var(--error); margin-bottom: 20px; text-align: center;"><%= message %></p>
+                    <% } %>
+                    <input type="hidden" name="email" value="<%= email %>">
+                    <button type="submit" class="btn" id="submit-btn">Verify OTP</button>
+                <% } else if (step === 'reset') { %>
+                    <div class="form-group">
+                        <label for="password">New Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password" required>
+                        <div class="form-error" id="password-error">Password must be at least 8 characters.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirmPassword" class="form-control" placeholder="Confirm new password" required>
+                        <div class="form-error" id="confirm-password-error">Passwords do not match.</div>
+                    </div>
+                    <% if (locals.message && message.length > 0) { %>
+                        <p style="color: var(--error); margin-bottom: 20px; text-align: center;"><%= message %></p>
+                    <% } %>
+                    <input type="hidden" name="email" value="<%= email %>">
+                    <button type="submit" class="btn" id="submit-btn">Reset Password</button>
+                <% } %>
+            </form>
+            <div class="back-to-login">
+                <a href="/login" class="login-link">Back to Login</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include("../../views/partials/user/footer") %>
+
+    <script>
+        const form = document.getElementById('forgot-password-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        if (step === 'email') { 
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+
+            function validateEmail() {
+                const email = emailInput.value.trim();
+                const emailPattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+                if (!email) {
+                    emailError.textContent = 'Email is required.';
+                    emailError.style.display = 'block';
+                    return false;
+                } else if (!emailPattern.test(email)) {
+                    emailError.textContent = 'Please enter a valid email.';
+                    emailError.style.display = 'block';
+                    return false;
+                }
+                emailError.style.display = 'none';
+                return true;
+            }
+
+            emailInput.addEventListener('input', validateEmail);
+
+            form.addEventListener('submit', (e) => {
+                if (!validateEmail()) {
+                    e.preventDefault();
+                    return;
+                }
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending OTP...';
+            });
+         } else if (step === 'otp') { 
+            const otpInput = document.getElementById('otp');
+            const otpError = document.getElementById('otp-error');
+
+            function validateOTP() {
+                const otp = otpInput.value.trim();
+                if (!otp) {
+                    otpError.textContent = 'OTP is required.';
+                    otpError.style.display = 'block';
+                    return false;
+                } else if (!/^\d{6}$/.test(otp)) {
+                    otpError.textContent = 'Please enter a valid 6-digit OTP.';
+                    otpError.style.display = 'block';
+                    return false;
+                }
+                otpError.style.display = 'none';
+                return true;
+            }
+
+            otpInput.addEventListener('input', validateOTP);
+
+            form.addEventListener('submit', (e) => {
+                if (!validateOTP()) {
+                    e.preventDefault();
+                    return;
+                }
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Verifying OTP...';
+            });
+        } else if (step === 'reset') { 
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const passwordError = document.getElementById('password-error');
+            const confirmPasswordError = document.getElementById('confirm-password-error');
+
+            function validatePassword() {
+                const password = passwordInput.value;
+                if (!password) {
+                    passwordError.textContent = 'Password is required.';
+                    passwordError.style.display = 'block';
+                    return false;
+                } else if (password.length < 8) {
+                    passwordError.textContent = 'Password must be at least 8 characters.';
+                    passwordError.style.display = 'block';
+                    return false;
+                }
+                passwordError.style.display = 'none';
+                return true;
+            }
+
+            function validateConfirmPassword() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                if (!confirmPassword) {
+                    confirmPasswordError.textContent = 'Confirm password is required.';
+                    confirmPasswordError.style.display = 'block';
+                    return false;
+                } else if (confirmPassword !== password) {
+                    confirmPasswordError.textContent = 'Passwords do not match.';
+                    confirmPasswordError.style.display = 'block';
+                    return false;
+                }
+                confirmPasswordError.style.display = 'none';
+                return true;
+            }
+
+            passwordInput.addEventListener('input', validatePassword);
+            confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+            form.addEventListener('submit', (e) => {
+                const isPasswordValid = validatePassword();
+                const isConfirmPasswordValid = validateConfirmPassword();
+                if (!isPasswordValid || !isConfirmPasswordValid) {
+                    e.preventDefault();
+                    return;
+                }
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Resetting Password...';
+            });
+        }
+    </script>
+</body>
+</html>
+
+    <!-- <-indclude("../../views/partials/user/footer") %> -->

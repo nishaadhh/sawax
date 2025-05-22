@@ -1,0 +1,442 @@
+<%- include("../../views/partials/user/header") %>
+
+<link rel="stylesheet" href="/css/shop.css">
+<title>SAWAX | Shop Premium Watches</title>
+
+<style>
+    :root {
+        --primary: #1a1a1a;
+        --secondary: #f8f8f8;
+        --accent: #d4af37;
+        --text: #333;
+        --light-text: #777;
+        --border: #e0e0e0;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .product-card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        background: #fff;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .product-card:hover {
+        transform: scale(1.02);
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 299px;
+        object-fit: cover;
+    }
+
+    .product-details {
+        padding: 15px;
+    }
+
+    .product-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .product-price {
+        color: var(--accent);
+        font-size: 16px;
+        margin-top: 5px;
+    }
+
+    .view-button {
+        font-weight: 600;
+        font-size: small;
+        margin-top: 10px;
+        display: inline-block;
+        padding: 8px 12px;
+        background: var(--accent);
+        color: var(--primary);
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .view-button:hover {
+        background: #b8982f;
+    }
+
+    .shop-sidebar {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-section {
+        margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .search-input {
+        border: none;
+        padding: 8px;
+        flex: 1;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        background: var(--accent);
+        border: none;
+        padding: 8px 12px;
+        color: var(--primary);
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .search-btn:hover {
+        background: #b8982f;
+    }
+
+    .category-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .category-item {
+        margin-bottom: 10px;
+    }
+
+    .category-link {
+        color: var(--text);
+        font-size: 14px;
+        text-decoration: none;
+        display: flex;
+        justify-content: space-between;
+        transition: color 0.3s;
+    }
+
+    .category-link:hover {
+        color: var(--accent);
+    }
+
+    .filter-group {
+        margin-bottom: 15px;
+    }
+
+    .filter-group-title {
+        font-size: 16px;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .price-range {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .range-slider {
+        width: 100%;
+    }
+
+    .price-inputs {
+        display: flex;
+        gap: 10px;
+    }
+
+    .price-input {
+        width: 50%;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .alpha-filter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .alpha-checkbox {
+        display: none;
+    }
+
+    .alpha-label {
+        padding: 5px 10px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text);
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .alpha-checkbox:checked + .alpha-label {
+        background: var(--accent);
+        color: var(--primary);
+    }
+
+    .apply-filter {
+        background: var(--accent);
+        color: var(--primary);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: background 0.3s;
+    }
+
+    .apply-filter:hover {
+        background: #b8982f;
+    }
+
+    .shop-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .sort-select {
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        padding: 8px 12px;
+        margin: 0 5px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text);
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+
+    .pagination a:hover, .pagination a.active {
+        background: var(--accent);
+        color: var(--primary);
+    }
+
+    .reset-filters {
+        background: transparent;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 10px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .reset-filters:hover {
+        background: var(--accent);
+        color: var(--primary);
+    }
+</style>
+
+<section class="page-title">
+    <div class="container">
+        <h1>Our Collection</h1>
+        <p>Discover exceptional timepieces crafted for distinction</p>
+    </div>
+</section>
+
+<section class="shop-section">
+    <div class="container">
+        <div class="shop-layout">
+            <!-- Sidebar -->
+            <div class="shop-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Search</h3>
+                    <form id="search-form" action="/filter" method="GET">
+                        <div class="search-container">
+                            <input type="text" name="query" class="search-input" placeholder="Search watches..." value="<%= searchQuery || '' %>">
+                            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Categories</h3>
+                    <ul class="category-list">
+                        <li class="category-item">
+                            <a href="/shop" class="category-link">
+                                <span>All Categories</span>
+                                <span class="category-count"></span>
+                            </a>
+                        </li>
+                        <% category.forEach(cat => { %>
+                            <li class="category-item">
+                                <a href="/filter?category=<%= cat._id %>" class="category-link">
+                                    <span><%= cat.name %></span>
+                                    <span class="category-count">(<%= cat.productCount || 0 %>)</span>
+                                </a>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    
+                        <button type="button" class="reset-filters" onclick="location.href='/shop'">Reset Filters</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Products Main -->
+            <div class="shop-products grid-view">
+                <div class="shop-controls">
+                    <div class="products-found">
+                        Showing <%= (currentPage - 1) * 9 + 1 %>-<%= Math.min(currentPage * 9, totalProducts) %> of <%= totalProducts %> products
+                    </div>
+                    <div class="shop-actions">
+                        <button class="filter-toggle">Filters</button>
+                        <div class="view-options">
+                            <button class="view-btn active" data-view="grid">☰</button>
+                            <button class="view-btn" data-view="list">≡</button>
+                        </div>
+                        <select class="sort-select" onchange="location = '/filter?sort=' + this.value + '<%= selectedCategory ? '&category=' + selectedCategory : '' %>'">
+                            <option value="relevance" <%= sort === 'relevance' ? 'selected' : '' %>>Relevance</option>
+                            <option value="price-low" <%= sort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
+                            <option value="price-high" <%= sort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
+                            <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+                            <option value="bestselling" <%= sort === 'bestselling' ? 'selected' : '' %>>Bestselling</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="product-grid">
+                    <% if (products.length > 0) { %>
+                        <% products.forEach(product => { %>
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                                </div>
+                                <div class="product-details">
+                                    <h3 class="product-name"><%= product.productName %></h3>
+                                    <p class="product-brand">Brand: <%= product.brand %></p>
+                                    <p class="product-price">$<%= product.salePrice %></p>
+                                    <p class="product-color">Color: <%= product.color %></p>
+                                    <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
+                                    <a href="/product/<%= product._id %>" class="view-button">View Product</a>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p style="text-align: center; color: var(--light-text); font-size: 18px;">
+                            No products found. Try adjusting your filters.
+                        </p>
+                    <% } %>
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages > 1) { %>
+                    <div class="pagination">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="/filter?page=<%= i %><%= selectedCategory ? '&category=' + selectedCategory : '' %><%= searchQuery ? '&query=' + searchQuery : '' %><%= minPrice ? '&minPrice=' + minPrice : '' %><%= maxPrice ? '&maxPrice=' + maxPrice : '' %><%= sort ? '&sort=' + sort : '' %><%= alphaFilter ? '&alpha=' + alphaFilter : '' %>" class="<%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Sync price range sliders with input fields
+    const minPriceSlider = document.getElementById('minPrice');
+    const maxPriceSlider = document.getElementById('maxPrice');
+    const minPriceInput = document.getElementById('minPriceInput');
+    const maxPriceInput = document.getElementById('maxPriceInput');
+
+    minPriceSlider.addEventListener('input', () => {
+        minPriceInput.value = minPriceSlider.value;
+        if (parseInt(minPriceSlider.value) > parseInt(maxPriceSlider.value)) {
+            maxPriceSlider.value = minPriceSlider.value;
+            maxPriceInput.value = minPriceSlider.value;
+        }
+    });
+
+    maxPriceSlider.addEventListener('input', () => {
+        maxPriceInput.value = maxPriceSlider.value;
+        if (parseInt(maxPriceSlider.value) < parseInt(minPriceSlider.value)) {
+            minPriceSlider.value = maxPriceSlider.value;
+            minPriceInput.value = maxPriceSlider.value;
+        }
+    });
+
+    minPriceInput.addEventListener('change', () => {
+        minPriceSlider.value = minPriceInput.value;
+        if (parseInt(minPriceInput.value) > parseInt(maxPriceInput.value)) {
+            maxPriceInput.value = minPriceInput.value;
+            maxPriceSlider.value = minPriceInput.value;
+        }
+    });
+
+    maxPriceInput.addEventListener('change', () => {
+        maxPriceSlider.value = maxPriceInput.value;
+        if (parseInt(maxPriceInput.value) < parseInt(minPriceInput.value)) {
+            minPriceInput.value = maxPriceInput.value;
+            minPriceSlider.value = maxPriceInput.value;
+        }
+    });
+
+    // Allow only one alphabetical filter checkbox to be selected
+    const alphaCheckboxes = document.querySelectorAll('.alpha-checkbox');
+    alphaCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                alphaCheckboxes.forEach(cb => {
+                    if (cb !== checkbox) cb.checked = false;
+                });
+            }
+        });
+    });
+
+    // Debug: Log filter state on form submit
+    document.getElementById('filter-form').addEventListener('submit', () => {
+        console.log('Filter Form Submitted:', {
+            category: '<%= selectedCategory %>',
+            query: '<%= searchQuery %>',
+            minPrice: minPriceInput.value,
+            maxPrice: maxPriceInput.value,
+            alpha: document.querySelector('.alpha-checkbox:checked')?.value,
+            sort: '<%= sort %>'
+        });
+    });
+</script>
+
+<%- include("../../views/partials/user/footer") %>
