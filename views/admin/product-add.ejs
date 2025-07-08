@@ -1,20 +1,20 @@
 <%- include("../../views/partials/admin/header") %>
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     <style>
         /* General Styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         :root {
-      --primary-color: #3498db;
-      --secondary-color: #2c3e50;
-      --success-color: #2ecc71;
-      --danger-color: #e74c3c;
-      --info-color: #3498db;
-      --light-gray: #ecf0f1;
-    }
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+            --light-gray: #ecf0f1;
+        }
 
         .error-message {
             color: red;
@@ -137,21 +137,16 @@
                 <div id="description-error" class="error-message"></div>
             </div>
 
-        
-
             <div class="form-group">
                 <label for="brand">Brand</label>
                 <input type="text" name="brand" id="brand" placeholder="Enter brand">
                 <div id="brand-error" class="error-message"></div>
             </div>
 
-          
-            
-
             <div class="form-group">
-                <label for="salePrice">Sale Price</label>
-                <input type="number" name="salePrice" id="salePrice" step="0.01" placeholder="Enter sale price">
-                <div id="salePrice-error" class="error-message"></div>
+                <label for="regularPrice">Regular Price</label>
+                <input type="number" name="regularPrice" id="regularPrice" step="0.01" placeholder="Enter regular price">
+                <div id="regularPrice-error" class="error-message"></div>
             </div>
 
             <div class="form-group">
@@ -165,14 +160,6 @@
                 <input type="text" name="color" id="color" placeholder="Enter color">
                 <div id="color-error" class="error-message"></div>
             </div>
-
-           
-            
-           
-            
-          
-         
-            
 
             <div class="form-group">
                 <label for="category">Category</label>
@@ -262,7 +249,7 @@
 
     // Form validation
     let isValid = true;
-    const requiredFields = ['productName', 'description', 'brand', 'salePrice', 'quantity', 'color', 'category'];
+    const requiredFields = ['productName', 'description', 'brand', 'regularPrice', 'quantity', 'color', 'category'];
     requiredFields.forEach((field) => {
       const input = document.getElementsByName(field)[0];
       if (!input.value) {
@@ -298,11 +285,22 @@
         }
       }
 
+      // Log FormData contents for debugging
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
       fetch('/admin/addProducts', {
         method: 'POST',
         body: formData,
       })
-        .then((response) => response.json())
+        .then((response) => {
+          // Check if the response is OK (status 200-299)
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}, StatusText: ${response.statusText}`);
+          }
+          return response.json();
+        })
         .then((data) => {
           if (data.success) {
             Swal.fire({
@@ -325,10 +323,10 @@
           }
         })
         .catch((error) => {
-          console.error('Error:', error);
+          console.error('Fetch Error:', error);
           Swal.fire({
             title: 'Error!',
-            text: 'An unexpected error occurred',
+            text: `Failed to add product: ${error.message}`,
             icon: 'error',
             confirmButtonText: 'OK',
           });
@@ -336,137 +334,5 @@
     }
   });
 </script>
-
-
-
-
-
-
-
-<!-- <script>
-    let croppers = {};
-
-    function previewImage(event, index) {
-        const input = event.target;
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById(`preview${index}`);
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-
-                if (croppers[index]) {
-                    croppers[index].destroy();
-                }
-
-                croppers[index] = new Cropper(preview, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    ready: function() {
-                        this.cropper.crop();
-                    }
-                });
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function saveImage(index) {
-        if (croppers[index]) {
-            croppers[index].getCroppedCanvas().toBlob((blob) => {
-                const formData = new FormData();
-                formData.append('image', blob, `product-${Date.now()}-${index}.webp`);
-                
-                fetch('/admin/saveImage', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: `Image ${index} saved successfully`,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: data.message || `Failed to save Image ${index}`,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'An unexpected error occurred',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                });
-            }, 'image/webp');
-        }
-    }
-
-    document.getElementById('productForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Form validation
-        let isValid = true;
-        const requiredFields = ['productName', 'description', 'brand', 'salePrice', 'quantity', 'color', 'category'];
-        requiredFields.forEach(field => {
-            const input = document.getElementsByName(field)[0];
-            if (!input.value) {
-                isValid = false;
-                document.getElementById(`${field}-error`).textContent = 'This field is required.';
-            } else {
-                document.getElementById(`${field}-error`).textContent = '';
-            }
-        });
-
-        if (isValid) {
-            const formData = new FormData(this);
-            fetch('/admin/addProducts', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Product added successfully',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '/admin/addProducts';
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: data.message || 'An error occurred while adding the product',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'An unexpected error occurred',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-</script> -->
 
 <%- include("../../views/partials/admin/footer") %>

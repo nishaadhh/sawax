@@ -28,7 +28,7 @@
     }
 
     .card-header {
-      background-color:#d4af37;
+      background-color:#000000;
       color: white;
       border-radius: 8px 8px 0 0;
     }
@@ -67,8 +67,8 @@
     }
 
     .table th {
-      background-color: #d4af37;
-      color: white;
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
     }
 
     .pagination {
@@ -163,7 +163,7 @@
                       <td><%= category.description %></td>
                       <td>
                         <%= category.categoryOffer ? `${category.categoryOffer}%` : '0%' %>
-                        <% if (category.categoryOffer === 0) { %>
+                        <% if (!category.categoryOffer || category.categoryOffer === 0) { %>
                           <button class="btn btn-sm btn-info" onclick="addOffer('<%= category._id %>')">Add Offer</button>
                         <% } else { %>
                           <button class="btn btn-sm btn-warning" onclick="editOffer('<%= category._id %>', '<%= category.categoryOffer %>')">Edit Offer</button>
@@ -381,8 +381,10 @@
 
     function addOffer(categoryId) {
       Swal.fire({
-        title: 'Add Offer',
+        title: 'Add Category Offer',
         input: 'number',
+        inputLabel: 'Offer Percentage (1-99%)',
+        inputPlaceholder: 'Enter offer percentage',
         inputAttributes: {
           min: 1,
           max: 99,
@@ -391,6 +393,11 @@
         showCancelButton: true,
         confirmButtonText: 'Add',
         showLoaderOnConfirm: true,
+        inputValidator: (value) => {
+          if (!value || value < 1 || value > 99) {
+            return "Please enter a valid percentage between 1 and 99";
+          }
+        },
         preConfirm: (percentage) => {
           return fetch('/admin/addCategoryOffer', {
             method: 'POST',
@@ -426,8 +433,10 @@
 
     function editOffer(categoryId, currentOffer) {
       Swal.fire({
-        title: 'Edit Offer',
+        title: 'Edit Category Offer',
         input: 'number',
+        inputLabel: 'Offer Percentage (1-99%)',
+        inputPlaceholder: 'Enter offer percentage',
         inputValue: currentOffer,
         inputAttributes: {
           min: 1,
@@ -437,6 +446,11 @@
         showCancelButton: true,
         confirmButtonText: 'Update',
         showLoaderOnConfirm: true,
+        inputValidator: (value) => {
+          if (!value || value < 1 || value > 99) {
+            return "Please enter a valid percentage between 1 and 99";
+          }
+        },
         preConfirm: (percentage) => {
           return fetch('/admin/editCategoryOffer', {
             method: 'POST',
@@ -560,12 +574,7 @@
         }
       });
     }
-
-
-
-    
   </script>
 </body>
 
 <%- include("../../views/partials/admin/footer") %>
-

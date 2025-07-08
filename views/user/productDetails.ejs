@@ -1,5 +1,5 @@
 <%- include("../../views/partials/user/header") %>
-<link rel="stylesheet" href="/css/productDetails.css">
+<!-- <link rel="stylesheet" href="/css/productDetails.css"> -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -36,26 +36,35 @@
     position: relative;
   }
 
+  .zoom-container {
+    position: relative;
+    width: 74%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .main-image {
     position: relative;
     width: 100%;
-    max-height: 500px;
+    height: 400px; /* Fixed height for consistency */
+    max-width: 500px; /* Maximum width to prevent oversized images */
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff; /* White background for better image contrast */
   }
 
   .main-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Ensures images are fully visible without cropping */
     transition: transform 0.3s ease;
-  }
-
-  .zoom-container {
-    position: relative;
-    width: 100%;
-    height: 83%;
+    display: block;
   }
 
   .zoom-lens {
@@ -75,7 +84,7 @@
     left: 105%;
     width: 300px;
     height: 300px;
-    background-size: 200%;
+    background-size: cover; /* Changed to cover for better zoom clarity */
     background-repeat: no-repeat;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -88,7 +97,7 @@
     gap: 0.5rem;
     margin-top: 1rem;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
+    padding-bottom: 2.5rem;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -214,483 +223,469 @@
   }
 
   .add-to-cart:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .buy-now {
-    background-color: #1a1a1a;
-    color: white;
-  }
-
-  .buy-now:hover {
-    background-color: #333;
-    transform: scale(1.05);
-  }
-
-  .buy-now:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .wishlist-btn {
-    padding: clamp(8px, 1vw, 10px);
-    cursor: pointer;
-    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
-    color: #717070;
-    transition: color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-    width: 40px;
-    height: 40px;
-  }
-
-  .wishlist-btn:hover {
-    color: #e74c3c;
-    background-color: #e0e0e0;
-  }
-
-  /* Footer Styles */
-  footer {
-    background-color: #1a1a1a;
-    color: #fff;
-    padding: clamp(2rem, 5vw, 3rem) 0;
-    font-family: 'Lora', serif;
-    width: 100%;
-  }
-
-  footer .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .footer-about {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .footer-logo {
-    font-size: clamp(1.2rem, 3vw, 2rem);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-logo span {
-    color: #d4af37;
-  }
-
-  .footer-about p {
-    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-    color: #ccc;
-    line-height: 1.6;
-  }
-
-  .social-icons {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .social-icon {
-    color: #fff;
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    transition: color 0.3s ease;
-  }
-
-  .social-icon:hover {
-    color: #d4af37;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .footer-links h4 {
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: #d4af37;
-  }
-
-  .footer-links ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .footer-links a {
-    color: #ccc;
-    text-decoration: none;
-    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-    transition: color 0.3s ease;
-  }
-
-  .footer-links a:hover {
-    color: #d4af37;
-  }
-
-  .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    color: #ccc;
-    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-  }
-
-  .contact-icon {
-    color: #d4af37;
-    font-size: clamp(0.9rem, 1.5vw, 1rem);
-  }
-
-  .footer-bottom {
-    border-top: 1px solid #333;
-    padding-top: 1rem;
-    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-    color: #999;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    width: 100%;
-  }
-
-  .footer-bottom a {
-    color: #ccc;
-    text-decoration: none;
-    margin: 0 0.5rem;
-    transition: color 0.3s ease;
-  }
-
-  .footer-bottom a:hover {
-    color: #d4af37;
-  }
-
-  /* SweetAlert2 Custom Styles */
-  .swal2-popup {
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(10px) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
-    font-family: 'Playfair Display', serif !important;
-  }
-
-  .swal2-title {
-    color: #1a1a1a !important;
-    font-size: clamp(1.2rem, 3vw, 1.5rem) !important;
-    font-weight: 700 !important;
-  }
-
-  .swal2-content {
-    color: #666 !important;
-    font-size: clamp(0.9rem, 2vw, 1rem) !important;
-    font-family: 'Lora', serif !important;
-  }
-
-  .swal2-confirm {
-    background: linear-gradient(135deg, #d4af37, #b89778) !important;
-    color: white !important;
-    border-radius: 5px !important;
-    font-weight: bold !important;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
-    transition: transform 0.3s ease !important;
-  }
-
-  .swal2-confirm:hover {
-    transform: scale(1.05) !important;
-  }
-
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-    .product-details-container {
-      padding: clamp(1rem, 1.5vw, 1.5rem);
-    }
-
-    .main-image {
-      max-height: 400px;
-    }
-
-    .zoom-result {
-      width: 250px;
-      height: 250px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .product-details-container {
-      flex-direction: column;
-      padding: clamp(0.5rem, 1vw, 1rem);
-      margin: clamp(0.5rem, 1vw, 1rem);
-    }
-
-    .main-image {
-      max-height: 350px;
-    }
-
-    .zoom-result, .zoom-lens {
-      display: none !important;
-    }
-
-    .thumbnail-images {
-      gap: 0.4rem;
-    }
-
-    .thumbnail-images img {
-      width: 60px;
-      height: 60px;
-    }
-
-    .product-actions {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .add-to-cart, .buy-now {
-      width: 100%;
-      text-align: center;
-    }
-
-    .footer-content {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .footer-bottom {
-      flex-direction: column;
-      text-align: center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .product-details-container {
-      padding: clamp(0.3rem, 0.5vw, 0.5rem);
-      margin: clamp(0.3rem, 0.5vw, 0.5rem);
-    }
-
-    .main-image {
-      max-height: 250px;
-    }
-
-    .thumbnail-images img {
-      width: 50px;
-      height: 50px;
-    }
-
-    .quantity-btn {
-      padding: clamp(4px, 0.8vw, 5px) clamp(8px, 1vw, 10px);
-    }
-
-    .footer-logo {
-      font-size: clamp(1rem, 2vw, 1.5rem);
-    }
-  }
-
-  @media (max-width: 360px) {
-    .thumbnail-images img {
-      width: 45px;
-      height: 45px;
-    }
-  }
-</style>
+407    background-color: #ccc;
+408    cursor: not-allowed;
+409    transform: none;
+410  }
+411
+412  .buy-now {
+413    background-color: #1a1a1a;
+414    color: white;
+415  }
+416
+417  .buy-now:hover {
+418    background-color: #333;
+419    transform: scale(1.05);
+420  }
+421
+422  .buy-now:disabled {
+423    background-color: #ccc;
+424    cursor: not-allowed;
+425    transform: none;
+426  }
+427
+428  .wishlist-btn {
+429    padding: clamp(8px, 1vw, 10px);
+430    cursor: pointer;
+431    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+432    color: #717070;
+433    transition: color 0.3s ease;
+434    display: flex;
+435    align-items: center;
+436    justify-content: center;
+437    border-radius: 5px;
+438    background-color: #f0f0f0;
+439    width: 40px;
+440    height: 40px;
+441  }
+442
+443  .wishlist-btn:hover {
+444    color: #e74c3c;
+445    background-color: #e0e0e0;
+446  }
+447
+448  /* Footer Styles */
+449  footer {
+450    background-color: #1a1a1a;
+451    color: #fff;
+452    padding: clamp(2rem, 5vw, 3rem) 0;
+453    font-family: 'Lora', serif;
+454    width: 100%;
+455  }
+456
+457  footer .container {
+458    max-width: 1200px;
+459    margin: 0 auto;
+460    padding: 0 1rem;
+461    display: flex;
+462    flex-direction: column;
+463    gap: 2rem;
+464  }
+465
+466  .footer-content {
+467    display: grid;
+468    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+469    gap: 2rem;
+470    margin-bottom: 2rem;
+471  }
+472
+473  .footer-about {
+474    display: flex;
+475    flex-direction: column;
+476    gap: 1rem;
+477  }
+478
+479  .footer-logo {
+480    font-size: clamp(1.2rem, 3vw, 2rem);
+481    font-weight: 700;
+482    margin-bottom: 0.5rem;
+483  }
+484
+485  .footer-logo span {
+486    color: #d4af37;
+487  }
+488
+489  .footer-about p {
+490    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+491    color: #ccc;
+492    line-height: 1.6;
+493  }
+494
+495  .social-icons {
+496    display: flex;
+497    gap: 1rem;
+498  }
+499
+500  .social-icon {
+501    color: #fff;
+502    font-size: clamp(1rem, 1.5vw, 1.2rem);
+503    transition: color 0.3s ease;
+504  }
+505
+506  .social-icon:hover {
+507    color: #d4af37;
+508  }
+509
+510  .footer-links {
+511    display: flex;
+512    flex-direction: column;
+513    gap: 0.5rem;
+514  }
+515
+516  .footer-links h4 {
+517    font-size: clamp(1rem, 1.5vw, 1.2rem);
+518    font-weight: 700;
+519    margin-bottom: 0.5rem;
+520    color: #d4af37;
+521  }
+522
+523  .footer-links ul {
+524    list-style: none;
+525    display: flex;
+526    flex-direction: column;
+527    gap: 0.5rem;
+528  }
+529
+530  .footer-links a {
+531    color: #ccc;
+532    text-decoration: none;
+533    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+534    transition: color 0.3s ease;
+535  }
+536
+537  .footer-links a:hover {
+538    color: #d4af37;
+539  }
+540
+541  .contact-item {
+542    display: flex;
+543    align-items: center;
+544    gap: 0.5rem;
+545    margin-bottom: 0.5rem;
+546    color: #ccc;
+547    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+548  }
+549
+550 -post .contact-icon {
+551    color: #d4af37;
+552    font-size: clamp(0.9rem, 1.5vw, 1rem);
+553  }
+554
+555  .footer-bottom {
+556    border-top: 1px solid #333;
+557    padding-top: 1rem;
+558    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+559    color: #999;
+560    display: flex;
+561    justify-content: space-between;
+562    align-items: center;
+563    flex-wrap: wrap;
+564    gap: 1rem;
+565    width: 100%;
+566  }
+567
+568  .footer-bottom a {
+569    color: #ccc;
+570    text-decoration: none;
+571    margin: 0 0.5rem;
+572    transition: color 0.3s ease;
+573  }
+574
+575  .footer-bottom a:hover {
+576    color: #d4af37;
+577  }
+578
+579  /* SweetAlert2 Custom Styles */
+580  .swal2-popup {
+581    background: rgba(255, 255, 255, 0.9) !important;
+582    backdrop-filter: blur(10px) !important;
+583    border-radius: 12px !important;
+584    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+585    font-family: 'Playfair Display', serif !important;
+586  }
+587
+588  .swal2-title {
+589    color: #1a1a1a !important;
+590    font-size: clamp(1.2rem, 3vw, 1.5rem) !important;
+591    font-weight: 700 !important;
+592  }
+593
+594  .swal2-content {
+595    color: #666 !important;
+596    font-size: clamp(0.9rem, 2vw, 1rem) !important;
+597    font-family: 'Lora', serif !important;
+598  }
+599
+600  .swal2-confirm {
+601    background: linear-gradient(135deg, #d4af37, #b89778) !important;
+602    color: white !important;
+603    border-radius: 5px !important;
+604    font-weight: bold !important;
+605    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4) !important;
+606    transition: transform 0.3s ease !important;
+607  }
+608
+609  .swal2-confirm:hover {
+610    transform: scale(1.05) !important;
+611  }
+612
+613  /* Responsive Design */
+614  @media (max-width: 1024px) {
+615    .product-details-container {
+616      padding: clamp(1rem, 1.5vw, 1.5rem);
+617    }
+618
+619    .main-image {
+620      height: 350px;
+621      max-width: 400px;
+622    }
+623
+624    .zoom-result {
+625      width: 250px;
+626      height: 250px;
+627    }
+628  }
+629
+630  @media (max-width: 768px) {
+631    .product-details-container {
+632      flex-direction: column;
+633      padding: clamp(0.5rem, 1vw, 1rem);
+634      margin: clamp(0.5rem, 1vw, 1rem);
+635    }
+636
+637    .main-image {
+638      height: 300px;
+639      max-width: 100%;
+640    }
+641
+642    .zoom-result, .zoom-lens {
+643      display: none !important;
+644    }
+645
+646    .thumbnail-images {
+647      gap: 0.4rem;
+648    }
+649
+650    .thumbnail-images img {
+651      width: 60px;
+652      height: 60px;
+653    }
+654
+655    .product-actions {
+656      flex-direction: column;
+657      gap: 0.5rem;
+658    }
+659
+660    .add-to-cart, .buy-now {
+661      width: 100%;
+662      text-align: center;
+663    }
+664
+665    .footer-content {
+666      grid-template-columns: 1fr;
+667      gap: 1.5rem;
+668    }
+669
+670    .footer-bottom {
+671      flex-direction: column;
+672      text-align: center;
+673    }
+674  }
+675
+676  @media (max-width: 480px) {
+677    .product-details-container {
+678      padding: clamp(0.3rem, 0.5vw, 0.5rem);
+679      margin: clamp(0.3rem, 0.5vw, 0.5rem);
+680    }
+681
+682    .main-image {
+683      height: 200px;
+684      max-width: 100%;
+685    }
+686
+687    .thumbnail-images img {
+688      width: 50px;
+689      height: 50px;
+690    }
+691
+692    .quantity-btn {
+693      padding: clamp(4px, 0.8vw, 5px) clamp(8px, 1vw, 10px);
+694    }
+695
+696    .footer-logo {
+697      font-size: clamp(1rem, 2vw, 1.5rem);
+698    }
+699  }
+700
+701  @media (max-width: 360px) {
+702    .thumbnail-images img {
+703      width: 45px;
+704      height: 45px;
+705    }
+706  }
+707</style>
 
 <!-- Product Details Container -->
 <div class="product-details-container">
-  <!-- Product Images -->
+  <!-- Images Column -->
   <div class="product-images">
-    <% if (product.productImage && product.productImage.length > 0) { %>
-      <div class="main-image">
-        <div class="zoom-container" id="zoomContainer">
+    <% if (product.productImage?.length) { %>
+      <div class="zoom-container">
+        <div class="main-image">
           <img id="mainImage" src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
-          <div class="zoom-lens" id="zoomLens"></div>
-          <div class="zoom-result" id="zoomResult"></div>
         </div>
+        <div id="zoomLens" class="zoom-lens"></div>
+        <div id="zoomResult" class="zoom-result"></div>
       </div>
       <div class="thumbnail-images">
-        <% product.productImage.forEach((image, index) => { %>
-          <img src="/<%= image %>" alt="Thumbnail <%= index + 1 %>" onclick="changeMainImage('/<%= image %>')">
+        <% product.productImage.forEach(img => { %>
+          <img src="/<%= img %>" alt="Thumb" onclick="changeMainImage('/<%= img %>')">
         <% }); %>
       </div>
     <% } else { %>
-      <p>No images available for this product.</p>
+      <p>No images available.</p>
     <% } %>
   </div>
 
-  <!-- Product Info -->
+  <!-- Product Info Column -->
   <div class="product-info">
-    <h1 class="product-title"><%= product.productName || 'Product Name Unavailable' %></h1>
-    <div class="brand">Brand: <%= product.brand || 'N/A' %></div>
-    <div class="product-price">$<%= product.salePrice?.toFixed(2) || 'N/A' %></div>
+    <h1 class="product-title"><%= product.productName %></h1>
+    <div class="brand">Brand: <%= product.brand %></div>
+    <div class="product-price">$<%= product.salePrice.toFixed(2) %></div>
     <div class="product-stock <%= product.quantity <= 0 ? 'out-of-stock' : '' %>">
-      <%= product.quantity > 0 ? `In Stock: ${ product.quantity } items` : 'Out of Stock' %>
+      <%= product.quantity > 0 ? `In Stock: ${product.quantity}` : 'Out of Stock' %>
     </div>
-    <p class="product-description">
-      <%= product.description || 'No description available.' %>
-    </p>
-    <!-- <div class="quantity-selector">
-      <button class="quantity-btn" onclick="updateQuantity(-1)" <%= product.quantity <= 0 ? 'disabled' : '' %>>-</button>
-      <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="<%= product.quantity || 1 %>" <%= product.quantity <= 0 ? 'disabled' : '' %>>
-      <button class="quantity-btn" onclick="updateQuantity(1)" <%= product.quantity <= 0 ? 'disabled' : '' %>>+</button>
-    </div> -->
+    <p class="product-description"><%= product.description %></p>
     <div class="product-actions">
       <button class="add-to-cart" onclick="addToCart('<%= product._id %>')" <%= product.quantity <= 0 ? 'disabled' : '' %>>Add to Cart</button>
-
-      <div class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')"><i class="fa-solid fa-heart"></i></div>
+      <div class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
+        <i class="fa-solid fa-heart"></i>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  // Define productQuantity at the top to avoid reference errors
-  const productQuantity = <%= product.quantity || 0 %>;
+  // Pass server-side product object to script
+  const product = <%- JSON.stringify(product) %>;
 
-  // Image Zoom Functionality
-  const zoomContainer = document.getElementById('zoomContainer');
+  // Obtain DOM elements
   const mainImage = document.getElementById('mainImage');
   const zoomLens = document.getElementById('zoomLens');
   const zoomResult = document.getElementById('zoomResult');
 
-  if (mainImage && zoomLens && zoomResult) {
-    mainImage.addEventListener('mousemove', function(e) {
-      zoomLens.style.display = 'block';
-      zoomResult.style.display = 'block';
-      const rect = e.target.getBoundingClientRect();
-      const x = e.clientX - rect.left - zoomLens.offsetWidth / 2;
-      const y = e.clientY - rect.top - zoomLens.offsetHeight / 2;
-
-      zoomLens.style.left = `${x}px`;
-      zoomLens.style.top = `${y}px`;
-
-      zoomResult.style.backgroundImage = `url(${mainImage.src})`;
-      zoomResult.style.backgroundPosition = `-${x * 2}px -${y * 2}px`;
-    });
-
-    mainImage.addEventListener('mouseleave', () => {
-      zoomLens.style.display = 'none';
-      zoomResult.style.display = 'none';
-    });
+  function changeMainImage(src) {
+    mainImage.src = src;
+    zoomResult.style.backgroundImage = `url('${src}')`;
+    // Update zoom background size when image changes
+    updateZoomBackgroundSize();
   }
 
-  function initializeZoom() {
-    zoomResult.style.backgroundImage = `url('${mainImage.src}')`;
-    zoomContainer.addEventListener('mousemove', moveLens);
-    zoomContainer.addEventListener('touchmove', moveLens);
-    zoomContainer.addEventListener('mouseenter', showZoom);
-    zoomContainer.addEventListener('mouseleave', hideZoom);
-    zoomContainer.addEventListener('touchstart', showZoom);
-    zoomContainer.addEventListener('touchend', hideZoom);
+  function updateZoomBackgroundSize() {
+    const img = new Image();
+    img.src = mainImage.src;
+    img.onload = () => {
+      const zoomLevel = 2;
+      zoomResult.style.backgroundSize = `${img.naturalWidth * zoomLevel}px ${img.naturalHeight * zoomLevel}px`;
+    };
   }
 
-  function showZoom() {
-    zoomLens.style.display = 'block';
-    zoomResult.style.display = 'block';
-  }
-
-  function hideZoom() {
-    zoomLens.style.display = 'none';
-    zoomResult.style.display = 'none';
+  function getCursorPos(e) {
+    const rect = mainImage.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    return { x, y };
   }
 
   function moveLens(e) {
     e.preventDefault();
-    const rect = zoomContainer.getBoundingClientRect();
-    let x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-    let y = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
+    const pos = getCursorPos(e);
+    const lensW = zoomLens.offsetWidth;
+    const lensH = zoomLens.offsetHeight;
+    const imgRect = mainImage.getBoundingClientRect();
 
-    x = Math.max(zoomLens.offsetWidth / 2, Math.min(x, rect.width - zoomLens.offsetWidth / 2));
-    y = Math.max(zoomLens.offsetHeight / 2, Math.min(y, rect.height - zoomLens.offsetHeight / 2));
+    // Ensure lens stays within image boundaries
+    let x = Math.max(0, Math.min(pos.x - lensW / 2, imgRect.width - lensW));
+    let y = Math.max(0, Math.min(pos.y - lensH / 2, imgRect.height - lensH));
 
-    zoomLens.style.left = `${x - zoomLens.offsetWidth / 2}px`;
-    zoomLens.style.top = `${y - zoomLens.offsetHeight / 2}px`;
+    zoomLens.style.left = x + 'px';
+    zoomLens.style.top = y + 'px';
 
-    const ratioX = (x / rect.width) * 100;
-    const ratioY = (y / rect.height) * 100;
-    zoomResult.style.backgroundPosition = `${ratioX}% ${ratioY}%`;
+    const zoomLevel = 2;
+    const bgX = (x * zoomLevel) / (imgRect.width / mainImage.naturalWidth);
+    const bgY = (y * zoomLevel) / (imgRect.height / mainImage.naturalHeight);
+    zoomResult.style.backgroundPosition = `-${bgX}px -${bgY}px`;
   }
 
-  initializeZoom();
+  mainImage.addEventListener('mouseenter', () => {
+    zoomLens.style.display = 'block';
+    zoomResult.style.display = 'block';
+    zoomResult.style.backgroundImage = `url('${mainImage.src}')`;
+    updateZoomBackgroundSize();
+  });
 
-  function changeMainImage(imageSrc) {
-    mainImage.src = imageSrc;
-    zoomResult.style.backgroundImage = `url('${imageSrc}')`;
-  }
+  mainImage.addEventListener('mousemove', moveLens);
+
+  mainImage.addEventListener('mouseleave', () => {
+    zoomLens.style.display = 'none';
+    zoomResult.style.display = 'none';
+  });
+
+  // Ensure initial zoom setup
+  window.addEventListener('load', () => {
+    updateZoomBackgroundSize();
+  });
 
   function updateQuantity(change) {
     const quantityInput = document.getElementById('quantity');
     let quantity = parseInt(quantityInput.value) + change;
 
-    if (quantity < 1) {
-      quantity = 1;
-    }
-
-    if (quantity > 5) {
-      quantity = 5;
-    }
-
-    if (quantity > productQuantity) {
-      quantity = productQuantity;
-    }
+    if (quantity < 1) quantity = 1;
+    if (quantity > 5) quantity = 5;
+    if (quantity > product.quantity) quantity = product.quantity;
 
     quantityInput.value = quantity;
   }
 
   async function addToCart(productId) {
-        try {
-            const response = await fetch('/addToCart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, quantity: 1 })
-            });
-            const data = await response.json();
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Added to Cart!',
-                    text: 'Product has been successfully added to your cart.',
-                    confirmButtonColor: '#d4af37',
-                    background: '#f8f8f8',
-                    timer: 2000,
-                    timerProgressBar: true,
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed to Add',
-                    text: data.message || 'Failed to add product to cart.',
-                    confirmButtonColor: '#d4af37',
-                    background: '#f8f8f8',
-                });
-            }
-        } catch (error) {
-            console.error('Error adding to cart:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while adding to cart.',
-                confirmButtonColor: '#d4af37',
-                background: '#f8f8f8',
-            });
-        }
+    try {
+      const response = await fetch('/addToCart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, quantity: 1 })
+      });
+      const data = await response.json();
+      if (data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Added to Cart!',
+          text: 'Product has been successfully added to your cart.',
+          confirmButtonColor: '#d4af37',
+          background: '#f8f8f8',
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Add',
+          text: data.message || 'Failed to add product to cart.',
+          confirmButtonColor: '#d4af37',
+          background: '#f8f8f8',
+        });
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while adding to cart.',
+        confirmButtonColor: '#d4af37',
+        background: '#f8f8f8',
+      });
     }
+  }
+
   async function addToWishlist(productId) {
     try {
       const response = await fetch(`/addToWishlist/${productId}`, {
@@ -708,11 +703,6 @@
           timer: 2000,
           timerProgressBar: true,
           showConfirmButton: false,
-          customClass: {
-            popup: 'swal2-popup',
-            title: 'swal2-title',
-            content: 'swal2-content',
-          },
         });
       } else {
         Swal.fire({
@@ -724,11 +714,6 @@
           timer: 2000,
           timerProgressBar: true,
           showConfirmButton: false,
-          customClass: {
-            popup: 'swal2-popup',
-            title: 'swal2-title',
-            content: 'swal2-content',
-          },
         });
       }
     } catch (error) {
@@ -742,18 +727,12 @@
         timer: 2000,
         timerProgressBar: true,
         showConfirmButton: false,
-        customClass: {
-          popup: 'swal2-popup',
-          title: 'swal2-title',
-          content: 'swal2-content',
-        },
       });
     }
   }
 
   async function buyNow(productId) {
     const quantity = parseInt(document.getElementById('quantity').value);
-
     try {
       const response = await fetch(`/addToCart/${productId}`, {
         method: 'POST',
@@ -773,11 +752,6 @@
           timer: 2000,
           timerProgressBar: true,
           showConfirmButton: false,
-          customClass: {
-            popup: 'swal2-popup',
-            title: 'swal2-title',
-            content: 'swal2-content',
-          },
         });
       }
     } catch (error) {
@@ -791,14 +765,8 @@
         timer: 2000,
         timerProgressBar: true,
         showConfirmButton: false,
-        customClass: {
-          popup: 'swal2-popup',
-          title: 'swal2-title',
-          content: 'swal2-content',
-        },
       });
     }
   }
 </script>
 
-<%- include("../../views/partials/user/footer") %>

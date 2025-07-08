@@ -10,7 +10,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- Add SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>SAWAX | Cart</title>
     <style>
@@ -49,7 +48,6 @@
         padding: 0 clamp(15px, 2vw, 20px);
       }
 
-      /* Header */
       header {
         background-color: white;
         position: sticky;
@@ -155,7 +153,6 @@
         display: block;
       }
 
-      /* Cart Section */
       .cart {
         padding: clamp(40px, 8vw, 80px) 0;
       }
@@ -203,7 +200,7 @@
         padding: clamp(20px, 3vw, 30px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         width: 100%;
-        max-width: 800px; /* Limit width for better alignment */
+        max-width: 800px;
       }
 
       .cart-main h3 {
@@ -267,17 +264,20 @@
       }
 
       @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
 
       .cart-item-details p {
         font-size: clamp(12px, 1.8vw, 14px);
         color: var(--light-text);
+      }
+
+      .out-of-stock {
+        color: var(--error);
+        font-size: clamp(12px, 1.8vw, 14px);
+        font-weight: bold;
+        margin-top: 5px;
       }
 
       .cart-item-quantity {
@@ -364,6 +364,7 @@
 
       .btn:hover {
         background-color: #c1a033;
+        color: black;
         transform: translateY(-2px);
       }
 
@@ -372,7 +373,6 @@
         cursor: not-allowed;
       }
 
-      /* Footer */
       footer {
         background-color: #111;
         color: white;
@@ -481,11 +481,10 @@
         font-size: clamp(12px, 1.8vw, 14px);
       }
 
-      /* Responsive Design */
       @media (max-width: 992px) {
         .cart-main {
           width: 100%;
-          max-width: 800px; /* Limit width on tablets */
+          max-width: 800px;
         }
 
         .cart-item {
@@ -607,43 +606,41 @@
       }
 
       .cart-item-quantity {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-.quantity-btn {
-  width: 30px;
-  height: 30px;
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
-}
+      .quantity-btn {
+        width: 30px;
+        height: 30px;
+        background-color: #f0f0f0;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+      }
 
-.quantity-btn:hover {
-  background-color: #e0e0e0;
-}
+      .quantity-btn:hover {
+        background-color: #e0e0e0;
+      }
 
-.quantity-display {
-  width: 40px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text);
-}
+      .quantity-display {
+        width: 40px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text);
+      }
     </style>
   </head>
   <body>
-    <!-- Header -->
     <%- include("../../views/partials/user/header") %>
 
-    <!-- Cart Section -->
     <section class="cart">
       <div class="container">
         <div class="section-title">
@@ -656,10 +653,9 @@
             <p class="error-message" id="cart-error"></p>
             <% if (message) { %>
             <p style="color: red; margin-bottom: 20px"><%= message %></p>
-            <% } %> <% if (!cart || cart.length === 0) { %>
-            <p style="color: var(--light-text); text-align: center">
-              Your cart is empty.
-            </p>
+            <% } %>
+            <% if (!cart || cart.length === 0) { %>
+            <p style="color: var(--light-text); text-align: center">Your cart is empty.</p>
             <% } else { %>
             <div class="cart-items" id="cart-items">
               <% cart.forEach(item => { %>
@@ -667,48 +663,26 @@
                 <img src="<%= item.image %>" alt="<%= item.name %>" />
                 <div class="cart-item-details">
                   <h4><%= item.name %></h4>
-                  <p>Price: $<%= item.price.toFixed(2) %></p>
+                  <div class="product-price">$<%= item.price.toFixed(2) %></div>
+                  <% if (item.stock === 0) { %>
+                  <p class="out-of-stock">Out of Stock</p>
+                  <% } %>
                 </div>
                 <div class="cart-item-quantity">
-                  <button
-                    class="quantity-btn minus"
-                    onclick="updateQuantity('<%= item.productId %>', -1)"
-                  >
-                    -
-                  </button>
-                  <span
-                    class="quantity-display"
-                    data-product-id="<%= item.productId %>"
-                    ><%= item.quantity %></span
-                  >
-                  <button
-                    class="quantity-btn plus"
-                    onclick="updateQuantity('<%= item.productId %>', 1)"
-                  >
-                    +
-                  </button>
+                  <button class="quantity-btn minus" onclick="updateQuantity('<%= item.productId %>', -1)">-</button>
+                  <span class="quantity-display" data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>"><%= item.quantity %></span>
+                  <button class="quantity-btn plus" onclick="updateQuantity('<%= item.productId %>', 1)">+</button>
                 </div>
-                <div class="cart-item-price" data-price="<%= item.price %>">
-                  $<%= item.totalPrice.toFixed(2) %>
-                </div>
-                <button
-                  class="cart-item-remove"
-                  data-product-id="<%= item.productId %>"
-                  onclick="confirmRemove('<%= item.productId %>')"
-                >
+                <div class="cart-item-price" data-price="<%= item.price %>">$<%= (item.price * item.quantity).toFixed(2) %></div>
+                <button class="cart-item-remove" data-product-id="<%= item.productId %>" onclick="removeFromCart('<%= item.productId %>')">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
               <% }) %>
             </div>
             <div class="cart-summary">
-              <h4 id="cart-total">
-                Total: $<%= cart.reduce((total, item) => total +
-                item.totalPrice, 0).toFixed(2) %>
-              </h4>
-              <a href="/checkout" class="btn" id="checkout-btn"
-                >Proceed to Checkout</a
-              >
+              <h4 id="cart-total">Total: $<%= cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2) %></h4>
+              <a href="/checkout" class="btn" id="checkout-btn">Proceed to Checkout</a>
             </div>
             <% } %>
           </div>
@@ -716,199 +690,378 @@
       </div>
     </section>
 
-    <!-- Footer -->
     <%- include("../../views/partials/user/footer") %>
 
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  const cartItemsContainer = document.getElementById("cart-items");
-  const cartTotalElement = document.getElementById("cart-total");
-  const cartErrorElement = document.getElementById("cart-error");
-  const checkoutBtn = document.getElementById("checkout-btn");
+    <script>
+      const cartItemsContainer = document.getElementById("cart-items");
+      const cartTotalElement = document.getElementById("cart-total");
+      const cartErrorElement = document.getElementById("cart-error");
+      const checkoutBtn = document.getElementById("checkout-btn");
 
-  function showError(message) {
-    cartErrorElement.textContent = message;
-    cartErrorElement.style.display = "block";
-    setTimeout(() => {
-      cartErrorElement.style.display = "none";
-    }, 3000);
-  }
+      // Refresh cart prices on page load
+      async function refreshCart() {
+        try {
+          const response = await fetch("/refresh-cart", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+          });
 
-  function updateCartTotal() {
-    const items = document.querySelectorAll(".cart-item");
-    let total = 0;
-    items.forEach((item) => {
-      const price = parseFloat(
-        item.querySelector(".cart-item-price").dataset.price
-      );
-      const quantity = parseInt(
-        item.querySelector(".quantity-display").textContent // Updated to use quantity-display
-      );
-      total += price * quantity;
-    });
-    cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
-    checkoutBtn.disabled = items.length === 0;
-  }
+          if (!response.ok) {
+            const text = await response.text();
+            if (text.startsWith("<!DOCTYPE")) {
+              throw new Error("Received HTML instead of JSON. Possible authentication issue.");
+            }
+            const data = await response.json();
+            if (data.redirect) {
+              window.location.href = data.redirect;
+              return;
+            }
+            throw new Error(data.message || `HTTP error: ${response.status}`);
+          }
 
-  // Quantity update function for plus/minus buttons
-  async function updateQuantity(productId, change) {
-  try {
-    const quantityDisplay = document.querySelector(`.quantity-display[data-product-id="${productId}"]`);
-    let currentQuantity = parseInt(quantityDisplay.textContent);
-    const stock = parseInt(quantityDisplay.getAttribute('data-stock')); // Get stock quantity
-    const maxAllowedQuantity = Math.min(stock, 5); // Use the lesser of stock or 5
-
-    // Calculate new quantity
-    const newQuantity = currentQuantity + change;
-
-    // Client-side validation
-    if (newQuantity < 1) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Minimum Quantity!',
-        text: 'The quantity cannot be less than 1.',
-        confirmButtonColor: '#d4af37',
-        background: '#f8f8f8',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    if (newQuantity > maxAllowedQuantity) {
-      Swal.fire({
-        icon: 'warning',
-        title: stock < 5 ? 'Stock Limit Reached!' : 'User Limit Reached!',
-        text: stock < 5 ? `Only ${stock} items are available in stock.` : 'You cannot add more than 5 items of this product.',
-        confirmButtonColor: '#d4af37',
-        background: '#f8f8f8',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    // Send request to update quantity
-    const response = await fetch('/update-quantity', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId, quantity: newQuantity }),
-    });
-
-    const data = await response.json();
-    if (data.success) {
-      // Update the displayed quantity
-      quantityDisplay.textContent = newQuantity;
-
-      // Update the total price for this item
-      const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
-      const price = parseFloat(cartItem.querySelector('.cart-item-price').getAttribute('data-price'));
-      const newTotalPrice = price * newQuantity;
-      cartItem.querySelector('.cart-item-price').textContent = `$${newTotalPrice.toFixed(2)}`;
-
-      // Update the cart total
-      updateCartTotal();
-
-      // Show success message
-      Swal.fire({
-        icon: 'success',
-        title: 'Quantity Updated!',
-        text: 'Cart quantity has been successfully updated.',
-        confirmButtonColor: '#d4af37',
-        background: '#f8f8f8',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to Update!',
-        text: data.message || 'Failed to update quantity.',
-        confirmButtonColor: '#d4af37',
-        background: '#f8f8f8',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-    }
-  } catch (error) {
-    console.error('Error updating quantity:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error!',
-      text: 'An error occurred while updating the quantity.',
-      confirmButtonColor: '#d4af37',
-      background: '#f8f8f8',
-      timer: 2000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
-  }
-}
-
-  // Initial setup
-  updateCartTotal();
-
-  // Remove the confirmRemove function if already defined elsewhere
-  function confirmRemove(productId) {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d4af37",
-      cancelButtonColor: "#e74c3c",
-      confirmButtonText: "Yes, remove it!",
-      background: "#f8f8f8",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(`/deleteItem`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ productId }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status) {
+          const data = await response.json();
+          if (data.success) {
+            data.cart.forEach(item => {
+              const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
+              if (cartItem) {
+                cartItem.querySelector(".product-price").textContent = `$${item.price.toFixed(2)}`;
+                cartItem.querySelector(".cart-item-price").dataset.price = item.price;
+                cartItem.querySelector(".cart-item-price").textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+                cartItem.querySelector(".quantity-display").dataset.stock = item.stock;
+                if (item.stock === 0) {
+                  cartItem.querySelector(".cart-item-details").innerHTML += '<p class="out-of-stock">Out of Stock</p>';
+                }
+              }
+            });
+            updateCartTotal();
+            if (data.priceChanged) {
               Swal.fire({
-                icon: "success",
-                title: "Removed!",
-                text: data.message,
+                icon: "info",
+                title: "Price Update",
+                text: "Some product prices have been updated to reflect the latest changes.",
                 confirmButtonColor: "#d4af37",
                 background: "#f8f8f8",
                 timer: 2000,
                 timerProgressBar: true,
+                showConfirmButton: false
+              });
+            }
+          } else {
+            showError(data.message || "Failed to refresh cart.");
+          }
+        } catch (error) {
+          console.error("Error refreshing cart:", error);
+          showError(error.message || "Failed to refresh cart.");
+        }
+      }
+
+      function showError(message) {
+        cartErrorElement.textContent = message;
+        cartErrorElement.style.display = "block";
+        setTimeout(() => {
+          cartErrorElement.style.display = "none";
+        }, 3000);
+      }
+
+      function updateCartTotal() {
+        const items = document.querySelectorAll(".cart-item");
+        let total = 0;
+        items.forEach((item) => {
+          const price = parseFloat(item.querySelector(".cart-item-price").dataset.price);
+          const quantity = parseInt(item.querySelector(".quantity-display").textContent);
+          total += price * quantity;
+        });
+        cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+        checkoutBtn.disabled = items.length === 0;
+      }
+
+      async function checkStockAndPriceBeforeCheckout(event) {
+        event.preventDefault();
+        try {
+          const response = await fetch("/refresh-cart", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (!response.ok) {
+            const text = await response.text();
+            if (text.startsWith("<!DOCTYPE")) {
+              throw new Error("Received HTML instead of JSON. Possible authentication issue.");
+            }
+            const data = await response.json();
+            if (data.redirect) {
+              window.location.href = data.redirect;
+              return;
+            }
+            throw new Error(data.message || `HTTP error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (data.success) {
+            let hasOutOfStock = false;
+            data.cart.forEach(item => {
+              const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
+              if (cartItem) {
+                cartItem.querySelector(".product-price").textContent = `$${item.price.toFixed(2)}`;
+                cartItem.querySelector(".cart-item-price").dataset.price = item.price;
+                cartItem.querySelector(".cart-item-price").textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+                cartItem.querySelector(".quantity-display").dataset.stock = item.stock;
+                if (item.stock === 0) {
+                  hasOutOfStock = true;
+                  if (!cartItem.querySelector(".out-of-stock")) {
+                    cartItem.querySelector(".cart-item-details").innerHTML += '<p class="out-of-stock">Out of Stock</p>';
+                  }
+                }
+              }
+            });
+            updateCartTotal();
+            if (data.priceChanged) {
+              Swal.fire({
+                icon: "info",
+                title: "Price Update",
+                text: "Some product prices have been updated. Please review before proceeding.",
+                confirmButtonColor: "#d4af37",
+                background: "#f8f8f8",
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false
+              });
+              return;
+            }
+            if (hasOutOfStock) {
+              Swal.fire({
+                icon: "warning",
+                title: "Out of Stock!",
+                text: "One or more products in your cart are out of stock. Please remove them to proceed.",
+                confirmButtonColor: "#d4af37",
+                background: "#f8f8f8",
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false
+              });
+              return;
+            }
+            window.location.href = "/checkout";
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: data.message || "Failed to validate cart.",
+              confirmButtonColor: "#d4af37",
+              background: "#f8f8f8"
+            });
+          }
+        } catch (error) {
+          console.error("Error validating cart:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.message || "Failed to validate cart.",
+            confirmButtonColor: "#d4af37",
+            background: "#f8f8f8"
+          });
+        }
+      }
+
+      async function updateQuantity(productId, change) {
+        try {
+          const quantityDisplay = document.querySelector(`.quantity-display[data-product-id="${productId}"]`);
+          let currentQuantity = parseInt(quantityDisplay.textContent);
+          const stock = parseInt(quantityDisplay.getAttribute("data-stock"));
+          const maxAllowedQuantity = Math.min(stock, 5);
+          let newQuantity = currentQuantity + change;
+
+          // Optimistic UI update
+          if (newQuantity >= 1 && newQuantity <= maxAllowedQuantity) {
+            quantityDisplay.textContent = newQuantity;
+            const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+            const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
+            cartItem.querySelector(".cart-item-price").textContent = `$${(price * newQuantity).toFixed(2)}`;
+            updateCartTotal();
+          } else if (newQuantity < 1) {
+            Swal.fire({
+              icon: "warning",
+              title: "Minimum Quantity!",
+              text: "The quantity cannot be less than 1.",
+              confirmButtonColor: "#d4af37",
+              background: "#f8f8f8",
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
+            return;
+          } else if (newQuantity > maxAllowedQuantity) {
+            Swal.fire({
+              icon: "warning",
+              title: stock < 5 ? "Stock Limit Reached!" : "User Limit Reached!",
+              text: stock < 5 ? `Only ${stock} items are available in stock.` : "You cannot add more than 5 items of this product.",
+              confirmButtonColor: "#d4af37",
+              background: "#f8f8f8",
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
+            return;
+          }
+
+          const response = await fetch("/update-quantity", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId, quantity: newQuantity })
+          });
+
+          if (!response.ok) {
+            const text = await response.text();
+            if (text.startsWith("<!DOCTYPE")) {
+              throw new Error("Received HTML instead of JSON. Possible authentication issue.");
+            }
+            const data = await response.json();
+            if (data.redirect) {
+              window.location.href = data.redirect;
+              return;
+            }
+            throw new Error(data.message || `HTTP error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (data.success) {
+            quantityDisplay.textContent = newQuantity; // Ensure UI matches server response
+            const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+            cartItem.querySelector(".cart-item-price").dataset.price = data.price;
+            cartItem.querySelector(".product-price").textContent = `$${data.price.toFixed(2)}`;
+            const newTotalPrice = data.price * newQuantity;
+            cartItem.querySelector(".cart-item-price").textContent = `$${newTotalPrice.toFixed(2)}`;
+            quantityDisplay.setAttribute("data-stock", stock - change); // Update stock locally (approximate)
+            updateCartTotal();
+            Swal.fire({
+              icon: "success",
+              title: "Quantity Updated!",
+              text: "Cart quantity has been successfully updated.",
+              confirmButtonColor: "#d4af37",
+              background: "#f8f8f8",
+              timer: 1000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
+          } else {
+            // Revert UI if API call fails
+            quantityDisplay.textContent = currentQuantity;
+            const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+            const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
+            cartItem.querySelector(".cart-item-price").textContent = `$${(price * currentQuantity).toFixed(2)}`;
+            updateCartTotal();
+            Swal.fire({
+              icon: "error",
+              title: "Failed to Update!",
+              text: data.message || "Failed to update quantity.",
+              confirmButtonColor: "#d4af37",
+              background: "#f8f8f8",
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
+          }
+        } catch (error) {
+          console.error("Error updating quantity:", error);
+          // Revert UI on error
+          const quantityDisplay = document.querySelector(`.quantity-display[data-product-id="${productId}"]`);
+          quantityDisplay.textContent = currentQuantity;
+          const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+          const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
+          cartItem.querySelector(".cart-item-price").textContent = `$${(price * currentQuantity).toFixed(2)}`;
+          updateCartTotal();
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.message || "Failed to update product quantity.",
+            confirmButtonColor: "#d4af37",
+            background: "#f8f8f8",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
+        }
+      }
+
+      async function removeFromCart(productId) {
+        try {
+          const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d4af37",
+            cancelButtonColor: "#e74c3c",
+            confirmButtonText: "Yes, remove it!",
+            background: "#f8f8f8"
+          });
+
+          if (result.isConfirmed) {
+            const response = await fetch("/deleteItem", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ productId })
+            });
+
+            if (!response.ok) {
+              const text = await response.text();
+              if (text.startsWith("<!DOCTYPE")) {
+                throw new Error("Received HTML instead of JSON. Possible authentication issue.");
+              }
+              const data = await response.json();
+              if (data.redirect) {
+                window.location.href = data.redirect;
+                return;
+              }
+              throw new Error(data.message || `HTTP error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.status) {
+              Swal.fire({
+                icon: "success",
+                title: "Removed!",
+                text: data.message || "Product removed from cart successfully.",
+                confirmButtonColor: "#d4af37",
+                background: "#f8f8f8",
+                timer: 1000,
+                timerProgressBar: true,
+                showConfirmButton: false
               }).then(() => {
-                location.reload(); // Refresh the page after removing the item
+                location.reload();
               });
             } else {
               Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: data.message,
+                text: data.message || "Failed to remove product from cart.",
                 confirmButtonColor: "#d4af37",
                 background: "#f8f8f8",
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
               });
             }
-          })
-          .catch((error) => {
-            console.error("Fetch Error:", error);
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "There was an error removing the item from the cart",
-              confirmButtonColor: "#d4af37",
-              background: "#f8f8f8",
-            });
+          }
+        } catch (error) {
+          console.error("Error removing product:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.message || "Failed to remove product from cart.",
+            confirmButtonColor: "#d4af37",
+            background: "#f8f8f8",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
           });
+        }
       }
-    });
-  }
-</script>
+
+      // Initialize cart
+      window.addEventListener("load", refreshCart);
+      checkoutBtn.addEventListener("click", checkStockAndPriceBeforeCheckout);
+      updateCartTotal();
+    </script>
   </body>
 </html>

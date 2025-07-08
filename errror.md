@@ -1,0 +1,1 @@
+do not show out of stoke shop

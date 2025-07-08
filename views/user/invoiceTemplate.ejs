@@ -1,0 +1,256 @@
+
+  
+  <head>
+  <title>SAWAX | Invoice</title>
+    <style>
+        /* Invoice Theme */
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --teal: #046963;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+        }
+
+        body {
+            background-color: var(--secondary);
+            color: var(--text);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--teal);
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        p strong {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        p:nth-child(2), /* Invoice # */
+        p:nth-child(3) /* Customer */ {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        p:last-child /* Total */ {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px solid var(--border);
+        }
+
+        p:last-child strong {
+            color: var(--accent);
+        }
+
+        ul {
+            list-style: none;
+            margin: 20px 0;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        li {
+            padding: 12px 20px;
+            font-size: 15px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        li:nth-child(odd) {
+            background-color: var(--secondary);
+        }
+
+        li::before {
+            content: '\2022'; /* Bullet */
+            color: var(--teal);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            p:last-child {
+                font-size: 16px;
+            }
+
+            li {
+                font-size: 14px;
+                padding: 10px 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+                box-shadow: none;
+                border: none;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h1::after {
+                width: 40px;
+            }
+
+            p {
+                font-size: 13px;
+            }
+
+            p:last-child {
+                font-size: 14px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 10px;
+            }
+
+            h1, p, li {
+                color: black !important;
+            }
+
+            h1::after, p:last-child {
+                border-color: black !important;
+            }
+
+            ul {
+                border: 1px solid black;
+            }
+
+            li {
+                border-bottom: 1px solid black;
+            }
+
+            li:nth-child(odd) {
+                background-color: transparent;
+            }
+        }
+
+        .download-btn {
+  margin-top: 25px;
+  padding: 10px 20px;
+  background-color: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.download-btn:hover { transform: translateY(-2px); }
+
+/* Hide the button automatically when printing */
+@media print {
+  .download-btn { display: none !important; }
+}
+
+    </style>
+</head>
+
+<!-- Invoice Content -->
+<div class="container" id="invoice">
+  <h1>Invoice</h1>
+  <p>Invoice #: <strong><%= invoice.invoiceNumber %></strong></p>
+  <p>Customer: <strong><%= invoice.customerName %></strong></p>
+  <p>Items:</p>
+  <ul>
+    <% invoice.items.forEach(item => { %>
+      <li><%= item.name %> – <%= item.quantity %> × $<%= item.price %></li>
+    <% }) %>
+  </ul>
+  <p>Total: <strong>$<%= invoice.totalAmount %></strong></p>
+
+  <!-- ↓↓↓  NEW BUTTON  ↓↓↓ -->
+  <button class="download-btn" onclick="downloadInvoice()">Download PDF</button>
+</div>
+
+<!-- Script -->
+<script>
+  function downloadInvoice () {
+    /* Optional: briefly hide the button so it never shows in the PDF */
+    const btn = document.querySelector('.download-btn');
+    btn.style.display = 'none';
+    /* Give the browser a tick to repaint, then open the print dialog */
+    setTimeout(() => {
+      window.print();
+      /* Restore the button when the dialog closes */
+      btn.style.display = 'inline-block';
+    }, 0);
+  }
+</script>

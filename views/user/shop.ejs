@@ -93,7 +93,7 @@
         display: flex;
         align-items: center;
         border: 1px solid var(--border);
-        border-radius: 4px;
+        border-radius: 20px;
         overflow: hidden;
     }
 
@@ -115,7 +115,8 @@
     }
 
     .search-btn:hover {
-        background: #b8982f;
+        background: #1c1b1b;
+        color: #b8982f;
     }
 
     .category-list {
@@ -283,7 +284,7 @@
                     <h3 class="sidebar-title">Search</h3>
                     <form id="search-form" action="/filter" method="GET">
                         <div class="search-container">
-                            <input type="text" name="query" class="search-input" placeholder="Search watches..." value="<%= searchQuery || '' %>">
+                            <input type="text" name="query" id="search-input" class="search-input" placeholder="Search watches..." value="<%= searchQuery || '' %>">
                             <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     </form>
@@ -310,16 +311,14 @@
                 </div>
 
                 <div class="sidebar-section">
-                    
-                        <button type="button" class="reset-filters" onclick="location.href='/shop'">Reset Filters</button>
-                    </form>
+                    <button type="button" class="reset-filters" onclick="location.href='/shop'">Reset Filters</button>
                 </div>
             </div>
 
             <!-- Products Main -->
             <div class="shop-products grid-view">
                 <div class="shop-controls">
-                    <div class="products-found">
+                    <div class="products-found" id="products-found">
                         Showing <%= (currentPage - 1) * 9 + 1 %>-<%= Math.min(currentPage * 9, totalProducts) %> of <%= totalProducts %> products
                     </div>
                     <div class="shop-actions">
@@ -328,7 +327,7 @@
                             <button class="view-btn active" data-view="grid">☰</button>
                             <button class="view-btn" data-view="list">≡</button>
                         </div>
-                        <select class="sort-select" onchange="location = '/filter?sort=' + this.value + '<%= selectedCategory ? '&category=' + selectedCategory : '' %>'">
+                        <select class="sort-select" id="sort-select" onchange="location = '/filter?sort=' + this.value + '<%= selectedCategory ? '&category=' + selectedCategory : '' %>'">
                             <option value="relevance" <%= sort === 'relevance' ? 'selected' : '' %>>Relevance</option>
                             <option value="price-low" <%= sort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
                             <option value="price-high" <%= sort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
@@ -338,7 +337,7 @@
                     </div>
                 </div>
 
-                <div class="product-grid">
+                <div class="product-grid" id="product-grid">
                     <% if (products.length > 0) { %>
                         <% products.forEach(product => { %>
                             <div class="product-card">
@@ -348,7 +347,7 @@
                                 <div class="product-details">
                                     <h3 class="product-name"><%= product.productName %></h3>
                                     <p class="product-brand">Brand: <%= product.brand %></p>
-                                    <p class="product-price">$<%= product.salePrice %></p>
+                                    <p class="product-price">₹<%= product.salePrice %></p>
                                     <p class="product-color">Color: <%= product.color %></p>
                                     <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
                                     <a href="/product/<%= product._id %>" class="view-button">View Product</a>
@@ -363,31 +362,142 @@
                 </div>
 
                 <!-- Pagination -->
-                <% if (totalPages > 1) { %>
-                    <div class="pagination">
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <a href="/filter?page=<%= i %><%= selectedCategory ? '&category=' + selectedCategory : '' %><%= searchQuery ? '&query=' + searchQuery : '' %><%= minPrice ? '&minPrice=' + minPrice : '' %><%= maxPrice ? '&maxPrice=' + maxPrice : '' %><%= sort ? '&sort=' + sort : '' %><%= alphaFilter ? '&alpha=' + alphaFilter : '' %>" class="<%= currentPage === i ? 'active' : '' %>"><%= i %></a>
-                        <% } %>
-                    </div>
-                <% } %>
+<div class="pagination" id="pagination"></div>
             </div>
         </div>
     </div>
 </section>
 
 <script>
-    // Sync price range sliders with input fields
-    const minPriceSlider = document.getElementById('minPrice');
-    const maxPriceSlider = document.getElementById('maxPrice');
-    const minPriceInput = document.getElementById('minPriceInput');
-    const maxPriceInput = document.getElementById('maxPriceInput');
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 
+function performSearch(page = 1) {
+    const searchQuery = document.getElementById('search-input').value.trim();
+    const productGrid = document.getElementById('product-grid');
+    const pagination = document.getElementById('pagination');
+    const productsFound = document.getElementById('products-found');
+    const minPriceInput = document.getElementById('minPriceInput')?.value || '';
+    const maxPriceInput = document.getElementById('maxPriceInput')?.value || '';
+    const alphaFilter = document.querySelector('.alpha-checkbox:checked')?.value || '';
+    const sortSelect = document.getElementById('sort-select')?.value || 'relevance';
+    const selectedCategory = '<%= selectedCategory %>' || ''; // From EJS
+
+    const queryParams = new URLSearchParams({
+        query: searchQuery,
+        page: page,
+        category: selectedCategory,
+        minPrice: minPriceInput,
+        maxPrice: maxPriceInput,
+        alpha: alphaFilter,
+        sort: sortSelect
+    }).toString();
+
+    fetch(`/filter?${queryParams}`, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        productGrid.innerHTML = '';
+        if (data.products.length > 0) {
+            data.products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="/${product.productImage[0]}" alt="${product.productName}">
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-name">${product.productName}</h3>
+                        <p class="product-brand">Brand: ${product.brand}</p>
+                        <p class="product-price">₹${product.salePrice}</p>
+                        <p class="product-color">Color: ${product.color}</p>
+                        <p class="product-description">${product.description.slice(0, 100)}...</p>
+                        <a href="/product/${product._id}" class="view-button">View Product</a>
+                    </div>
+                `;
+                productGrid.appendChild(productCard);
+            });
+        } else {
+            productGrid.innerHTML = `
+                <p style="text-align: center; color: var(--light-text); font-size: 18px;">
+                    No products found. Try adjusting your filters.
+                </p>
+            `;
+        }
+
+        productsFound.textContent = `Showing ${(data.currentPage - 1) * 9 + 1}-${Math.min(data.currentPage * 9, data.totalProducts)} of ${data.totalProducts} products`;
+
+        pagination.innerHTML = '';
+        if (data.totalPages > 1) {
+            for (let i = 1; i <= data.totalPages; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.textContent = i;
+                pageLink.className = data.currentPage === i ? 'active' : '';
+                pageLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    performSearch(i);
+                });
+                pagination.appendChild(pageLink);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching products:', error);
+        productGrid.innerHTML = `
+            <p style="text-align: center; color: var(--light-text); font-size: 18px;">
+                Error loading products. Please try again.
+            </p>
+        `;
+    });
+}
+
+// Handle search input with debounce
+const searchInput = document.getElementById('search-input');
+const debouncedSearch = debounce(() => performSearch(1), 300);
+searchInput.addEventListener('input', debouncedSearch);
+
+// Prevent default form submission
+document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    performSearch(1);
+});
+
+// Handle sort select change
+const sortSelect = document.getElementById('sort-select');
+if (sortSelect) {
+    sortSelect.addEventListener('change', () => performSearch(1));
+}
+
+// Trigger initial load with current page and parameters
+document.addEventListener('DOMContentLoaded', () => {
+    const initialPage = parseInt('<%= currentPage %>') || 1;
+    performSearch(initialPage);
+});
+
+// Existing scripts for sliders and filters remain unchanged
+const minPriceSlider = document.getElementById('minPrice');
+const maxPriceSlider = document.getElementById('maxPrice');
+const minPriceInput = document.getElementById('minPriceInput');
+const maxPriceInput = document.getElementById('maxPriceInput');
+
+if (minPriceSlider && maxPriceSlider && minPriceInput && maxPriceInput) {
     minPriceSlider.addEventListener('input', () => {
         minPriceInput.value = minPriceSlider.value;
         if (parseInt(minPriceSlider.value) > parseInt(maxPriceSlider.value)) {
             maxPriceSlider.value = minPriceSlider.value;
             maxPriceInput.value = minPriceSlider.value;
         }
+        performSearch(1); // Refresh on slider change
     });
 
     maxPriceSlider.addEventListener('input', () => {
@@ -396,6 +506,7 @@
             minPriceSlider.value = maxPriceSlider.value;
             minPriceInput.value = maxPriceSlider.value;
         }
+        performSearch(1); // Refresh on slider change
     });
 
     minPriceInput.addEventListener('change', () => {
@@ -404,6 +515,7 @@
             maxPriceInput.value = minPriceInput.value;
             maxPriceSlider.value = minPriceInput.value;
         }
+        performSearch(1); // Refresh on input change
     });
 
     maxPriceInput.addEventListener('change', () => {
@@ -412,31 +524,29 @@
             minPriceInput.value = maxPriceInput.value;
             minPriceSlider.value = maxPriceInput.value;
         }
+        performSearch(1); // Refresh on input change
     });
+}
 
-    // Allow only one alphabetical filter checkbox to be selected
-    const alphaCheckboxes = document.querySelectorAll('.alpha-checkbox');
-    alphaCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                alphaCheckboxes.forEach(cb => {
-                    if (cb !== checkbox) cb.checked = false;
-                });
-            }
-        });
+const alphaCheckboxes = document.querySelectorAll('.alpha-checkbox');
+alphaCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+            alphaCheckboxes.forEach(cb => {
+                if (cb !== checkbox) cb.checked = false;
+            });
+        }
+        performSearch(1); // Refresh on alpha filter change
     });
+});
 
-    // Debug: Log filter state on form submit
-    document.getElementById('filter-form').addEventListener('submit', () => {
-        console.log('Filter Form Submitted:', {
-            category: '<%= selectedCategory %>',
-            query: '<%= searchQuery %>',
-            minPrice: minPriceInput.value,
-            maxPrice: maxPriceInput.value,
-            alpha: document.querySelector('.alpha-checkbox:checked')?.value,
-            sort: '<%= sort %>'
-        });
+const filterForm = document.getElementById('filter-form');
+if (filterForm) {
+    filterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        performSearch(1);
     });
+}
 </script>
 
 <%- include("../../views/partials/user/footer") %>

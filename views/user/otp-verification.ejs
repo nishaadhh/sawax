@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAWAX Chrono Elite | OTP Verification</title>
+  <link rel="stylesheet" href="/css/verify-otp.css">
+  <!-- Added SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="otp-title">Verify Your OTP</h1>
+    <p class="otp-subtitle">Please enter the 6-digit code sent to your email to verify your account.</p>
+    <% if (locals.message && message.length > 0) { %>
+      <div class="message <%= messageType === 'error' ? 'error' : 'success' %>">
+        <%= message %>
+      </div>
+    <% } %>
+    <form class="otp-form" id="otpForm">
+      <div class="otp-inputs">
+        <input type="text" id="otp1" class="otp-input" name="otp1" maxlength="1" required>
+        <input type="text" id="otp2" class="otp-input" name="otp2" maxlength="1" required>
+        <input type="text" id="otp3" class="otp-input" name="otp3" maxlength="1" required>
+        <input type="text" id="otp4" class="otp-input" name="otp4" maxlength="1" required>
+        <input type="text" id="otp5" class="otp-input" name="otp5" maxlength="1" required>
+        <input type="text" id="otp6" class="otp-input" name="otp6" maxlength="1" required>
+      </div>
+      <button type="button" id="verifyBtn" class="verify-btn">Verify OTP</button>
+    </form>
+    <div class="timer" id="timer">Resend available in 30s</div>
+    <div class="resend-link">
+      Didn't receive the code? <a href="/resendOtp " id="resend">Resend OTP</a>
+    </div>
+  </div>
+  
+  <!-- JavaScript Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+  
+  <script>
+    // Timer 
+    const timerElement = document.getElementById('timer');
+    const resendLink = document.getElementById('resend');
+
+    function startTimer() {
+      resendLink.classList.remove('enabled');
+      resendLink.style.pointerEvents = 'none';
+      timerElement.style.display = 'block';
+      timeLeft = 30;
+      timerElement.textContent = `Resend available in ${timeLeft}s`;
+
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = `Resend available in ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timerElement.style.display = 'none';
+          resendLink.classList.add('enabled');
+          resendLink.style.pointerEvents = 'auto';
+        }
+      }, 1000);
+    }
+
+    // Initialize timer on page load
+    startTimer();
+
+    // OTP input field behavior
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((input, index) => {
+      // Move to next input when a digit is entered
+      input.addEventListener('input', (e) => {
+        // Allow only numbers
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+        
+        // Auto-submit when all fields are filled
+        if (index === inputs.length - 1 && input.value.length === 1) {
+          checkAllInputsFilled();
+        }
+      });
+      
+      // Handle backspace navigation
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    // Check if all inputs are filled
+    function checkAllInputsFilled() {
+      const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+      if (allFilled) {
+        // Optional: Auto-submit when all fields are filled
+        // document.getElementById('verifyBtn').click();
+      }
+    }
+
+    // Verify OTP submission
+    document.getElementById('verifyBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      submitOTP();
+    });
+    
+    // Form submission with validation
+    function submitOTP() {
+      // Collect OTP values
+      const otp1 = document.getElementById("otp1").value;
+      const otp2 = document.getElementById("otp2").value;
+      const otp3 = document.getElementById("otp3").value;
+      const otp4 = document.getElementById("otp4").value;
+      const otp5 = document.getElementById("otp5").value;
+      const otp6 = document.getElementById("otp6").value;
+      
+      // Validate  
+      if (!otp1 || !otp2 || !otp3 || !otp4 || !otp5 || !otp6) {
+        Swal.fire({
+          title: 'Incomplete OTP',
+          text: 'Please enter all 6 digits of the OTP',
+          icon: 'warning'
+        });
+        return;
+      }
+      
+      // Show loading state
+      document.getElementById('verifyBtn').disabled = true;
+      document.getElementById('verifyBtn').textContent = 'Verifying...';
+      
+      // Send OTP verification request
+      axios.post('/verify-otp', {otp1, otp2, otp3, otp4, otp5, otp6})
+        .then((response) => {
+          if (response.data.success) {
+            Swal.fire({
+              title: 'Verified!',
+              text: 'OTP verified successfully',
+              icon: 'success',
+              timer: 1500
+            }).then(() => {
+              window.location.href = response.data.redirectUrl;
+            });
+          } else {
+            Swal.fire({
+              title: 'Verification Failed',
+              text: response.data.message || 'Invalid OTP. Please try again.',
+              icon: 'error'
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error verifying OTP:", error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Something went wrong. Please try again later.',
+            icon: 'error'
+          });
+        })
+        .finally(() => {
+          // Reset button state
+          document.getElementById('verifyBtn').disabled = false;
+          document.getElementById('verifyBtn').textContent = 'Verify OTP';
+        });
+    }
+    
+    // Resend OTP functionality
+    
+  </script>
+</body>
+</html>

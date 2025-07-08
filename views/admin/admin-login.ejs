@@ -5,26 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
     <style>
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap");
+
+        /* Define CSS custom properties for color animation */
+        @property --color-1 {
+            syntax: "<color>";
+            inherits: false;
+            initial-value: hsl(0, 0%, 0%);
+        }
+
+        @property --color-2 {
+            syntax: "<color>";
+            inherits: false;
+            initial-value: hsl(0, 0%, 100%);
+        }
+
+        /* Keyframes for gradient color change */
+        @keyframes gradient-change {
+            to {
+                --color-1: hsl(0, 0%, 0%);
+                --color-2: hsl(309, 78%, 4%);
+            }
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #d4af37;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #000000;
+            position: relative;
+            overflow: hidden;
         }
+
+        .background-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .title {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 3;
+        }
+
+        .title article {
+            display: grid;
+            gap: 1lh;
+            text-align: center;
+        }
+
+        .title h1 {
+            font-size: 15vmin;
+            font-weight: 900;
+            font-family: "Montserrat", sans-serif;
+            animation: gradient-change 2s linear infinite alternate;
+            background: linear-gradient(to right in oklch, var(--color-1), var(--color-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.25cap;
+        }
+
+        .ghost {
+            width: 8vmin;
+            height: 12vmin;
+            background-color: #e7e6e6;
+            background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+            background-image: radial-gradient(ellipse at 35% 40%, #000 8%, transparent 0%),
+                radial-gradient(ellipse at 65% 40%, #000 8%, transparent 0%),
+                radial-gradient(ellipse at 50% 60%, #000 8%, transparent 0%);
+            border-radius: 100% / 70% 70% 0% 0%;
+            transform: translateX(100em) rotateZ(-90deg);
+            position: relative;
+            opacity: 0.9;
+            mix-blend-mode: exclusion;
+            animation: ghostMove 4s ease-out infinite;
+        }
+
+        @keyframes ghostMove {
+            0% {
+                transform: translateX(30em) rotateZ(-90deg);
+            }
+            100% {
+                transform: translateX(-35em) rotateZ(-90deg);
+            }
+        }
+
+        .ghost div {
+            position: absolute;
+            width: 20%;
+            background-color: #e7e6e6;
+            background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+        }
+
+        .ghost div:nth-of-type(1) {
+            height: 7vmin;
+            left: 0;
+            bottom: -6vmin;
+            border-radius: 100% / 0% 0% 50% 50%;
+        }
+
+        .ghost div:nth-of-type(2),
+        .ghost div:nth-of-type(4) {
+            height: 4vmin;
+            left: 20%;
+            bottom: -3vmin;
+            border-radius: 100% / 50% 50% 0% 0%;
+            background-color: transparent;
+        }
+
+        .ghost div:nth-of-type(3) {
+            height: 4vmin;
+            left: 40%;
+            bottom: -3.95vmin;
+            border-radius: 100% / 0% 0% 60% 60%;
+            background-color: #e7e6e6;
+        }
+
+        .ghost div:nth-of-type(4) {
+            left: 60%;
+        }
+
+        .ghost div:nth-of-type(5) {
+            height: 3vmin;
+            left: 80%;
+            bottom: -2.9vmin;
+            border-radius: 100% / 0% 0% 70% 70%;
+            background-color: #e7e6e6;
+        }
+
         .login-container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            z-index: 2;
+            position: relative;
         }
+
+        .login-container article {
+            display: grid;
+            gap: 1lh;
+            text-align: center;
+        }
+
         .login-container h2 {
             margin-bottom: 20px;
-            color: #333;
+            font-size: 5vmin;
+            animation: gradient-change 2s linear infinite alternate;
+            background: linear-gradient(to right in oklch, var(--color-1), var(--color-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.25cap;
         }
+
         .login-container input[type="text"],
         .login-container input[type="password"] {
             width: 90%;
@@ -33,6 +188,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         .login-container button {
             width: 100%;
             padding: 10px;
@@ -43,14 +199,33 @@
             font-size: 16px;
             cursor: pointer;
         }
+
         .login-container button:hover {
             background-color: rgb(185, 141, 18);
         }
     </style>
 </head>
 <body>
+    <!-- <div class="background-container">
+        <div class="ghost">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div> -->
+
+    <div class="title">
+        <article>
+            <h1>SAWAX</h1>
+        </article>
+    </div>
+
     <div class="login-container">
-        <h2>Admin Login</h2>
+        <article>
+            <h2>Admin Login</h2>
+        </article>
         <form action="/admin/login" method="POST">
             <input type="text" name="email" placeholder="email" required>
             <input type="password" name="password" placeholder="Password" required>

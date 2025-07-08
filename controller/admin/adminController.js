@@ -64,7 +64,21 @@ const logout = async (req, res) => {
     }
 };
 
-
+// In adminController.js
+const getProductManagement = async (req, res) => {
+  try {
+    const products = await Product.find().populate('category');
+    const totalPages = Math.ceil(products.length / 10); // Adjust pagination
+    res.render('product-management', {
+      data: products,
+      totalPages,
+      currentPage: parseInt(req.query.page) || 1,
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).send('Server error');
+  }
+};
 
 
 
@@ -75,6 +89,6 @@ module.exports = {
     loadDashboard,
     pageError,
     logout,
-    
+    getProductManagement
 
 }

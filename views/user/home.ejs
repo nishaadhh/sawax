@@ -1,3 +1,53 @@
+
+
+<style>
+    
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #c1a033);
+            color: rgb(0, 0, 0);
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            display: inline-block;
+            padding: 12px 30px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+        .btn-explore{
+            background: transparent;
+            border-color: aliceblue;
+            border: 2px solid #d4af37;
+            color: rgb(255, 255, 255);
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            display: inline-block;
+            padding: 12px 30px;
+    }
+
+     .btn-explore:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+
+
+    </style>
+
+
 <%- include("../../views/partials/user/header") %>
 <link rel="stylesheet" href="/css/home.css">
 <!-- Add SweetAlert2 CDN -->
@@ -9,8 +59,8 @@
         <h1><strong>CHOOSE THE BEST</strong></h1>
         <p>Discover our collection of premium timepieces crafted with precision and designed for distinction.</p>
         <div class="hero-buttons">
-            <a href="/shop" class="btn">Shop Now</a>
-            <a href="# " class="btn btn-outline">Explore</a>
+            <a href="/shop" class="btn-primary">Shop Now</a>
+            <a href="/about " class="btn-explore">Explore</a>
         </div>
     </div>
     <div class="hero-image">
@@ -113,7 +163,7 @@
 </section>
 
 <!-- Newsletter -->
-<section class="newsletter">
+<!-- <section class="newsletter">
     <div class="container">
         <h3>Subscribe to Our Newsletter</h3>
         <p>Stay updated with our latest collections, exclusive offers, and watch care tips.</p>
@@ -122,7 +172,7 @@
             <button type="submit" class="newsletter-btn">Subscribe</button>
         </form>
     </div>
-</section>
+</section> -->
 
 <script>
     async function addToCart(productId) {

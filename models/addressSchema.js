@@ -16,6 +16,11 @@ const addressSchema = new Schema({
             type: String,
             required: true
         },
+
+
+// --------------------------------------------
+
+
         country:{
             type: String,
             required: true
@@ -58,3 +63,4 @@ const addressSchema = new Schema({
 const Address = mongoose.model('Address', addressSchema);
 
 module.exports = Address;
+

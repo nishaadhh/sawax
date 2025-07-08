@@ -9,6 +9,7 @@ const brand = require('../../models/brandSchema');
 const wishlist = require('../../models/userSchema');
 // controller/user/userController.js
 const mongoose = require('mongoose');
+const path = require("path");
 
 const Cart = require("../../models/cartSchema");
 // const Product = require("../../models/productSchema");                                                                                      
@@ -65,6 +66,164 @@ const loadSignUpPage = async (req, res) => {
         res.status(500).send('Server Error')
     }
 }
+
+
+
+
+
+// Render the forgot password page (GET /forgot-password)
+// Renders the Forgot Password page
+const renderForgotPassword = (req, res) => {
+  res.render('forgot-password', { message: '' });
+};
+
+
+// Handle forgot password form submission (POST /forgot-password)
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.render('user/forgot-password', { message: 'Email not found.' });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    req.session.otp = otp;
+    req.session.email = email;
+
+    const emailSent = await sendVerificationEmail(email, otp);
+    if (!emailSent) {
+      return res.render('user/forgot-password', { message: 'Failed to send OTP. Please try again.' });
+    }
+
+    res.redirect('/otp-verification');
+  } catch (error) {
+    console.error('Error in forgotPassword:', error);
+    res.status(500).render('user/forgot-password', { message: 'Server Error' });
+  }
+};
+
+// Handle resetting the password (POST /reset-password)
+const resetPassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const email = req.session.email;
+
+    if (!email) {
+      return res.status(400).json({ status: false, message: 'Session expired. Please start over.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    await User.findOneAndUpdate({ email }, { password: hashedPassword });
+
+    req.session.email = null;
+
+    res.json({ status: true, message: 'Password updated successfully.' });
+  } catch (error) {
+    console.error('Error in resetPassword:', error);
+    res.status(500).json({ status: false, message: 'Server Error' });
+  }
+};
+
+
+
+
+// Export all functions
+// Export both functions
+
+
+// const forgetpasswordOtp = async (req, res) => {
+//     try {
+//         if(!req.session.user){
+//             return res.render('otp-verification')
+//         } else{
+//             res.redirect('/')
+//         }
+//     } catch (error) {
+//         res.redirect('/pagenotfound')
+//     }
+// }
+
+
+
+
+
+
+const forgetpasswordOtp  = async (req, res) => {
+
+
+     try {
+        if(!req.session.user){
+            return res.render('otp-verification')
+        } else{
+            res.redirect('/')
+        }
+    
+    try{
+        const {otp1,otp2,otp3,otp4,otp5,otp6} = req.body;
+
+        console.log('OTP',otp1,otp2,otp3,otp4,otp5,otp6)
+        const otp = otp1.concat(otp2).concat(otp3).concat(otp4).concat(otp5).concat(otp6)
+        console.log(req.session.userOtp)
+
+        if(otp===req.session.userOtp){
+            const user = req.session.userData;
+            const passwordHash = await securePassword(user.password);
+
+            const saveUserData = new User({
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                googleId: user.googleId || null,
+                password: passwordHash
+            })
+
+            await saveUserData.save();
+            req.session.user = saveUserData._id;
+
+            res.json({success:true,redirectUrl:'/'})
+
+        } else{
+            res.status(400).json({success:false,message:'Invalid OTP Please try again'})
+        }
+
+    } catch (error) {
+        console.error('Error verifying OTP',error)
+        res.status(500).json({success:false,message:'Server Error'})
+    }
+    }catch (error) {
+        res.redirect('/pagenotfound')
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+
 
 
 
@@ -138,9 +297,9 @@ const signUp = async (req, res) => {
 
         const emailSent = await sendVerificationEmail(email,otp);
 
-        if(!emailSent){
-            return res.json("email-error")
-        }
+        // if(!emailSent){
+        //     return res.json("email-error")
+        // }
         
         req.session.userOtp = otp;
         req.session.userData = {name,email,password};
@@ -344,7 +503,6 @@ const loadShoppingPage = async (req, res) => {
             .limit(limit)
             .lean();
 
-        // Debug: Log products on initial load
         console.log('Initial Load Products:', products.length);
 
         const totalProducts = await Product.countDocuments(queryObj);
@@ -386,22 +544,26 @@ const filterProduct = async (req, res) => {
     try {
         const user = req.session.user;
         const { category, query, minPrice, maxPrice, alpha, sort, page = 1 } = req.query;
+        const isAjax = req.xhr || req.headers.accept.includes('json');
+
+        // Fetch all listed categories
+        const categories = await Category.find({ isListed: true });
+        const categoryIDs = categories.map(cat => cat._id);
+
         const queryObj = {
             isBlocked: false,
-            quantity: { $gt: 0 }
+            quantity: { $gt: 0 },
+            category: { $in: categoryIDs } // Default to all listed categories
         };
 
-        // Debug: Log incoming query parameters
-        console.log('Filter Query Params:', { category, query, minPrice, maxPrice, alpha, sort, page });
-
         // Category filter
-        let categories = await Category.find({ isListed: true });
         if (category) {
-            const findCategory = await Category.findOne({ _id: category });
+            const findCategory = await Category.findOne({ _id: category, isListed: true });
             if (findCategory) {
                 queryObj.category = findCategory._id;
             } else {
-                console.warn('Category not found:', category);
+                console.warn('Invalid category ID:', category);
+                // Keep default category filter instead of leaving it undefined
             }
         }
 
@@ -420,7 +582,6 @@ const filterProduct = async (req, res) => {
             const max = maxPrice ? parseFloat(maxPrice) : Infinity;
             if (min > 0) queryObj.salePrice.$gte = min;
             if (max < Infinity) queryObj.salePrice.$lte = max;
-            console.log('Price Filter Applied:', queryObj.salePrice);
         }
 
         // Alphabetical filter
@@ -444,7 +605,6 @@ const filterProduct = async (req, res) => {
             }
             if (regex) {
                 queryObj.productName = { $regex: regex, $options: 'i' };
-                console.log('Alphabetical Filter Applied:', queryObj.productName);
             }
         }
 
@@ -456,25 +616,25 @@ const filterProduct = async (req, res) => {
         // Sorting
         const sortObj = {};
         if (sort) {
-            if (sort === 'price-low') sortObj.salePrice = 1;
-            else if (sort === 'price-high') sortObj.salePrice = -1;
-            else if (sort === 'newest') sortObj.createdAt = -1;
-            else if (sort === 'bestselling') {
-                // Check if salesCount exists in schema
-                const product = await Product.findOne();
-                if (product && typeof product.salesCount !== 'undefined') {
-                    sortObj.salesCount = -1;
-                } else {
-                    sortObj.createdAt = -1; // Fallback to createdAt
-                    console.warn('salesCount field not found, falling back to createdAt');
-                }
-            } else {
-                sortObj.createdAt = -1; // Default for relevance
+            switch (sort) {
+                case 'price-low':
+                    sortObj.salePrice = 1;
+                    break;
+                case 'price-high':
+                    sortObj.salePrice = -1;
+                    break;
+                case 'newest':
+                    sortObj.createdAt = -1;
+                    break;
+                case 'bestselling':
+                    sortObj.salesCount = -1; // Assume salesCount exists, or remove if not used
+                    break;
+                default:
+                    sortObj.createdAt = -1;
             }
         } else {
             sortObj.createdAt = -1;
         }
-        console.log('Sort Applied:', sortObj);
 
         // Fetch products
         const products = await Product.find(queryObj)
@@ -483,9 +643,7 @@ const filterProduct = async (req, res) => {
             .limit(itemsPerPage)
             .lean();
 
-        // Debug: Log query and results
-        console.log('Query Object:', queryObj);
-        console.log('Products Found:', products.length);
+        console.log(`Page ${currentPage} Products:`, products.length, 'Total Products:', await Product.countDocuments(queryObj));
 
         // Total products for pagination
         const totalProducts = await Product.countDocuments(queryObj);
@@ -519,7 +677,17 @@ const filterProduct = async (req, res) => {
             }
         }
 
-        // Render shop page
+        // Handle AJAX request
+        if (isAjax) {
+            return res.json({
+                products,
+                totalProducts,
+                totalPages,
+                currentPage
+            });
+        }
+
+        // Render shop page for non-AJAX
         res.render('shop', {
             user: userData,
             products,
@@ -536,14 +704,17 @@ const filterProduct = async (req, res) => {
         });
     } catch (error) {
         console.error('Error while filtering products:', error);
+        if (req.xhr || req.headers.accept.includes('json')) {
+            return res.status(500).json({ error: 'Server error' });
+        }
         res.redirect('/pageNotFound');
     }
 };
 
 
-// const women =async(req,res)=>{
+// const men =async(req,res)=>{
 //     try {
-//         res.render("women")
+//         res.render("men")
 //     } catch (error) {
 //         res.redirect('/pagenotfound')
 //     }
@@ -741,51 +912,80 @@ const removeFromCart = async (req, res) => {
 
 
  // controller/user/userController.js
-
 const loadCart = async (req, res) => {
   try {
     const userId = req.session.user;
-    const userData = await User.findOne({ _id: userId });
 
     // Check if user is logged in
     if (!userId) {
       if (req.xhr || req.headers.accept.includes('json')) {
-        return res.status(401).json({ success: false, message: 'Please log in to view cart' });
+        return res.status(401).json({ success: false, message: 'Please log in to view cart', redirect: '/login' });
       }
       return res.redirect('/login');
     }
 
-    // Fetch cart and populate product details
+    // Fetch user and cart data
+    const userData = await User.findOne({ _id: userId });
     const cart = await Cart.findOne({ userId }).populate('items.productId');
+
     let cartItems = [];
+    let isUpdated = false;
+    let priceChanged = false;
 
     if (cart && cart.items.length > 0) {
-     cartItems = cart.items.map(item => {
-  if (!item.productId) {
-    console.warn(`Product not found for item: ${item.productId}`);
-    return null;
-  }
-  return {
-    productId: item.productId._id,
-    name: item.productId.productName,
-    image: item.productId.productImage && item.productId.productImage.length > 0 ? `/${item.productId.productImage[0]}` : '',
-    price: item.price,
-    quantity: item.quantity,
-    totalPrice: item.totalPrice,
-    stock: item.productId.quantity, 
-  };
-}).filter(item => item !== null);
+      cartItems = cart.items.map((item) => {
+        if (!item.productId) {
+          console.warn(`Product not found for item: ${item.productId}`);
+          return null;
+        }
+
+        // Check for price changes
+        const effectivePrice = item.productId.salePrice * (1 - (item.productId.productOffer || 0) / 100);
+        if (item.price !== effectivePrice) {
+          item.price = effectivePrice;
+          item.totalPrice = item.quantity * effectivePrice;
+          priceChanged = true;
+          isUpdated = true;
+        }
+
+        // Sync quantity if product stock is less than cart quantity
+        if (item.productId.quantity < item.quantity) {
+          item.quantity = item.productId.quantity;
+          item.totalPrice = item.quantity * item.price;
+          isUpdated = true;
+        }
+
+        return {
+          productId: item.productId._id,
+          name: item.productId.productName,
+          image:
+            item.productId.productImage && item.productId.productImage.length > 0
+              ? `/${item.productId.productImage[0]}`
+              : '/placeholder.svg',
+          price: item.price,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+          stock: item.productId.quantity,
+        };
+      }).filter(item => item !== null);
+
+      // Save only if updates were made
+      if (isUpdated) {
+        await cart.save();
+      }
     }
 
-    // Handle message from query params
+    // Optional: Display message from query
     const message = req.query.message ? decodeURIComponent(req.query.message) : null;
-    
-    // Render cart.ejs
+
+    // Render cart
     res.render('cart', {
-        user: userData,
+      user: userData,
       cart: cartItems,
       message,
+      priceChanged
     });
+
   } catch (error) {
     console.error('Error loading cart:', error);
     if (req.xhr || req.headers.accept.includes('json')) {
@@ -794,33 +994,38 @@ const loadCart = async (req, res) => {
     res.redirect('/errorpage?message=cart-load-error');
   }
 };
-// Include previous cart, updateCart, removeFromCart functions
-
 
 const updateCart = async (req, res) => {
-    try {
-        const { productId, quantity } = req.body;
-        const userId = req.session.user;
-        if (!productId || quantity < 1) {
-            return res.status(400).json({ message: "Invalid product ID or quantity" });
-        }
-        const cart = await Cart.findOne({ userId });
-        if (!cart) {
-            return res.status(404).json({ message: "Cart not found" });
-        }
-        const item = cart.items.find(item => item.productId.toString() === productId);
-        if (item) {
-            item.quantity = quantity;
-            item.totalPrice = item.price * quantity;
-            await cart.save();
-            res.status(200).json({ message: "Cart updated" });
-        } else {
-            res.status(404).json({ message: "Item not found in cart" });
-        }
-    } catch (error) {
-        console.error("Error updating cart:", error);
-        res.status(500).json({ message: "Server error" });
+  try {
+    const { productId, quantity } = req.body;
+    const userId = req.session.user;
+    if (!productId || quantity < 1) {
+      return res.status(400).json({ message: "Invalid product ID or quantity" });
     }
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+    const item = cart.items.find(item => item.productId._id.toString() === productId);
+    if (item) {
+      // Update price to reflect current product price
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+      item.quantity = quantity;
+      item.price = effectivePrice;
+      item.totalPrice = quantity * effectivePrice;
+      await cart.save();
+      res.status(200).json({ message: "Cart updated", price: effectivePrice });
+    } else {
+      res.status(404).json({ message: "Item not found in cart" });
+    }
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const addAddress = async (req, res) => {
@@ -994,24 +1199,37 @@ const checkout = async (req, res) => {
     const userId = req.session.user;
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     const user = await User.findById(userId);
+    const addressData = await Address.findOne({ userId });
     if (!cart || !cart.items.length) {
       return res.redirect("/cart?message=Your%20cart%20is%20empty");
     }
+
     const cartItems = cart.items.map(item => ({
-      productId: item.productId._id,
-      name: item.productId.productName,
-      image: item.productId.productImage[0],
-      price: item.price,
+      product: {
+        _id: item.productId._id,
+        productName: item.productId.productName,
+        productImage: item.productId.productImage[0],
+      },
       quantity: item.quantity,
       totalPrice: item.totalPrice,
     }));
+
+    const subtotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const shippingCharge = 0; // As per your shipping logic
+    const grandTotal = subtotal + shippingCharge;
+
     res.render("checkout", {
-      cart: cartItems,
-      user: user || { addresses: [] },
+      cartItems,
+      user,
+      addresses: addressData || { address: [] },
+      walletBalance: user.walletBalance || 0,
+      subtotal,
+      shippingCharge,
+      grandTotal
     });
   } catch (error) {
     console.error("Error fetching checkout:", error);
-    res.redirect("/errorpage?message=checkout-error");
+    res.redirect("/errorpage? ..message=checkout-error");
   }
 };
 
@@ -1107,6 +1325,70 @@ const removeFromWishlist = async (req, res) => {
     }
 };
  
+
+
+
+const wallet = async (req, res) => {
+    try {
+        // Mock data; replace with actual database queries
+        const walletBalance = 1500.50; // Fetch from user wallet in DB
+        const transactions = [
+            { date: new Date(), type: 'Deposit', amount: 1000, description: 'Added funds via UPI' },
+            { date: new Date(), type: 'Purchase', amount: 499.50, description: 'Order #1234' }
+        ];
+
+        res.render('wallet', {
+            walletBalance,
+            transactions
+        });
+    } catch (error) {
+        console.error('Error fetching wallet page:', error);
+        res.status(500).send('Server Error');
+    }
+};
+
+const addFunds = async (req, res) => {
+    try {
+        const { amount } = req.body;
+        const amountNum = parseFloat(amount);
+
+        if (isNaN(amountNum) || amountNum <= 0) {
+            return res.status(500).json({ status: false, message: 'Invalid amount' });
+        }
+
+        // Update wallet balance in DB (pseudo-code)
+        // await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: amountNum } });
+
+        // Add transaction to history (pseudo-code)
+        // await Transaction.create({
+        //     userId: req.user.id,
+        //     date: new Date(),
+        //     type: 'Deposit',
+        //     amount: amountNum,
+        //     description: 'Added funds via form'
+        // });
+
+        res.json({ status: true, message: 'Funds added successfully' });
+    } catch (error) {
+        console.error('Error adding funds:', error);
+        res.status(500).json({ status: false, message: 'Server Error' });
+    }
+};
+
+// Export the functions (add to your existing exports)
+
+
+// Export the functions (add to your existing exports)
+const couponload = async (req, res) => {
+    try {
+        res.render('coupon');
+    } catch (error) {   
+        console.error('Error loading coupons page:', error);
+        }
+    }
+
+      
+
 module.exports = {
     loadHomePage,
     pageNotFound,
@@ -1136,8 +1418,17 @@ module.exports = {
     loadCart,
     addAddress,
     placeOrder,
-    updateCart
+    updateCart,
+       wallet,
+    addFunds,
+    resetPassword,
+     renderForgotPassword, 
+     forgotPassword,
+     forgetpasswordOtp,
+   couponload
 
 
     
 }
+
+

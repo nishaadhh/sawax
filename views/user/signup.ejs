@@ -8,6 +8,17 @@
     <title>Sign Up | SAWAX Premium Timepieces</title>
 </head>
 <body>
+
+
+ <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">SA<span>WAX</span></div>
+                   
+</header>
+
+
+
     <!-- Signup Section -->
     <section class="signup-section">
         <div class="signup-container">
@@ -46,7 +57,10 @@
                         By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
                     </div>
                     
-                    <button type="submit" class="btn" style="background-color: #DF8A00;">Create Account</button>
+                    <button type="submit" class="btn" style="background-color: #DF8A00;">
+                        Create Account
+                        <span class="spinner"></span>
+                    </button>
                 </form>
                 
                 <div class="signup-divider">
@@ -92,9 +106,11 @@
         const error3 = document.getElementById("error3");
         const error4 = document.getElementById("error4");
         const signupform = document.getElementById("signupform");
+        const signupButton = document.querySelector(".btn");
+        const spinner = document.querySelector(".spinner");
 
         // Check if all elements are found
-        if (!nameid || !emailid || !passid || !cpassid || !error1 || !error2 || !error3 || !error4 || !signupform) {
+        if (!nameid || !emailid || !passid || !cpassid || !error1 || !error2 || !error3 || !error4 || !signupform || !signupButton || !spinner) {
             console.error("One or more DOM elements not found");
             throw new Error("Required DOM elements missing");
         }
@@ -195,8 +211,56 @@
 
             if (!isNameValid || !isEmailValid || !isPassValid) {
                 e.preventDefault();
+            } else {
+                // Show spinner and disable button
+                signupButton.disabled = true;
+                signupButton.classList.add("loading");
+
+                // Handle form completion (fallback timeout)
+                const handleFormCompletion = () => {
+                    signupButton.disabled = false;
+                    signupButton.classList.remove("loading");
+                };
+
+                // Add a timeout as a fallback since we can't directly detect server response
+                setTimeout(handleFormCompletion, 2000); // Adjust timeout as needed
             }
         });
     </script>
-</body>
-</html>
+
+    <style>
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #DF8A00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn:disabled {
+            background-color: #DF8A00;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>

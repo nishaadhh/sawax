@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>SAWAX | Order History</title>
+    <title>SAWAX | My Orders</title>
     <style>
         :root {
             --primary: #1a1a1a;
@@ -14,6 +14,9 @@
             --light-text: #777;
             --border: #e0e0e0;
             --error: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
         }
 
         * {
@@ -25,235 +28,367 @@
 
         body {
             color: var(--text);
-            overflow-x: hidden;
-            background-color: var(--secondary);
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
         }
 
         .container {
-            width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* Header */
-        header {
-            background-color: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        .orders-section {
+            padding: 40px 0 80px;
         }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-        }
-
-        .logo {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: var(--primary);
-        }
-
-        .logo span {
-            color: var(--accent);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        nav ul li a {
-            font-weight: 500;
-            transition: color 0.3s;
-            font-size: 16px;
-        }
-
-        nav ul li a:hover {
-            color: var(--accent);
-        }
-
-        .header-icons {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .header-icon {
-            cursor: pointer;
-            font-size: 20px;
-            transition: color 0.3s;
-        }
-
-        .header-icon:hover {
-            color: var(--accent);
-        }
-
-        .mobile-menu {
-            display: none;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .sign-in-link {
-            color: var(--accent);
-            text-decoration: none;
-            padding: 1px;
-            display: block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1000;
-            right: 0;
-            border-radius: 4px;
-        }
-
-        .dropdown-content a {
-            color: var(--text);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            width: 100%;
-        }
-
-        .dropdown-content a:hover {
-            background-color: var(--secondary);
-            color: var(--accent);
-            border-radius: 4px;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* Order Details Section */
-        .order-details-section {
-            padding: 80px 0;
-        }
-
-        .section-title {
+        .section-header {
             text-align: center;
             margin-bottom: 50px;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .section-title h2 {
-            font-size: 36px;
+        .section-header h1 {
+            font-size: 42px;
             font-weight: 300;
-            margin-bottom: 10px;
-            position: relative;
-            display: inline-block;
+            margin-bottom: 15px;
             color: var(--primary);
+            position: relative;
         }
 
-        .section-title h2::after {
+        .section-header h1::after {
             content: '';
             position: absolute;
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background-color: var(--accent);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #c1a033);
+            border-radius: 2px;
         }
 
-        .section-title p {
+        .section-header p {
             color: var(--light-text);
             font-size: 18px;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        .order-details-content {
-            background-color: white;
-            border-radius: 8px;
+        /* Advanced Search and Filter */
+        .search-filter-section {
+            background: white;
             padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
         }
 
-        .order-table {
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            padding: 15px 50px 15px 20px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafafa;
         }
 
-        .order-table th,
-        .order-table td {
-            padding: 15px;
-            text-align: left;
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
+            font-size: 18px;
+        }
+
+        .filter-select {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            min-width: 180px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        /* Orders Grid */
+        .orders-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #c1a033);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-color: var(--accent);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 1px solid var(--border);
         }
 
-        .order-table th {
+        .order-id {
+            font-size: 18px;
             font-weight: 600;
             color: var(--primary);
-            background-color: var(--secondary);
         }
 
-        .order-table td {
+        .order-date {
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .order-body {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .order-details {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .order-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
             color: var(--light-text);
         }
 
-        .order-table .btn-details,
-        .order-table .btn-cancel {
-            padding: 8px 15px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            margin-right: 5px;
+        .order-amount {
+            text-align: right;
         }
 
-        .order-table .btn-details {
-            background-color: transparent;
+        .amount-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { 
+            background: #fff3cd; 
+            color: #856404; 
+            border: 1px solid #ffeaa7;
+        }
+        .status-confirmed { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+            border: 1px solid #bee5eb;
+        }
+        .status-shipped { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb;
+        }
+        .status-delivered { 
+            background: #d1f2eb; 
+            color: #00695c; 
+            border: 1px solid #7dd3fc;
+        }
+        .status-cancelled { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb;
+        }
+        .status-return_requested,
+        .status-return-requested { 
+            background: #fff3cd; 
+            color: #856404; 
+            border: 1px solid #ffeaa7;
+        }
+        .status-return-approved { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+            border: 1px solid #bee5eb;
+        }
+        .status-return-rejected { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Action Buttons */
+        .order-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #c1a033);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error), #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
             border: 2px solid var(--accent);
             color: var(--accent);
         }
 
-        .order-table .btn-details:hover {
-            background-color: var(--accent);
-            color: var(--primary);
-        }
-
-        .order-table .btn-cancel {
-            background-color: transparent;
-            border: 2px solid var(--error);
-            color: var(--error);
-        }
-
-        .order-table .btn-cancel:hover {
-            background-color: var(--error);
+        .btn-outline:hover {
+            background: var(--accent);
             color: white;
         }
 
-        .order-table .btn-details.loading::after,
-        .order-table .btn-cancel.loading::after {
-            content: '\f1ce'; /* Font Awesome spinner */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            display: inline-block;
-            margin-left: 8px;
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Loading state */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            right: 10px;
             animation: spin 1s linear infinite;
         }
 
@@ -262,528 +397,862 @@
             100% { transform: rotate(360deg); }
         }
 
-        .order-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            margin-bottom: 10px;
+        /* Empty State */
+        .empty-orders {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
 
-        .order-details.active {
-            max-height: 600px; /* Adjust based on content */
-            padding: 20px;
+        .empty-orders i {
+            font-size: 80px;
+            color: var(--light-text);
+            margin-bottom: 30px;
         }
 
-        .order-details-inner {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-
-        .order-items h4,
-        .shipping-info h4 {
-            font-size: 18px;
-            font-weight: 600;
+        .empty-orders h3 {
+            font-size: 24px;
+            color: var(--primary);
             margin-bottom: 15px;
-            color: var(--primary);
         }
 
-        .order-items ul {
-            list-style: none;
-        }
-
-        .order-items ul li {
-            margin-bottom: 10px;
+        .empty-orders p {
             color: var(--light-text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 16px;
+            margin-bottom: 30px;
         }
 
-        .order-items ul li img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .shipping-info p {
-            margin-bottom: 10px;
-            color: var(--light-text);
-        }
-
-        .tracking-info {
-            color: var(--accent);
-            cursor: pointer;
-        }
-
-        .tracking-info:hover {
-            color: #c1a033;
-        }
-
-        .btn-back {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: var(--accent);
-            color: var(--primary);
+        .btn-shop {
+            background: linear-gradient(135deg, var(--accent), #c1a033);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 10px;
             font-weight: 600;
-            border-radius: 4px;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 14px;
-            margin-top: 20px;
+            transition: all 0.3s ease;
         }
 
-        .btn-back:hover {
-            background-color: #c1a033;
+        .btn-shop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Enhanced Pagination */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .pagination button {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 44px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
             transform: translateY(-2px);
         }
 
-        .no-orders {
-            text-align: center;
-            padding: 20px;
-            color: var(--light-text);
-            font-size: 18px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #111;
+        .pagination button.active {
+            background: var(--accent);
             color: white;
-            padding: 60px 0 30px;
+            border-color: var(--accent);
         }
 
-        .footer-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .footer-logo {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .footer-logo span {
-            color: var(--accent);
-        }
-
-        .footer-about p {
-            opacity: 0.7;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.1);
-            display: flex;
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s;
+            gap: 10px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--primary), #2c3e50);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 40px;
         }
 
-        .social-icon:hover {
-            background-color: var(--accent);
-        }
-
-        .footer-links h4 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-links h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links ul li a {
-            opacity: 0.7;
-            transition: opacity 0.3s, color 0.3s;
-        }
-
-        .footer-links ul li a:hover {
-            opacity: 1;
-            color: var(--accent);
-        }
-
-        .contact-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            opacity: 0.7;
-        }
-
-        .contact-icon {
-            font-size: 18px;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            opacity: 0.7;
-            font-size: 14px;
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(26, 26, 26, 0.3);
         }
 
         /* Responsive Design */
-        @media (max-width: 992px) {
-            .order-details-inner {
-                grid-template-columns: 1fr;
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
             }
 
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
+            .search-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .order-body {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .order-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .section-header h1 {
+                font-size: 32px;
+            }
+
+            .product-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .amount-value {
+                font-size: 18px;
             }
         }
 
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
+        @media (max-width: 480px) {
+            .order-card {
+                padding: 20px 15px;
             }
 
-            .mobile-menu {
-                display: block;
-            }
-
-            .order-details-section {
-                padding: 60px 0;
-            }
-
-            .order-details-content {
-                padding: 20px;
-            }
-
-            .order-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-
-            .order-table th,
-            .order-table td {
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            .order-table th:nth-child(4),
-            .order-table td:nth-child(4) {
-                min-width: 100px;
-            }
-
-            .order-details.active {
-                max-height: 800px;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .footer-bottom {
+            .order-header {
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
             }
+
+            .pagination button {
+                padding: 8px 12px;
+                min-width: 36px;
+            }
         }
 
-        @media (max-width: 576px) {
-            .section-title h2 {
-                font-size: 28px;
+        /* Additional animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-            .section-title p {
-                font-size: 16px;
-            }
+        .order-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
 
-            .btn-back {
-                font-size: 12px;
-                padding: 10px 20px;
-            }
+        .order-card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
 
-            .order-items h4,
-            .shipping-info h4 {
-                font-size: 16px;
-            }
-
-            .order-items ul li img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .order-table .btn-details,
-            .order-table .btn-cancel {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
+        .order-card:nth-child(3n) {
+            animation-delay: 0.2s;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <%- include("../../views/partials/user/header") %>
 
-    <!-- Order Details Section -->
-    <section class="order-details-section">
+    <section class="orders-section">
         <div class="container">
-            <div class="section-title">
-                <h2>Order History</h2>
-                <p>Review the details of your past orders.</p>
+            <!-- Section Header -->
+            <div class="section-header">
+                <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
+                <p>Track and manage all your orders in one place. From pending to delivered, we've got you covered.</p>
             </div>
-            <div class="order-details-content">
-                <table class="order-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (orders && orders.length > 0) { %>
-                            <% orders.forEach(order => { %>
-                                <tr>
-                                    <td>#<%= order.orderId %></td>
-                                    <td><%= new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %></td>
-                                    <td>₹<%= order.totalAmount.toFixed(2) %></td>
-                                    <td class="order-status"><%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %></td>
-                                    <td>
-                                        <button class="btn btn-details" data-order="<%= order._id %>">View Details</button>
-                                        <% if (order.status !== 'cancelled' && order.status !== 'delivered') { %>
-                                            <button class="btn btn-cancel" data-order="<%= order._id %>">Cancel Order</button>
+
+            <!-- Search and Filter -->
+            <div class="search-filter-section">
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <input type="text" 
+                               class="search-input" 
+                               id="order-search-input" 
+                               placeholder="Search by Order ID, Product name, or Status...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <select class="filter-select" id="order-search-filter">
+                        <option value="all">All Orders</option>
+                        <option value="orderId">Order ID</option>
+                        <option value="date">Date</option>
+                        <option value="status">Status</option>
+                        <option value="productName">Product Name</option>
+                    </select>
+                    <select class="filter-select" id="status-filter">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="return_requested">Return Requested</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Orders Grid -->
+            <div class="orders-grid" id="orders-container">
+                <% if (orders && orders.length > 0) { %>
+                    <% orders.forEach((order, index) => { %>
+                        <div class="order-card order-item" 
+                             data-order-id="<%= order.orderId || '' %>" 
+                             data-date="<%= order.createdOn ? new Date(order.createdOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '' %>" 
+                             data-status="<%= 
+                                 order.requestStatus === 'rejected' ? 'return-rejected' :
+                                 order.requestStatus === 'approved' ? 'return-approved' :
+                                 order.status === 'return_requested' && !order.requestStatus ? 'return-requested' :
+                                 (order.status || '').toLowerCase().replace('_', '-')
+                             %>" 
+                             data-product-names="<%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems.map(item => item.productName ? item.productName.toLowerCase() : '').join(',') : '' %>"
+                             style="animation-delay: <%= index * 0.1 %>s">
+                            
+                            <!-- Order Header -->
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-id">#<%= order.orderId || 'N/A' %></div>
+                                    <div class="order-date">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <%= order.createdOn ? new Date(order.createdOn).toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) : 'N/A' %>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-<%= 
+                                    order.requestStatus === 'rejected' ? 'return-rejected' :
+                                    order.requestStatus === 'approved' ? 'return-approved' :
+                                    order.status === 'return_requested' && !order.requestStatus ? 'return-requested' :
+                                    (order.status || '').toLowerCase().replace('_', '-')
+                                %>">
+                                    <i class="fas fa-<%= 
+                                        order.status === 'pending' ? 'clock' :
+                                        order.status === 'confirmed' ? 'check-circle' :
+                                        order.status === 'shipped' ? 'truck' :
+                                        order.status === 'delivered' ? 'check-double' :
+                                        order.status === 'cancelled' ? 'times-circle' :
+                                        'question-circle'
+                                    %>"></i>
+                                    <%= 
+                                        order.requestStatus === 'rejected' ? 'Return Rejected' :
+                                        order.requestStatus === 'approved' ? 'Return Approved' :
+                                        order.status === 'return_requested' && !order.requestStatus ? 'Return Requested' :
+                                        (order.status || '').charAt(0).toUpperCase() + (order.status || '').slice(1).replace('_', ' ')
+                                    %>
+                                </span>
+                            </div>
+
+                            <!-- Order Body -->
+                            <div class="order-body">
+                                <% if (order.orderedItems && order.orderedItems.length > 0 && order.orderedItems[0].productImages && order.orderedItems[0].productImages.length > 0) { %>
+                                    <img class="product-image" 
+                                         src="<%= order.orderedItems[0].productImages[0] %>" 
+                                         alt="<%= order.orderedItems[0].productName %>"
+                                         loading="lazy">
+                                <% } else { %>
+                                    <div class="product-image" style="background: var(--secondary); display: flex; align-items: center; justify-content: center; color: var(--light-text);">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                <% } %>
+
+                                <div class="order-details">
+                                    <div class="product-name">
+                                        <%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems[0].productName || 'Product Not Found' : 'No Items' %>
+                                        <% if (order.orderedItems && order.orderedItems.length > 1) { %>
+                                            <span style="color: var(--light-text); font-size: 12px;">
+                                                +<%= order.orderedItems.length - 1 %> more item<%= order.orderedItems.length > 2 ? 's' : '' %>
+                                            </span>
                                         <% } %>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5">
-                                        <div class="order-details" id="order-<%= order._id %>">
-                                            <div class="order-details-inner">
-                                                <div class="order-items">
-                                                    <h4>Items</h4>
-                                                    <ul>
-                                                        <% if (order.orderedItems && order.orderedItems.length > 0) { %>
-                                                            <% order.orderedItems.forEach(item => { %>
-                                                                <li>
-                                                                    <% if (item.product && item.product.productImage && item.product.productImage.length > 0) { %>
-                                                                        <img src="<%= item.product.productImage[0] %>" alt="<%= item.product.productName %>">
-                                                                    <% } else { %>
-                                                                        <img src="/images/placeholder.png" alt="No Image">
-                                                                    <% } %>
-                                                                    <%= item.product ? item.product.productName : 'Product Not Found' %> - <%= item.quantity %> x ₹<%= item.product && item.product.salePrice ? (item.product.salePrice).toFixed(2) : 'N/A' %>
-                                                                </li>
-                                                            <% }); %>
-                                                        <% } else { %>
-                                                            <li>No items available</li>
-                                                        <% } %>
-                                                    </ul>
-                                                </div>
-                                                <div class="shipping-info">
-                                                    <h4>Shipping Information</h4>
-                                                    <p><strong>Address:</strong> <%= order.shippingAddress || 'N/A' %></p>
-                                                    <p><strong>Status:</strong> 
-                                                        <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %> 
-                                                        <% if (order.status === 'delivered' && order.deliveredOn) { %>
-                                                            on <%= new Date(order.deliveredOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %>
-                                                        <% } else if (order.status === 'shipped' && order.updatedOn) { %>
-                                                            on <%= new Date(order.updatedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %>
-                                                        <% } else if (order.status === 'cancelled' && order.updatedOn) { %>
-                                                            on <%= new Date(order.updatedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) %>
-                                                        <% } %>
-                                                    </p>
-                                                    <% if (order.status === 'cancelled' && order.cancelReason) { %>
-                                                        <p><strong>Cancel Reason:</strong> <%= order.cancelReason %></p>
-                                                    <% } %>
-                                                    <!-- <p><a href="#" class="tracking-info" data-order-id="<%= order.orderId %>">Track Order</a></p> -->
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div class="order-meta">
+                                        <span><i class="fas fa-boxes"></i> Qty: <%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems[0].quantity || 0 : 0 %></span>
+                                        <span><i class="fas fa-credit-card"></i> <%= 
+                                            order.paymentMethod === 'cod' ? 'Cash on Delivery' :
+                                            order.paymentMethod === 'online' ? 'Online Payment' :
+                                            order.paymentMethod === 'wallet' ? 'Wallet Payment' : 'Unknown'
+                                        %></span>
+                                        <% if (order.address && order.address.city) { %>
+                                            <span><i class="fas fa-map-marker-alt"></i> <%= order.address.city %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <div class="order-amount">
+                                    <div class="amount-value">₹<%= order.finalAmount ? order.finalAmount.toFixed(2) : '0.00' %></div>
+                                    <% if (order.discount && order.discount > 0) { %>
+                                        <div style="font-size: 12px; color: var(--success);">
+                                            <i class="fas fa-tag"></i> Saved ₹<%= order.discount.toFixed(2) %>
                                         </div>
-                                    </td>
-                                </tr>
-                            <% }); %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="5" class="no-orders">You have no orders yet.</td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-                <a href="/profile" class="btn-back">Back to Profile</a>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <!-- Order Actions -->
+                            <div class="order-actions">
+                                <a href="/order-details?orderId=<%= order._id %>" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                
+                                <% if (['pending', 'confirmed', 'shipped'].includes(order.status) && !order.requestStatus) { %>
+                                    <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                <% } %>
+                                
+                                <% if (order.status === 'delivered' && !order.requestStatus && order.deliveredOn) { %>
+                                    <% const deliveryDate = new Date(order.deliveredOn); %>
+                                    <% const currentDate = new Date(); %>
+                                    <% const daysSinceDelivery = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60 * 24)); %>
+                                    <% if (daysSinceDelivery <= 7) { %>
+                                        <button class="btn btn-success" onclick="requestReturn('<%= order._id %>')">
+                                            <i class="fas fa-undo"></i> Return
+                                        </button>
+                                    <% } %>
+                                <% } %>
+
+                                <% if (order.status === 'delivered' && !order.requestStatus) { %>
+                                    <button class="btn btn-outline" onclick="downloadInvoice('<%= order._id %>')">
+                                        <i class="fas fa-download"></i> Invoice
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="empty-orders">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet. Start shopping to see your orders here.</p>
+                        <a href="/shop" class="btn-shop">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                <% } %>
             </div>
+
+            <!-- Pagination -->
+            <% if (orders && orders.length > 0 && totalPages > 1) { %>
+                <div class="pagination-wrapper">
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <a href="/orders?page=<%= currentPage - 1 %>">
+                                <button><i class="fas fa-chevron-left"></i></button>
+                            </a>
+                        <% } else { %>
+                            <button disabled><i class="fas fa-chevron-left"></i></button>
+                        <% } %>
+                        
+                        <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                            <% if (i === currentPage) { %>
+                                <button class="active"><%= i %></button>
+                            <% } else { %>
+                                <a href="/orders?page=<%= i %>">
+                                    <button><%= i %></button>
+                                </a>
+                            <% } %>
+                        <% } %>
+                        
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/orders?page=<%= currentPage + 1 %>">
+                                <button><i class="fas fa-chevron-right"></i></button>
+                            </a>
+                        <% } else { %>
+                            <button disabled><i class="fas fa-chevron-right"></i></button>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Back Button -->
+            <a href="/profile" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Profile
+            </a>
         </div>
     </section>
 
-    <!-- Footer -->
-    <%- include("../../views/partials/user/footer") %>
-
-    <!-- SweetAlert2 for Confirmation -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- JavaScript for Order Details Toggle, Tracking, and Cancellation -->
     <script>
-        // Toggle Order Details
-        const detailButtons = document.querySelectorAll('.btn-details');
-        detailButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const orderId = button.getAttribute('data-order');
-                const details = document.getElementById(`order-${orderId}`);
-                const isActive = details.classList.contains('active');
+        // Search and Filter Functionality
+        const searchInput = document.getElementById('order-search-input');
+        const searchFilter = document.getElementById('order-search-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const orderItems = document.querySelectorAll('.order-item');
+        let searchTimeout;
 
-                button.classList.add('loading');
-                button.disabled = true;
+        function filterOrders() {
+            const query = searchInput.value.trim().toLowerCase();
+            const filter = searchFilter.value;
+            const status = statusFilter.value;
 
-                setTimeout(() => {
-                    document.querySelectorAll('.order-details').forEach(detail => {
-                        detail.classList.remove('active');
+            orderItems.forEach(item => {
+                const orderId = (item.getAttribute('data-order-id') || '').toLowerCase();
+                const date = (item.getAttribute('data-date') || '').toLowerCase();
+                const itemStatus = (item.getAttribute('data-status') || '').toLowerCase();
+                const productNames = (item.getAttribute('data-product-names') || '').toLowerCase();
+
+                // Search filter logic
+                let matchesSearch = true;
+                if (query) {
+                    if (filter === 'all') {
+                        matchesSearch = orderId.includes(query) || date.includes(query) || 
+                                      itemStatus.includes(query) || productNames.includes(query);
+                    } else if (filter === 'orderId') {
+                        matchesSearch = orderId.includes(query);
+                    } else if (filter === 'date') {
+                        matchesSearch = date.includes(query);
+                    } else if (filter === 'status') {
+                        matchesSearch = itemStatus.includes(query);
+                    } else if (filter === 'productName') {
+                        matchesSearch = productNames.includes(query);
+                    }
+                }
+
+                // Status filter logic
+                let matchesStatus = status === 'all' || itemStatus === status;
+
+                // Show/hide item
+                if (matchesSearch && matchesStatus) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeInUp 0.3s ease-out forwards';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show empty state if no items visible
+            const visibleItems = Array.from(orderItems).filter(item => item.style.display !== 'none');
+            const container = document.getElementById('orders-container');
+            let emptyState = container.querySelector('.empty-search-state');
+            
+            if (visibleItems.length === 0 && (query || status !== 'all')) {
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.className = 'empty-orders empty-search-state';
+                    emptyState.innerHTML = `
+                        <i class="fas fa-search"></i>
+                        <h3>No Orders Found</h3>
+                        <p>No orders match your search criteria. Try adjusting your filters.</p>
+                        <button onclick="clearFilters()" class="btn-shop">
+                            <i class="fas fa-filter"></i> Clear Filters
+                        </button>
+                    `;
+                    container.appendChild(emptyState);
+                }
+                emptyState.style.display = 'block';
+            } else if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        function clearFilters() {
+            searchInput.value = '';
+            searchFilter.value = 'all';
+            statusFilter.value = 'all';
+            filterOrders();
+        }
+
+        // Debounced search
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterOrders, 300);
+        });
+
+        searchFilter.addEventListener('change', filterOrders);
+        statusFilter.addEventListener('change', filterOrders);
+
+        // Order Management Functions
+        async function cancelOrder(orderId) {
+            const { value: reasonOption } = await Swal.fire({
+                title: 'Cancel Order',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <p style="margin-bottom: 15px; color: #666;">Please select a reason for cancellation:</p>
+                    </div>
+                `,
+                input: 'select',
+                inputOptions: {
+                    'Changed my mind': 'Changed my mind',
+                    'Found a better price': 'Found a better price',
+                    'Ordered by mistake': 'Ordered by mistake',
+                    'Delivery taking too long': 'Delivery taking too long',
+                    'Item no longer needed': 'Item no longer needed',
+                    'Wrong item ordered': 'Wrong item ordered',
+                    'Other': 'Other reason'
+                },
+                inputPlaceholder: 'Select cancellation reason',
+                showCancelButton: true,
+                confirmButtonText: 'Continue',
+                cancelButtonText: 'Keep Order',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please select a reason for cancellation';
+                    }
+                }
+            });
+
+            if (!reasonOption) return;
+
+            let finalReason = reasonOption;
+            if (reasonOption === 'Other') {
+                const { value: customReason } = await Swal.fire({
+                    title: 'Specify Reason',
+                    input: 'textarea',
+                    inputLabel: 'Please provide your cancellation reason',
+                    inputPlaceholder: 'Type your reason here...',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value || value.trim().length < 10) {
+                            return 'Please provide a detailed reason (at least 10 characters)';
+                        }
+                    }
+                });
+                if (!customReason) return;
+                finalReason = customReason;
+            }
+
+            // Show confirmation with refund info
+            const result = await Swal.fire({
+                title: 'Confirm Cancellation',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <p><strong>Reason:</strong> ${finalReason}</p>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <p style="margin: 0; color: #28a745;"><i class="fas fa-info-circle"></i> <strong>Refund Information:</strong></p>
+                            <p style="margin: 5px 0; font-size: 14px;">If you paid online or via wallet, the refund will be credited to your wallet within 24 hours.</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Cancel Order',
+                cancelButtonText: 'Keep Order',
+                confirmButtonColor: '#dc3545'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                // Show loading
+                Swal.fire({
+                    title: 'Cancelling Order...',
+                    html: 'Please wait while we process your cancellation.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const response = await fetch('/cancelOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, reason: finalReason })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Order Cancelled Successfully!',
+                        html: `
+                            <div style="text-align: left; margin: 20px 0;">
+                                <p>Your order has been cancelled successfully.</p>
+                                ${data.refundAmount > 0 ? `
+                                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #c3e6cb;">
+                                        <p style="margin: 0; color: #155724;"><i class="fas fa-wallet"></i> <strong>Refund: ₹${data.refundAmount.toFixed(2)}</strong></p>
+                                        <p style="margin: 5px 0; font-size: 14px; color: #155724;">Amount has been credited to your wallet.</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
+                    location.reload();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Cancellation Failed',
+                    text: error.message || 'Failed to cancel order. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
 
-                    if (!isActive) {
-                        details.classList.add('active');
+        async function requestReturn(orderId) {
+            const { value: formValues } = await Swal.fire({
+                title: 'Request Return',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Return Reason:</label>
+                            <select id="return-reason" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px;">
+                                <option value="">Select a reason</option>
+                                <option value="Wrong size">Wrong size</option>
+                                <option value="Damaged product">Damaged product</option>
+                                <option value="Not as described">Not as described</option>
+                                <option value="Quality issues">Quality issues</option>
+                                <option value="Defective item">Defective item</option>
+                                <option value="Wrong item delivered">Wrong item delivered</option>
+                                <option value="Changed my mind">Changed my mind</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Detailed Description:</label>
+                            <textarea id="return-description" placeholder="Please provide detailed information about the return reason..." 
+                                style="width: 100%; min-height: 100px; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; resize: vertical;"></textarea>
+                        </div>
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeaa7;">
+                            <p style="margin: 0; color: #856404; font-size: 14px;"><i class="fas fa-info-circle"></i> <strong>Return Policy:</strong></p>
+                            <ul style="margin: 10px 0; padding-left: 20px; color: #856404; font-size: 13px;">
+                                <li>Returns are accepted within 7 days of delivery</li>
+                                <li>Item must be in original condition</li>
+                                <li>Refund will be processed to your wallet</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Submit Return Request',
+                cancelButtonText: 'Cancel',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const reason = document.getElementById('return-reason').value;
+                    const description = document.getElementById('return-description').value;
+
+                    if (!reason) {
+                        Swal.showValidationMessage('Please select a return reason');
+                        return false;
+                    }
+                    if (!description || description.trim().length < 20) {
+                        Swal.showValidationMessage('Please provide a detailed description (at least 20 characters)');
+                        return false;
                     }
 
-                    button.classList.remove('loading');
-                    button.disabled = false;
-                }, 300);
-            });
-        });
-
-        // Track Order Placeholder
-        const trackLinks = document.querySelectorAll('.tracking-info');
-        trackLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const orderId = link.getAttribute('data-order-id');
-                alert(`Tracking for Order #${orderId} is not yet implemented. Status updates will be available soon!`);
-            });
-        });
-
-        // Cancel Order
- const cancelButtons = document.querySelectorAll('.btn-cancel');
-cancelButtons.forEach(button => {
-    button.addEventListener('click', async () => {
-        const orderId = button.getAttribute('data-order');
-        console.log("Cancelling order:", orderId);
-
-        // Show confirmation with reason input
-        const { value: reason, isConfirmed } = await Swal.fire({
-            title: 'Cancel Order',
-            text: 'Please provide a reason for cancelling this order:',
-            input: 'text',
-            inputPlaceholder: 'Enter your reason...',
-            showCancelButton: true,
-            confirmButtonText: 'Cancel Order',
-            cancelButtonText: 'Keep Order',
-            inputValidator: (value) => {
-                if (!value || value.trim() === '') {
-                    return 'You must provide a reason for cancellation';
+                    return { reason, description };
                 }
-            },
-            customClass: {
-                confirmButton: 'btn btn-danger',
-                cancelButton: 'btn btn-secondary'
+            });
+
+            if (!formValues) return;
+
+            try {
+                // Show loading
+                Swal.fire({
+                    title: 'Submitting Return Request...',
+                    html: 'Please wait while we process your return request.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const response = await fetch('/requestReturn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId,
+                        returnReason: formValues.reason,
+                        returnDescription: formValues.description
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Return Request Submitted!',
+                        html: `
+                            <div style="text-align: left; margin: 20px 0;">
+                                <p>Your return request has been submitted successfully.</p>
+                                <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #bee5eb;">
+                                    <p style="margin: 0; color: #0c5460;"><i class="fas fa-clock"></i> <strong>What's Next?</strong></p>
+                                    <ul style="margin: 10px 0; padding-left: 20px; color: #0c5460; font-size: 14px;">
+                                        <li>Our team will review your request within 24 hours</li>
+                                        <li>You'll receive an update via email/notification</li>
+                                        <li>If approved, pickup will be arranged</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                    location.reload();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Request Failed',
+                    text: error.message || 'Failed to submit return request. Please try again.',
+                    confirmButtonText: 'OK'
+                });
             }
+        }
+
+        function downloadInvoice(orderId) {
+            window.open(`/order/${orderId}/invoice`, '_blank');
+        }
+
+        // Enhanced animations and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all order cards
+            orderItems.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // Add loading states to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!this.classList.contains('loading')) {
+                        this.classList.add('loading');
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                        }, 2000);
+                    }
+                });
+            });
         });
 
-        if (!isConfirmed) {
-            console.log("Cancellation aborted by user");
-            return;
+        // Auto-refresh order status every 30 seconds
+        let autoRefreshInterval;
+        function startAutoRefresh() {
+            autoRefreshInterval = setInterval(() => {
+                // Only refresh if user is still on the page and there are pending orders
+                if (document.visibilityState === 'visible') {
+                    const hasPendingOrders = Array.from(orderItems).some(item => {
+                        const status = item.getAttribute('data-status');
+                        return ['pending', 'confirmed', 'shipped'].includes(status);
+                    });
+                    
+                    if (hasPendingOrders) {
+                        // Silent refresh - update status without full page reload
+                        fetch('/orders/status-update', { method: 'GET' })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.hasUpdates) {
+                                    // Show subtle notification about updates
+                                    const toast = document.createElement('div');
+                                    toast.style.cssText = `
+                                        position: fixed;
+                                        top: 20px;
+                                        right: 20px;
+                                        background: var(--success);
+                                        color: white;
+                                        padding: 15px 20px;
+                                        border-radius: 8px;
+                                        z-index: 10000;
+                                        animation: slideInRight 0.3s ease;
+                                    `;
+                                    toast.innerHTML = '<i class="fas fa-sync"></i> Order status updated!';
+                                    document.body.appendChild(toast);
+                                    
+                                    setTimeout(() => {
+                                        toast.style.animation = 'slideOutRight 0.3s ease';
+                                        setTimeout(() => toast.remove(), 300);
+                                        location.reload();
+                                    }, 2000);
+                                }
+                            })
+                            .catch(console.error);
+                    }
+                }
+            }, 30000);
         }
 
-        console.log("Cancellation reason:", reason);
+        // Start auto-refresh
+        startAutoRefresh();
 
-        // Add loading state
-        button.classList.add('loading');
-        button.disabled = true;
-
-        try {
-            const response = await fetch('/cancelOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ orderId, reason }),
-            });
-
-            console.log("Fetch response:", response);
-
-            // Check if the response is OK (status 200-299)
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.log("Error response text:", errorText);
-                throw new Error(`Server responded with status ${response.status}: ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log("Response data:", data);
-
-            if (data.success) {
-                Swal.fire({
-                    title: 'Order Cancelled',
-                    text: 'Your order has been cancelled successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Update UI
-                    const statusCell = button.closest('tr').querySelector('.order-status');
-                    console.log("Updating status cell:", statusCell);
-                    statusCell.textContent = 'Cancelled';
-                    button.remove();
-                });
+        // Stop auto-refresh when user leaves the page
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                clearInterval(autoRefreshInterval);
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    text: data.message || 'Failed to cancel the order.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+                startAutoRefresh();
             }
-        } catch (error) {
-            console.error('Error cancelling order:', error);
-            Swal.fire({
-                title: 'Error',
-                text: error.message || 'An error occurred while cancelling the order.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        } finally {
-            button.classList.remove('loading');
-            button.disabled = false;
-        }
-    });
-});
+        });
     </script>
+    
+    <!-- CSS for animations -->
+    <style>
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+
+    
 </body>
 </html>

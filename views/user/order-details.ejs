@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>SAWAX | Order Details</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+            --error: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .order-details-section {
+            padding: 40px 0 80px;
+        }
+
+        /* Enhanced Header */
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section-header h1 {
+            font-size: 36px;
+            font-weight: 300;
+            margin-bottom: 15px;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #c1a033);
+            border-radius: 2px;
+        }
+
+        /* Main Order Card */
+        .order-details-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .order-details-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent), #c1a033);
+        }
+
+        /* Order Header */
+        .order-header {
+            background: linear-gradient(135deg, var(--primary), #2c3e50);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .order-id {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .order-date {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Status Timeline */
+        .status-timeline-section {
+            padding: 40px 30px;
+            background: #f8f9fa;
+        }
+
+        .timeline-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .status-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--success), var(--info));
+            z-index: 0;
+            border-radius: 2px;
+        }
+
+        .status-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .status-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            transform: scale(1.2);
+        }
+
+        .status-current {
+            background: linear-gradient(135deg, var(--info), #2980b9);
+            animation: pulse 2s infinite;
+        }
+
+        .status-inactive {
+            background: #e0e0e0;
+            color: #999;
+        }
+
+        .status-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            max-width: 80px;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+
+        /* Content Sections */
+        .order-content {
+            padding: 30px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .section-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Product Details */
+        .product-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .product-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-info h6 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .summary-row.total {
+            font-size: 20px;
+            font-weight: 600;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            margin-top: 15px;
+        }
+
+        .payment-method {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Address Section */
+        .address-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .address-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .address-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .address-field i {
+            color: var(--accent);
+            width: 16px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #c1a033);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error), #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #2980b9);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Return Section */
+        .return-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #ffbd69;
+        }
+
+        .return-approved {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+        }
+
+        .return-rejected {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #dc3545;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--primary), #2c3e50);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(26, 26, 26, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .order-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .status-timeline {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .status-line {
+                display: none;
+            }
+
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                max-width: 300px;
+            }
+
+            .address-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-header h1 {
+                font-size: 28px;
+            }
+
+            .order-content {
+                padding: 20px;
+            }
+
+            .section-card {
+                padding: 20px;
+            }
+
+            .product-image {
+                width: 80px;
+                height: 80px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        /* Enhanced animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-details-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section-card {
+            animation: fadeInUp 0.6s ease-out;
+            animation-delay: 0.2s;
+            animation-fill-mode: both;
+        }
+    </style>
+</head>
+<body>
+    <%- include("../../views/partials/user/header") %>
+
+    <section class="order-details-section">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="section-header">
+                <h1><i class="fas fa-receipt"></i> Order Details</h1>
+                <p>Complete information about your order and delivery status</p>
+            </div>
+
+            <% if (order) { %>
+                <div class="order-details-card">
+                    <!-- Order Header -->
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">#<%= order.orderId %></div>
+                            <div style="margin-top: 8px; opacity: 0.9;">
+                                <i class="fas fa-calendar-alt"></i>
+                                Ordered on <%= new Date(order.createdOn).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) %>
+                            </div>
+                        </div>
+                        <div class="order-date">
+                            <i class="fas fa-info-circle"></i>
+                            Status: <%= order.status.charAt(0).toUpperCase() + order.status.slice(1).replace('_', ' ') %>
+                        </div>
+                    </div>
+
+                    <!-- Status Timeline -->
+                    <div class="status-timeline-section">
+                        <h3 class="timeline-title"><i class="fas fa-route"></i> Order Progress</h3>
+                        <div class="status-timeline">
+                            <div class="status-line"></div>
+                            <% 
+                                const statuses = [
+                                    { key: 'pending', label: 'Order Placed', icon: 'shopping-cart' },
+                                    { key: 'confirmed', label: 'Confirmed', icon: 'check-circle' },
+                                    { key: 'shipped', label: 'Shipped', icon: 'truck' },
+                                    { key: 'delivered', label: 'Delivered', icon: 'check-double' }
+                                ];
+                                const currentStatusIndex = statuses.findIndex(s => s.key === order.status);
+                            %>
+                            <% statuses.forEach((status, index) => { %>
+                                <div class="status-point">
+                                    <div class="status-dot <%= 
+                                        index < currentStatusIndex ? 'status-active' :
+                                        index === currentStatusIndex ? 'status-current' :
+                                        'status-inactive'
+                                    %>">
+                                        <i class="fas fa-<%= status.icon %>"></i>
+                                    </div>
+                                    <div class="status-label"><%= status.label %></div>
+                                    <% if (index === currentStatusIndex && order.updatedOn) { %>
+                                        <div style="font-size: 10px; color: var(--light-text); margin-top: 5px;">
+                                            <%= new Date(order.updatedOn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- Content Grid -->
+                    <div class="order-content">
+                        <div class="content-grid">
+                            <!-- Product Details -->
+                            <div>
+                                <div class="section-card">
+                                    <h3 class="section-title">
+                                        <i class="fas fa-box"></i> Product Details
+                                    </h3>
+                                    <% order.orderedItems.forEach(item => { %>
+                                        <div class="product-item">
+                                            <img src="<%= item.productImages && item.productImages.length > 0 ? item.productImages[0] : '/assets/images/placeholder.png' %>"
+                                                 alt="<%= item.productName || 'Product' %>"
+                                                 class="product-image">
+                                            <div class="product-info">
+                                                <h6><%= item.productName || 'Product Not Found' %></h6>
+                                                <div class="product-meta">
+                                                    <div><i class="fas fa-cubes"></i> Quantity: <%= item.quantity || 0 %></div>
+                                                    <div><i class="fas fa-tag"></i> Unit Price: ₹<%= item.price ? item.price.toFixed(2) : 'N/A' %></div>
+                                                    <div><i class="fas fa-calculator"></i> Total: ₹<%= item.price && item.quantity ? (item.price * item.quantity).toFixed(2) : 'N/A' %></div>
+                                                </div>
+                                                <div class="product-price">₹<%= item.price ? item.price.toFixed(2) : 'N/A' %></div>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+
+                                <!-- Shipping Address -->
+                                <div class="section-card">
+                                    <h3 class="section-title">
+                                        <i class="fas fa-map-marker-alt"></i> Shipping Address
+                                    </h3>
+                                    <div class="address-card">
+                                        <div class="address-info">
+                                            <div class="address-field">
+                                                <i class="fas fa-user"></i>
+                                                <strong><%= order.address.name || 'N/A' %></strong>
+                                            </div>
+                                            <div class="address-field">
+                                                <i class="fas fa-phone"></i>
+                                                <%= order.address.phone || 'N/A' %>
+                                            </div>
+                                            <div class="address-field">
+                                                <i class="fas fa-envelope"></i>
+                                                <%= order.address.email || 'N/A' %>
+                                            </div>
+                                            <div class="address-field">
+                                                <i class="fas fa-home"></i>
+                                                <%= order.address.streetAddress || 'N/A' %>
+                                            </div>
+                                            <div class="address-field">
+                                                <i class="fas fa-city"></i>
+                                                <%= order.address.city || 'N/A' %>, <%= order.address.state || 'N/A' %>
+                                            </div>
+                                            <div class="address-field">
+                                                <i class="fas fa-mail-bulk"></i>
+                                                <%= order.address.pincode || 'N/A' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Summary -->
+                            <div>
+                                <div class="order-summary">
+                                    <h3 style="margin-bottom: 20px; text-align: center;">
+                                        <i class="fas fa-receipt"></i> Order Summary
+                                    </h3>
+                                    <div class="summary-row">
+                                        <span>Subtotal:</span>
+                                        <span>₹<%= order.totalPrice ? order.totalPrice.toFixed(2) : '0.00' %></span>
+                                    </div>
+                                    <% if (order.discount > 0) { %>
+                                        <div class="summary-row" style="color: #4ade80;">
+                                            <span><i class="fas fa-tag"></i> Discount:</span>
+                                            <span>-₹<%= order.discount.toFixed(2) %></span>
+                                        </div>
+                                    <% } %>
+                                    <div class="summary-row">
+                                        <span><i class="fas fa-truck"></i> Delivery:</span>
+                                        <span>₹<%= order.deliveryCharge ? order.deliveryCharge.toFixed(2) : '0.00' %></span>
+                                    </div>
+                                    <div class="summary-row total">
+                                        <span>Total Amount:</span>
+                                        <span>₹<%= order.finalAmount ? order.finalAmount.toFixed(2) : '0.00' %></span>
+                                    </div>
+                                    <div class="payment-method">
+                                        <i class="fas fa-<%= 
+                                            order.paymentMethod === 'cod' ? 'money-bill-wave' :
+                                            order.paymentMethod === 'online' ? 'credit-card' :
+                                            order.paymentMethod === 'wallet' ? 'wallet' : 'question'
+                                        %>"></i>
+                                        <%= order.paymentMethod === 'cod' ? 'Cash on Delivery' :
+                                            order.paymentMethod === 'online' ? 'Online Payment' :
+                                            order.paymentMethod === 'wallet' ? 'Wallet Payment' : 'Unknown' %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Return Section -->
+                        <% if (['return_requested', 'returning', 'returned'].includes(order.status) || order.requestStatus) { %>
+                            <div class="return-section <%= 
+                                order.requestStatus === 'approved' || order.status === 'returned' ? 'return-approved' :
+                                order.requestStatus === 'rejected' ? 'return-rejected' : ''
+                            %>">
+                                <h3 style="margin-bottom: 20px;">
+                                    <i class="fas fa-undo-alt"></i> Return Information
+                                </h3>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                    <div><strong>Reason:</strong> <%= order.returnReason || 'N/A' %></div>
+                                    <div><strong>Description:</strong> <%= order.returnDescription || 'N/A' %></div>
+                                    <div><strong>Status:</strong> 
+                                        <span style="font-weight: 600; text-transform: uppercase;">
+                                            <%= order.requestStatus ? order.requestStatus : 'Pending' %>
+                                        </span>
+                                    </div>
+                                    <% if (order.updatedOn) { %>
+                                        <div><strong>Requested On:</strong> 
+                                            <%= new Date(order.updatedOn).toLocaleDateString('en-US', { 
+                                                year: 'numeric', 
+                                                month: 'long', 
+                                                day: 'numeric' 
+                                            }) %>
+                                        </div>
+                                    <% } %>
+                                </div>
+
+                                <% if (order.requestStatus === 'approved' || order.status === 'returned') { %>
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle"></i>
+                                        <strong>Return Approved!</strong><br>
+                                        <% if (order.status === 'returned') { %>
+                                            Your product has been returned and refund has been processed to your wallet.
+                                        <% } else { %>
+                                            Your return request has been approved. Pickup will be arranged shortly.
+                                        <% } %>
+                                    </div>
+                                <% } else if (order.requestStatus === 'rejected') { %>
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-times-circle"></i>
+                                        <strong>Return Request Rejected</strong><br>
+                                        <% if (order.rejectionReason) { %>
+                                            Reason: <%= order.rejectionReason %>
+                                        <% } %>
+                                    </div>
+                                <% } else { %>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-clock"></i>
+                                        <strong>Return Request Under Review</strong><br>
+                                        Our team is reviewing your return request. You will be notified once a decision is made.
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <% if (['pending', 'confirmed', 'shipped'].includes(order.status) && !order.requestStatus) { %>
+                                <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">
+                                    <i class="fas fa-times"></i> Cancel Order
+                                </button>
+                            <% } %>
+
+                            <% if (order.status === 'delivered' && !order.requestStatus && order.deliveredOn) { %>
+                                <% const deliveryDate = new Date(order.deliveredOn); %>
+                                <% const currentDate = new Date(); %>
+                                <% const daysSinceDelivery = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60 * 24)); %>
+                                <% if (daysSinceDelivery <= 7) { %>
+                                    <button class="btn btn-success" onclick="initiateReturn('<%= order._id %>')">
+                                        <i class="fas fa-undo"></i> Request Return
+                                    </button>
+                                <% } %>
+                            <% } %>
+
+                            <% if (order.status === 'delivered' && !order.requestStatus) { %>
+                                <button class="btn btn-info" onclick="downloadInvoice('<%= order._id %>')">
+                                    <i class="fas fa-download"></i> Download Invoice
+                                </button>
+                            <% } %>
+
+                            <% if (order.status === 'return_requested' && order.requestStatus === 'pending') { %>
+                                <button class="btn btn-danger" onclick="cancelReturnRequest('<%= order._id %>')">
+                                    <i class="fas fa-ban"></i> Cancel Return Request
+                                </button>
+                            <% } %>
+
+                            <a href="/orders" class="btn btn-primary">
+                                <i class="fas fa-list"></i> View All Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <a href="/orders" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Orders
+                </a>
+
+            <% } else { %>
+                <div class="order-details-card">
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 60px; color: var(--warning); margin-bottom: 20px;"></i>
+                        <h3>Order Not Found</h3>
+                        <p style="color: var(--light-text); margin: 20px 0;">The order you're looking for doesn't exist or you don't have permission to view it.</p>
+                        <a href="/orders" class="btn btn-primary">
+                            <i class="fas fa-list"></i> View All Orders
+                        </a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Cancel Order Function
+        async function cancelOrder(orderId) {
+            const { value: reasonOption } = await Swal.fire({
+                title: 'Cancel Order',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <p style="margin-bottom: 15px; color: #666;">Please select a reason for cancellation:</p>
+                    </div>
+                `,
+                input: 'select',
+                inputOptions: {
+                    'Changed my mind': 'Changed my mind',
+                    'Found a better price': 'Found a better price',
+                    'Ordered by mistake': 'Ordered by mistake',
+                    'Delivery taking too long': 'Delivery taking too long',
+                    'Item no longer needed': 'Item no longer needed',
+                    'Wrong item ordered': 'Wrong item ordered',
+                    'Other': 'Other reason'
+                },
+                inputPlaceholder: 'Select cancellation reason',
+                showCancelButton: true,
+                confirmButtonText: 'Continue',
+                cancelButtonText: 'Keep Order',
+                confirmButtonColor: '#dc3545',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please select a reason for cancellation';
+                    }
+                }
+            });
+
+            if (!reasonOption) return;
+
+            let finalReason = reasonOption;
+            if (reasonOption === 'Other') {
+                const { value: customReason } = await Swal.fire({
+                    title: 'Specify Reason',
+                    input: 'textarea',
+                    inputLabel: 'Please provide your cancellation reason',
+                    inputPlaceholder: 'Type your reason here...',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value || value.trim().length < 10) {
+                            return 'Please provide a detailed reason (at least 10 characters)';
+                        }
+                    }
+                });
+                if (!customReason) return;
+                finalReason = customReason;
+            }
+
+            // Show confirmation with refund info
+            const result = await Swal.fire({
+                title: 'Confirm Cancellation',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <p><strong>Reason:</strong> ${finalReason}</p>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <p style="margin: 0; color: #28a745;"><i class="fas fa-info-circle"></i> <strong>Refund Information:</strong></p>
+                            <p style="margin: 5px 0; font-size: 14px;">If you paid online or via wallet, the refund will be credited to your wallet within 24 hours.</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Cancel Order',
+                cancelButtonText: 'Keep Order',
+                confirmButtonColor: '#dc3545'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                // Show loading
+                Swal.fire({
+                    title: 'Cancelling Order...',
+                    html: 'Please wait while we process your cancellation.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const response = await fetch('/cancelOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, reason: finalReason })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Order Cancelled Successfully!',
+                        html: `
+                            <div style="text-align: left; margin: 20px 0;">
+                                <p>Your order has been cancelled successfully.</p>
+                                ${data.refundAmount > 0 ? `
+                                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #c3e6cb;">
+                                        <p style="margin: 0; color: #155724;"><i class="fas fa-wallet"></i> <strong>Refund: ₹${data.refundAmount.toFixed(2)}</strong></p>
+                                        <p style="margin: 5px 0; font-size: 14px; color: #155724;">Amount has been credited to your wallet.</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    window.location.href = '/orders';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Cancellation Failed',
+                    text: error.message || 'Failed to cancel order. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        // Initiate Return Function
+        async function initiateReturn(orderId) {
+            const { value: formValues } = await Swal.fire({
+                title: 'Request Return',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Return Reason:</label>
+                            <select id="return-reason" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px;">
+                                <option value="">Select a reason</option>
+                                <option value="Wrong size">Wrong size</option>
+                                <option value="Damaged product">Damaged product</option>
+                                <option value="Not as described">Not as described</option>
+                                <option value="Quality issues">Quality issues</option>
+                                <option value="Defective item">Defective item</option>
+                                <option value="Wrong item delivered">Wrong item delivered</option>
+                                <option value="Changed my mind">Changed my mind</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Detailed Description:</label>
+                            <textarea id="return-description" placeholder="Please provide detailed information about the return reason..." 
+                                style="width: 100%; min-height: 100px; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; resize: vertical;"></textarea>
+                        </div>
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeaa7;">
+                            <p style="margin: 0; color: #856404; font-size: 14px;"><i class="fas fa-info-circle"></i> <strong>Return Policy:</strong></p>
+                            <ul style="margin: 10px 0; padding-left: 20px; color: #856404; font-size: 13px;">
+                                <li>Returns are accepted within 7 days of delivery</li>
+                                <li>Item must be in original condition</li>
+                                <li>Refund will be processed to your wallet</li>
+                                <li>Pickup will be arranged within 2-3 business days</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Submit Return Request',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#28a745',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const reason = document.getElementById('return-reason').value;
+                    const description = document.getElementById('return-description').value;
+
+                    if (!reason) {
+                        Swal.showValidationMessage('Please select a return reason');
+                        return false;
+                    }
+                    if (!description || description.trim().length < 20) {
+                        Swal.showValidationMessage('Please provide a detailed description (at least 20 characters)');
+                        return false;
+                    }
+
+                    return { reason, description };
+                }
+            });
+
+            if (!formValues) return;
+
+            try {
+                // Show loading
+                Swal.fire({
+                    title: 'Submitting Return Request...',
+                    html: 'Please wait while we process your return request.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const response = await fetch('/requestReturn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId,
+                        returnReason: formValues.reason,
+                        returnDescription: formValues.description
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Return Request Submitted!',
+                        html: `
+                            <div style="text-align: left; margin: 20px 0;">
+                                <p>Your return request has been submitted successfully.</p>
+                                <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #bee5eb;">
+                                    <p style="margin: 0; color: #0c5460;"><i class="fas fa-clock"></i> <strong>What's Next?</strong></p>
+                                    <ul style="margin: 10px 0; padding-left: 20px; color: #0c5460; font-size: 14px;">
+                                        <li>Our team will review your request within 24 hours</li>
+                                        <li>You'll receive an update via email/notification</li>
+                                        <li>If approved, pickup will be arranged</li>
+                                        <li>Refund will be processed after quality check</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                    location.reload();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Request Failed',
+                    text: error.message || 'Failed to submit return request. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        // Cancel Return Request Function
+        async function cancelReturnRequest(orderId) {
+            const result = await Swal.fire({
+                title: 'Cancel Return Request',
+                text: 'Are you sure you want to cancel your return request?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'Keep request'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    // Show loading
+                    Swal.fire({
+                        title: 'Cancelling Return Request...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const response = await fetch('/cancelReturn', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderId })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Return Request Cancelled',
+                            text: 'Your return request has been cancelled successfully.',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                        location.reload();
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Failed to cancel return request'
+                    });
+                }
+            }
+        }
+
+        // Download Invoice Function
+        function downloadInvoice(orderId) {
+            // Show loading toast
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+
+            toast.fire({
+                icon: 'info',
+                title: 'Generating invoice...'
+            });
+
+            // Open invoice in new tab
+            window.open(`/order/${orderId}/invoice`, '_blank');
+        }
+
+        // Page load animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on load
+            const cards = document.querySelectorAll('.section-card, .order-summary');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Add hover effects to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+
+   
+</body>
+</html>

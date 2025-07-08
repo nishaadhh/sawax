@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>SAWAX | Error</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+            --error: #e74c3c;
+            --gradient: linear-gradient(135deg, #d4af37, #b8972e);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .error-section {
+            padding: 60px 20px;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .error-icon {
+            font-size: 80px;
+            color: var(--error);
+            margin-bottom: 30px;
+            animation: shake 0.8s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .error-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: var(--light-text);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .error-details {
+            background: var(--secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--error);
+            text-align: left;
+        }
+
+        .error-code {
+            font-size: 14px;
+            color: var(--light-text);
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .error-container {
+                padding: 30px 20px;
+                margin: 20px;
+                border-radius: 15px;
+            }
+
+            .error-title {
+                font-size: 28px;
+            }
+
+            .error-message {
+                font-size: 16px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-container {
+                padding: 20px 15px;
+            }
+
+            .error-icon {
+                font-size: 60px;
+            }
+
+            .error-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include("../partials/user/header") %>
+
+    <section class="error-section">
+        <div class="error-container">
+            <i class="fas fa-exclamation-triangle error-icon"></i>
+            <h1 class="error-title">Oops! Something went wrong</h1>
+            <p class="error-message">
+                <% if (message) { %>
+                    <%= message %>
+                <% } else { %>
+                    We encountered an unexpected error while processing your request. Please try again or contact support if the problem persists.
+                <% } %>
+            </p>
+
+            <% if (error && typeof error === 'string') { %>
+                <div class="error-details">
+                    <strong>Error Details:</strong>
+                    <div class="error-code"><%= error %></div>
+                </div>
+            <% } %>
+
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i>
+                    Go Home
+                </a>
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Go Back
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <%- include("../partials/user/footer") %>
+
+    <script>
+        // Add loading state to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.href && !this.href.includes('javascript:')) {
+                    this.style.opacity = '0.7';
+                    this.style.pointerEvents = 'none';
+                    
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.opacity = '1';
+                        this.style.pointerEvents = 'auto';
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

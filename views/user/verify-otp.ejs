@@ -30,7 +30,7 @@
     </form>
     <div class="timer" id="timer">Resend available in 30s</div>
     <div class="resend-link">
-      Didn't receive the code? <a href="/resendOtp " id="resend">Resend OTP</a>
+      Didn't receive the code? <a href="/resendOtp" id="resend">Resend OTP</a>
     </div>
   </div>
   
@@ -167,7 +167,48 @@
     }
     
     // Resend OTP functionality
-    
+    resendLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Disable resend link during request
+      resendLink.style.pointerEvents = 'none';
+      resendLink.textContent = 'Sending...';
+      
+      // Send resend OTP request
+      axios.get('/resendOtp')
+        .then((response) => {
+          if (response.data.success) {
+            Swal.fire({
+              title: 'OTP Resent!',
+              text: 'A new OTP has been sent to your email.',
+              icon: 'success',
+              timer: 2000
+            });
+            // Restart timer after successful resend
+            startTimer();
+          } else {
+            Swal.fire({
+              title: 'Resend Failed',
+              text: response.data.message || 'Failed to resend OTP. Please try again.',
+              icon: 'error'
+            });
+            // Re-enable resend link on failure
+            resendLink.style.pointerEvents = 'auto';
+            resendLink.textContent = 'Resend OTP';
+          }
+        })
+        .catch((error) => {
+          console.error("Error resending OTP:", error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Something went wrong while resending OTP. Please try again later.',
+            icon: 'error'
+          });
+          // Re-enable resend link on error
+          resendLink.style.pointerEvents = 'auto';
+          resendLink.textContent = 'Resend OTP';
+        });
+    });
   </script>
 </body>
 </html>

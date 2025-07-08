@@ -641,7 +641,7 @@
     <script>
         let productsPerPage = 9;
         let currentPage = 1;
-        let allProducts = <%- JSON.stringify(products) %> || [];
+        let allProducts =  JSON.stringify(products) || [];
         let filteredProducts = [...allProducts];
         const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 

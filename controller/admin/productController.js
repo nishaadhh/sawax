@@ -1,20 +1,20 @@
-const Product = require("../../models/productSchema")
-const Category = require("../../models/categorySchema")
-const sharp = require("sharp")
-const path = require("path")
-const fs = require("fs")
+const Product = require("../../models/productSchema");
+const Category = require("../../models/categorySchema");
+const sharp = require("sharp");
+const path = require("path");
+const fs = require("fs");
 
 const getProductAddPage = async (req, res) => {
   try {
-    const category = await Category.find({ isListed: true })
+    const category = await Category.find({ isListed: true });
     res.render("product-add", {
       cat: category,
-    })
+    });
   } catch (error) {
-    console.error("Error loading product add page:", error)
-    res.status(500).json({ success: false, message: "Error loading product add page" })
+    console.error("Error loading product add page:", error);
+    res.status(500).json({ success: false, message: "Error loading product add page" });
   }
-}
+};
 
 const saveImage = async (req, res) => {
   try {
@@ -40,23 +40,12 @@ const saveImage = async (req, res) => {
   }
 };
 
-// 🟢 Add Product with Multiple Image Upload (using Sharp)
+// Add Product with Multiple Image Upload (using Sharp)
 const addProducts = async (req, res) => {
   try {
-                  console.log(" req.body",req.files);  
-    const {   productName,
-  description,
-  brand,
-  salePrice,
-  quantity,
-  color,
-  category} = req.body;
+    console.log("req.body", req.files);  
+    const { productName, description, brand, regularPrice, quantity, color, category } = req.body;
     const files = req.files;
-      
-      
- 
-
-
 
     // Ensure upload directory exists
     const uploadDir = path.join(__dirname, "../../public/uploads/product-images");
@@ -66,7 +55,6 @@ const addProducts = async (req, res) => {
 
     // Process images using Sharp
     const imageFilenames = [];
-
 
     for (let key in files) {
       for (const file of files[key]) {
@@ -81,7 +69,7 @@ const addProducts = async (req, res) => {
         imageFilenames.push(`uploads/product-images/${filename}`);
       }
     }
-          console.log(" sucessfull newProduct  PHOTO ",imageFilenames ); 
+    console.log("successful newProduct PHOTO", imageFilenames); 
 
     // Find category by name (ensure it exists)
     const foundCategory = await Category.findOne({ name: category });
@@ -89,22 +77,26 @@ const addProducts = async (req, res) => {
       return res.status(400).json({ success: false, message: "Category not found" });
     }
 
-          console.log(" sucessfull newProduct 2 " ); 
-
+    console.log("successful newProduct 2"); 
 
     // Create and save new product
     const newProduct = new Product({
       productName,
       description,
-       brand,
-      category: foundCategory._id, // Save category as ObjectId
-      salePrice,
-      quantity,
+      brand,
+      category: foundCategory._id,
+      regularPrice: parseFloat(regularPrice),
+      salePrice: parseFloat(regularPrice), // Initially same as regular price
+      quantity: parseInt(quantity),
       color,
       productImage: imageFilenames,
       status: "available",
     });
-    console.log(" sucessfull newProduct");  
+
+    // Calculate sale price based on category offer
+    newProduct.calculateSalePrice(foundCategory.categoryOffer);
+    
+    console.log("successful newProduct");  
 
     await newProduct.save();
     return res.status(200).json({ success: true, message: "Product added successfully" });
@@ -118,7 +110,7 @@ const getAllProducts = async (req, res) => {
   try {
     const search = req.query.search || "";
     const page = req.query.page || 1;
-    const limit = 4;
+    const limit = 7;
 
     const productData = await Product.find({
       $or: [
@@ -128,7 +120,7 @@ const getAllProducts = async (req, res) => {
     })
       .limit(limit * 1)
       .skip((page - 1) * limit)
-      .populate("category")  // Ensure population of category
+      .populate("category")
       .exec();
 
     const count = await Product.find({
@@ -146,111 +138,122 @@ const getAllProducts = async (req, res) => {
         currentPage: page,
         totalPages: Math.ceil(count / limit),
         cat: category,
+        error: null,
+        csrfToken: req.csrfToken ? req.csrfToken() : ''
       });
     } else {
-      res.render("admin-error");
+      res.render("admin-error", {
+        error: 'Categories not found.',
+        csrfToken: req.csrfToken ? req.csrfToken() : ''
+      });
     }
   } catch (error) {
     console.error("Error fetching products:", error);
-    res.render("admin-error");
+    res.render("admin-error", {
+      error: 'Failed to fetch products. Please try again later.',
+      csrfToken: req.csrfToken ? req.csrfToken() : ''
+    });
   }
 };
 
-
-
-
-
 const addProductOffer = async (req, res) => {
   try {
-      const { productId, percentage } = req.body;
-      const product = await Product.findById(productId);
+    const { productId, percentage } = req.body;
+    
+    // Validate percentage
+    if (isNaN(percentage) || percentage < 1 || percentage > 99) {
+      return res.status(400).json({ status: false, message: "Offer percentage must be between 1% and 99%" });
+    }
 
-      if (!product) {
-          return res.status(404).json({ status: false, message: "Product not found" });
-      }
+    const product = await Product.findById(productId).populate('category');
+    if (!product) {
+      return res.status(404).json({ status: false, message: "Product not found" });
+    }
 
-      product.productOffer = parseInt(percentage);
-      product.salePrice = Math.round(product.regularPrice * (1 - percentage / 100));
-      await product.save();
+    // Update product offer
+    product.productOffer = parseInt(percentage);
+    
+    // Recalculate sale price using the greater of product or category offer
+    product.calculateSalePrice(product.category.categoryOffer);
+    
+    await product.save();
 
-      res.json({ status: true, message: "Offer added successfully" });
+    res.json({ status: true, message: "Product offer added successfully" });
   } catch (error) {
-      console.error("Error in addProductOffer:", error);
-      res.status(500).json({ status: false, message: "Internal server error" });
+    console.error("Error in addProductOffer:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
 
 const removeProductOffer = async (req, res) => {
   try {
-      const { productId } = req.body;
-      const product = await Product.findById(productId);
+    const { productId } = req.body;
+    const product = await Product.findById(productId).populate('category');
 
-      if (!product) {
-          return res.status(404).json({ status: false, message: "Product not found" });
-      }
+    if (!product) {
+      return res.status(404).json({ status: false, message: "Product not found" });
+    }
 
-      product.productOffer = 0;
-      product.salePrice = product.regularPrice;
-      await product.save();
+    // Remove product offer
+    product.productOffer = 0;
+    
+    // Recalculate sale price using only category offer
+    product.calculateSalePrice(product.category.categoryOffer);
+    
+    await product.save();
 
-      res.json({ status: true, message: "Offer removed successfully" });
+    res.json({ status: true, message: "Product offer removed successfully" });
   } catch (error) {
-      console.error("Error in removeProductOffer:", error);
-      res.status(500).json({ status: false, message: "Internal server error" });
+    console.error("Error in removeProductOffer:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
 
-const blockProduct = async (req,res) => {
+const blockProduct = async (req, res) => {
   try {
-
     let id = req.query.id;
-    await Product.updateOne({_id:id},{$set:{isBlocked:true}});
-    res.redirect("/admin/products")
-    
+    await Product.updateOne({ _id: id }, { $set: { isBlocked: true } });
+    res.redirect("/admin/products");
   } catch (error) {
-    res.redirect("/pageerror")
-    
+    res.redirect("/pageerror");
   }
-}
+};
 
-const unblockProduct = async (req,res) => {
+const unblockProduct = async (req, res) => {
   try {
-
     let id = req.query.id;
-    await Product.updateOne({_id:id},{$set:{isBlocked:false}});
-    res.redirect("/admin/products")
-    
+    await Product.updateOne({ _id: id }, { $set: { isBlocked: false } });
+    res.redirect("/admin/products");
   } catch (error) {
-    res.redirect("/pageerror")
-    
+    res.redirect("/pageerror");
   }
-}
+};
 
 const getEditProduct = async (req, res) => {
   try {
-    const id = req.query.id
-    const product = await Product.findOne({ _id: id }).populate("category")
-    const categories = await Category.find({})
+    const id = req.query.id;
+    const product = await Product.findOne({ _id: id }).populate("category");
+    const categories = await Category.find({});
 
     if (!product) {
-      return res.status(404).send("Product not found")
+      return res.status(404).send("Product not found");
     }
 
     res.render("product-edit", {
       product: product,
       cat: categories,
-    })
+    });
   } catch (error) {
-    console.error("Error in getEditProduct:", error)
-    res.redirect("/pageerror")
+    console.error("Error in getEditProduct:", error);
+    res.redirect("/pageerror");
   }
-}
+};
 
 const editProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const { 
-      productName, description, salePrice, 
+      productName, description, regularPrice, 
       quantity, color, brand, category 
     } = req.body;
 
@@ -263,17 +266,7 @@ const editProduct = async (req, res) => {
       return res.status(400).json({ success: false, message: "Product with this name already exists. Please try another name." });
     }
 
-    const updateFields = {
-      productName,
-      description,
-      salePrice,
-      quantity,
-      color,
-      brand,
-      category,
-    };
-
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate('category');
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
@@ -300,18 +293,33 @@ const editProduct = async (req, res) => {
       }
     }
 
-    Object.assign(product, updateFields);
-    await product.save();
+    // Update product fields
+    product.productName = productName;
+    product.description = description;
+    product.regularPrice = parseFloat(regularPrice);
+    product.quantity = parseInt(quantity);
+    product.color = color;
+    product.brand = brand;
 
-    // res.json({ success: true, message: "Product updated successfully" });
-    res.redirect("/admin/products")
+    // Find new category if changed
+    const newCategory = await Category.findOne({ name: category });
+    if (newCategory) {
+      product.category = newCategory._id;
+      // Recalculate sale price with new category offer
+      product.calculateSalePrice(newCategory.categoryOffer);
+    } else {
+      // Keep existing category and recalculate
+      product.calculateSalePrice(product.category.categoryOffer);
+    }
+
+    await product.save();
+    res.redirect("/admin/products");
 
   } catch (error) {
     console.error("Error in editProduct:", error);
     res.status(500).json({ success: false, message: "An error occurred while updating the product" });
   }
 };
-
 
 const deleteSingleImage = async (req, res) => {
   try {
@@ -342,30 +350,27 @@ const deleteSingleImage = async (req, res) => {
   }
 };
 
-
-
 const deleteProduct = async (req, res) => {
   const productId = req.query.id;
   
   if (!productId) {
-      return res.status(400).json({ status: false, message: 'Product ID is required' });
+    return res.status(400).json({ status: false, message: 'Product ID is required' });
   }
   
   try {
-      // Find and delete the product by its ID
-      const product = await Product.findByIdAndDelete(productId);
+    // Find and delete the product by its ID
+    const product = await Product.findByIdAndDelete(productId);
 
-      if (!product) {
-          return res.status(404).json({ status: false, message: 'Product not found' });
-      }
+    if (!product) {
+      return res.status(404).json({ status: false, message: 'Product not found' });
+    }
 
-      res.redirect('/admin/products'); // Redirect to the products management page or wherever you want
+    res.redirect('/admin/products');
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ status: false, message: 'Server Error' });
+    console.error(err);
+    res.status(500).json({ status: false, message: 'Server Error' });
   }
-}
-
+};
 
 module.exports = {
   getProductAddPage,
@@ -380,8 +385,4 @@ module.exports = {
   editProduct,
   deleteSingleImage,
   deleteProduct
-
-
-
-
-}
+};
