@@ -83,7 +83,4 @@ router.get('/sales-report', adminAuth, salesController.getSalesReport);
 router.get('/sales-report/download/excel', adminAuth, salesController.downloadSalesReportExcel);
 router.get('/sales-report/download/pdf', adminAuth, salesController.downloadSalesReportPDF);
 
-
-
-
 module.exports = router;
