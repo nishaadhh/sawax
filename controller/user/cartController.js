@@ -18,7 +18,7 @@ const getCart = async (req, res) => {
     res.render("addToCart", { cart, message: req.query.message ? decodeURIComponent(req.query.message) : null });
   } catch (error) {
     console.error("Error fetching cart:", error);
-    res.redirect("/errorpage?message=cart-fetch-error");
+    res.redirect("/page-404");
   }
 };
 
@@ -103,19 +103,24 @@ const addToCart = async (req, res) => {
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     }
+
+    // Calculate effective price with proper discount
+    const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+
     const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
-      cart.items[itemIndex].totalPrice = cart.items[itemIndex].quantity * product.salePrice;
+      cart.items[itemIndex].totalPrice = cart.items[itemIndex].quantity * effectivePrice;
     } else {
       cart.items.push({
         productId,
         quantity,
-        price: product.salePrice,
-        totalPrice: quantity * product.salePrice,
+        price: effectivePrice,
+        totalPrice: quantity * effectivePrice,
         image: product.productImage[0],
         name: product.productName,
       });
+
     }
     await cart.save();
     // Optionally update product stock
@@ -197,7 +202,9 @@ const updateQuantity = async (req, res) => {
       });
     }
 
+    // Calculate effective price with proper discount
     const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+    
     item.quantity = quantity;
     item.price = effectivePrice;
     item.image = product.productImage[0] || "/placeholder.svg";
@@ -241,6 +248,7 @@ const refreshCart = async (req, res) => {
 
       const product = item.productId; // Already populated
 
+      // Calculate effective price with proper discount formula
       const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
 
       if (item.price !== effectivePrice) priceChanged = true;
@@ -286,5 +294,41 @@ module.exports = {
 
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

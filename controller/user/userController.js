@@ -113,7 +113,7 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ status: false, message: 'Session expired. Please start over.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 10);
     await User.findOneAndUpdate({ email }, { password: hashedPassword });
 
     req.session.email = null;
@@ -246,7 +246,7 @@ async function sendVerificationEmail(email, otp) {
           return false;
       }
 
-      const transporter = nodemailer.createTransport({
+      const transporter = nodemailer.createTransporter({
           service: 'gmail',
           port: 587,
           secure: false,
@@ -796,9 +796,10 @@ const cart = async (req, res) => {
       return res.status(400).json({ success: false, message: `Only ${product.quantity} items in stock` });
     }
 
-    // Validate price
-    const productPrice = product.salePrice; // Replace with product.price if correct
-    if (typeof productPrice !== 'number' || isNaN(productPrice) || productPrice <= 0) {
+    // Calculate effective price with discount
+    const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+    
+    if (typeof effectivePrice !== 'number' || isNaN(effectivePrice) || effectivePrice <= 0) {
       return res.status(400).json({ success: false, message: "Invalid product price" });
     }
 
@@ -818,7 +819,7 @@ const cart = async (req, res) => {
       }
       // Update existing item
       cart.items[itemIndex].quantity = newQuantity;
-      cart.items[itemIndex].totalPrice = productPrice * newQuantity;
+      cart.items[itemIndex].totalPrice = effectivePrice * newQuantity;
     } else {
       if (quantity > 5) {
         return res.status(400).json({ success: false, message: "User limit exceeded: Maximum 5 items per product allowed in cart" });
@@ -827,8 +828,8 @@ const cart = async (req, res) => {
       cart.items.push({
         productId,
         quantity,
-        price: productPrice,
-        totalPrice: productPrice * quantity,
+        price: effectivePrice,
+        totalPrice: effectivePrice * quantity,
         status: "placed",
         cancellationReason: "none",
       });
@@ -848,35 +849,6 @@ const cart = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
-// const updateCart = async (req, res) => {
-//   try {
-//     const { productId, quantity } = req.body;
-//     const userId = req.session.user;
-
-//     if (!productId || quantity < 1) {
-//       return res.status(400).json({ message: "Invalid product ID or quantity" });
-//     }
-
-//     const cart = await Cart.findOne({ userId });
-//     if (!cart) {
-//       return res.status(404).json({ message: "Cart not found" });
-//     }
-
-//     const item = cart.items.find(item => item.productId.toString() === productId);
-//     if (item) {
-//       item.quantity = quantity;
-//       item.totalPrice = item.price * quantity;
-//       await cart.save();
-//       res.status(200).json({ message: "Cart updated" });
-//     } else {
-//       res.status(404).json({ message: "Item not found in cart" });
-//     }
-//   } catch (error) {
-//     console.error("Error updating cart:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 
 const removeFromCart = async (req, res) => {
   try {
@@ -939,8 +911,10 @@ const loadCart = async (req, res) => {
           return null;
         }
 
-        // Check for price changes
+        // Calculate effective price with proper discount formula
         const effectivePrice = item.productId.salePrice * (1 - (item.productId.productOffer || 0) / 100);
+
+        // Check for price changes
         if (item.price !== effectivePrice) {
           item.price = effectivePrice;
           item.totalPrice = item.quantity * effectivePrice;
@@ -1008,7 +982,7 @@ const updateCart = async (req, res) => {
     }
     const item = cart.items.find(item => item.productId._id.toString() === productId);
     if (item) {
-      // Update price to reflect current product price
+      // Update price to reflect current product price with proper discount calculation
       const product = await Product.findById(productId);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
@@ -1017,6 +991,8 @@ const updateCart = async (req, res) => {
       item.quantity = quantity;
       item.price = effectivePrice;
       item.totalPrice = quantity * effectivePrice;
+      
+
       await cart.save();
       res.status(200).json({ message: "Cart updated", price: effectivePrice });
     } else {
@@ -1065,6 +1041,13 @@ const addAddress = async (req, res) => {
         if (!city || typeof city !== 'string' || !/^[A-Za-z\s]{2,}$/.test(city)) {
             errors.push('City must be at least 2 characters, letters and spaces only.');
         }
+
+
+
+
+
+
+        
 
         // Validate state
         const validStates = [
@@ -1286,12 +1269,14 @@ const addToWishlist = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Product already in wishlist.' });
         }
 
-        // Add product to wishlist
+        // Add product to wishlist with correct price calculation
+        const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+        
         user.wishlist.push({
             id: productId,
             image: product.productImage[0],
             name: product.productName,
-            price: product.salePrice
+            price: effectivePrice
         });
 
         await user.save();
@@ -1430,5 +1415,3 @@ module.exports = {
 
     
 }
-
-

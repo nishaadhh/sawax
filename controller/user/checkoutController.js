@@ -30,13 +30,20 @@ const loadCheckoutPage = async (req, res) => {
                 subtotal: 0,
                 couponDiscount: 0,
                 shippingCharge: 50, // As per orderSchema default
-                grandTotal: 0,
+                grandTotal: 50, // Only shipping charge when cart is empty
                 message: 'Your cart is empty'
             });
         }
 
         // Filter out items with invalid or missing product references
-        const validCartItems = cart.items.filter(item => item.productId && item.productId._id);
+        const validCartItems = cart.items.filter(item => 
+            item.productId && 
+            item.productId._id && 
+            item.productId.salePrice !== undefined && 
+            item.productId.salePrice !== null &&
+            item.quantity > 0
+        );
+
         if (validCartItems.length === 0) {
             return res.render('checkout', {
                 userData: user || { name: '', email: '', phone: '' },
@@ -45,22 +52,27 @@ const loadCheckoutPage = async (req, res) => {
                 subtotal: 0,
                 couponDiscount: 0,
                 shippingCharge: 50,
-                grandTotal: 0,
+                grandTotal: 50,
                 message: 'No valid items found in cart'
             });
         }
 
-        // Clean cart by removing invalid items
-        cart.items = validCartItems;
-        await cart.save();
+        // Clean cart by removing invalid items if any were filtered out
+        if (validCartItems.length !== cart.items.length) {
+            cart.items = validCartItems;
+            await cart.save();
+        }
 
         const addresses = await Address.findOne({ userId }) || { address: [] };
 
-        // Calculate totals
+        // Calculate subtotal properly
         const subtotal = validCartItems.reduce((sum, item) => {
-            const itemPrice = item.totalPrice || item.quantity * (item.productId.salePrice || 0);
+            const itemPrice = item.quantity * (item.productId.salePrice || 0);
+            console.log(`Item: ${item.productId.productName}, Quantity: ${item.quantity}, Price: ${item.productId.salePrice}, Total: ${itemPrice}`);
             return sum + itemPrice;
         }, 0);
+
+        console.log('loadCheckoutPage - calculated subtotal:', subtotal);
 
         // Check for applied coupon in session (if any)
         let couponDiscount = 0;
@@ -95,7 +107,7 @@ const loadCheckoutPage = async (req, res) => {
             subtotal: 0,
             couponDiscount: 0,
             shippingCharge: 50,
-            grandTotal: 0,
+            grandTotal: 50,
             message: 'Failed to load checkout page'
         });
     }

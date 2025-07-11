@@ -102,7 +102,7 @@
             position: relative;
             height: 90vh;
             background-color:#000000;;
-            color: white;
+            color: #b6b2b2; /* Changed to a   white color for contrast */
             display: flex;
             align-items: center;
             overflow: hidden;

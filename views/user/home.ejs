@@ -4,7 +4,7 @@
     
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #c1a033);
+            background: linear-gradient(135deg, #d1a206, #000000);
             color: rgb(0, 0, 0);
             font-weight: 600;
             border-radius: 4px;
@@ -21,12 +21,18 @@
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, #000000, #d1a206);
         }
+
+
+
+
+        
         .btn-explore{
             background: transparent;
             border-color: aliceblue;
             border: 2px solid #d4af37;
-            color: rgb(255, 255, 255);
+            color: #a58827;
             font-weight: 600;
             border-radius: 4px;
             transition: all 0.3s;
@@ -37,11 +43,16 @@
             font-size: 14px;
             display: inline-block;
             padding: 12px 30px;
+            
     }
 
      .btn-explore:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, #d1a206, #000000);
+            color: #000000;
+             /* text-shadow:  0 10px 10px #ffbb00; */
+           
         }
 
 
@@ -90,7 +101,7 @@
                         <div class="product-info">
                             <h3 class="product-name"><%= product.productName %></h3>
                             <div class="product-category"><%= product.category.name %></div>
-                            <div class="product-price">$<%= product.salePrice.toFixed(2) %></div>
+                            <div class="product-price">₹<%= product.salePrice.toFixed(2) %></div>
                             <div class="product-actions" onclick="event.stopPropagation();">
                                 <a href="#" class="btn add-to-cart" onclick="addToCart('<%= product._id %>')">Add to Cart</a>
                                 <div class="wishlist" onclick="addToWishlist('<%= product._id %>')"><i class="fa-solid fa-heart"></i></div>
@@ -151,7 +162,7 @@
             <div class="feature-card">
                 <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
                 <h3 class="feature-title">Free Shipping</h3>
-                <p class="feature-desc">Enjoy complimentary worldwide shipping on all orders over $150.</p>
+                <p class="feature-desc">Enjoy complimentary worldwide shipping on all orders over ₹150.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon"><i class="fa-solid fa-people-roof"></i></div>

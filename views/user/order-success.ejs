@@ -470,11 +470,11 @@
                             
                             <% order.orderedItems.forEach(function(item) { %>
                                 <div class="item-card">
-                                    <img 
+                                    <!-- <img 
                                         src="<%= item.productImages && item.productImages.length > 0 ? item.productImages[0] : '/assets/images/placeholder.png' %>" 
                                         alt="<%= item.productName || 'Product' %>" 
                                         class="item-image"
-                                    >
+                                    > -->
                                     <div class="item-details">
                                         <div class="item-name">
                                             <%= item.productName ? item.productName.split('|')[0].trim() : 'Unknown Product' %>
@@ -540,7 +540,7 @@
         </div>
     </section>
 
-    <%- include("../partials/user/footer") %>
+    
 
     <script>
         // Create confetti animation

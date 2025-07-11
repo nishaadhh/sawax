@@ -66,12 +66,12 @@ router.post("/change-password", userAuth, profileController.changePasswordValid)
 
 // Cart Routes
 router.get("/cart", userAuth, userController.loadCart);
+router.get("/refresh-cart", userAuth, cartController.refreshCart);
 router.post("/addToCart", userAuth, userController.cart);
 router.post("/addToCart/update", userAuth, userController.updateCart);
-router.post("/addToCart/remove", userAuth, userController.removeFromCart);
 router.post("/update-quantity", userAuth, cartController.updateQuantity);
+router.post("/addToCart/remove", userAuth, userController.removeFromCart);
 router.post("/deleteItem", userAuth, cartController.removeFromCart);
-router.get("/refresh-cart", userAuth, cartController.refreshCart);
 
 // Address Management
 router.get("/address", userAuth, profileController.loadAddressPage);
@@ -106,6 +106,30 @@ router.get("/order-details/:orderId", userAuth, orderController.loadOrderDetails
 router.post("/cancelOrder", userAuth, orderController.cancelOrder);
 router.post("/requestReturn", userAuth, orderController.requestReturn);
 router.get("/order-success/:orderId", userAuth, orderController.renderSuccessPage);
+
+// Wishlist Routes
+router.get('/wishlist', userAuth, userController.wishlistpage);
+router.post('/addToWishlist/:id', userAuth, userController.addToWishlist);
+router.delete('/removeFromWishlist/:id', userAuth, userController.removeFromWishlist);
+
+// Wallet Management with Razorpay Integration
+router.get('/wallet', userAuth, walletController.loadWallet);
+router.post('/wallet/create-razorpay-order', userAuth, walletController.createRazorpayOrder);
+router.post('/wallet/verify-payment', userAuth, walletController.verifyPayment);
+router.post('/wallet/withdraw-money', userAuth, walletController.withdrawMoney);
+
+// Error Page
+router.get("/errorpage", userController.errorpage);
+
+
+
+
+
+
+
+
+
+
 
 // Invoice and Order Actions
 router.get('/order/:id/invoice', userAuth, async (req, res) => {
@@ -162,18 +186,5 @@ router.get('/orders/status-update', userAuth, async (req, res) => {
   }
 });
 
-// Wishlist Routes
-router.get('/wishlist', userAuth, userController.wishlistpage);
-router.post('/addToWishlist/:id', userAuth, userController.addToWishlist);
-router.delete('/removeFromWishlist/:id', userAuth, userController.removeFromWishlist);
-
-// Wallet Management with Razorpay Integration
-router.get('/wallet', userAuth, walletController.loadWallet);
-router.post('/wallet/create-razorpay-order', userAuth, walletController.createRazorpayOrder);
-router.post('/wallet/verify-payment', userAuth, walletController.verifyPayment);
-router.post('/wallet/withdraw-money', userAuth, walletController.withdrawMoney);
-
-// Error Page
-router.get("/errorpage", userController.errorpage);
 
 module.exports = router;

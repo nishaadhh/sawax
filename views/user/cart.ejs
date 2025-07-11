@@ -663,7 +663,7 @@
                 <img src="<%= item.image %>" alt="<%= item.name %>" />
                 <div class="cart-item-details">
                   <h4><%= item.name %></h4>
-                  <div class="product-price">$<%= item.price.toFixed(2) %></div>
+                  <div class="product-price">₹<%= item.price.toFixed(2) %></div>
                   <% if (item.stock === 0) { %>
                   <p class="out-of-stock">Out of Stock</p>
                   <% } %>
@@ -673,7 +673,7 @@
                   <span class="quantity-display" data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>"><%= item.quantity %></span>
                   <button class="quantity-btn plus" onclick="updateQuantity('<%= item.productId %>', 1)">+</button>
                 </div>
-                <div class="cart-item-price" data-price="<%= item.price %>">$<%= (item.price * item.quantity).toFixed(2) %></div>
+                <div class="cart-item-price" data-price="<%= item.price %>">₹<%= (item.price * item.quantity).toFixed(2) %></div>
                 <button class="cart-item-remove" data-product-id="<%= item.productId %>" onclick="removeFromCart('<%= item.productId %>')">
                   <i class="fas fa-trash"></i>
                 </button>
@@ -681,7 +681,7 @@
               <% }) %>
             </div>
             <div class="cart-summary">
-              <h4 id="cart-total">Total: $<%= cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2) %></h4>
+              <h4 id="cart-total">Total: ₹<%= cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2) %></h4>
               <a href="/checkout" class="btn" id="checkout-btn">Proceed to Checkout</a>
             </div>
             <% } %>
@@ -690,7 +690,7 @@
       </div>
     </section>
 
-    <%- include("../../views/partials/user/footer") %>
+  
 
     <script>
       const cartItemsContainer = document.getElementById("cart-items");
@@ -724,9 +724,9 @@
             data.cart.forEach(item => {
               const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
               if (cartItem) {
-                cartItem.querySelector(".product-price").textContent = `$${item.price.toFixed(2)}`;
+                cartItem.querySelector(".product-price").textContent = `₹${item.price.toFixed(2)}`;
                 cartItem.querySelector(".cart-item-price").dataset.price = item.price;
-                cartItem.querySelector(".cart-item-price").textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+                cartItem.querySelector(".cart-item-price").textContent = `₹${(item.price * item.quantity).toFixed(2)}`;
                 cartItem.querySelector(".quantity-display").dataset.stock = item.stock;
                 if (item.stock === 0) {
                   cartItem.querySelector(".cart-item-details").innerHTML += '<p class="out-of-stock">Out of Stock</p>';
@@ -771,7 +771,7 @@
           const quantity = parseInt(item.querySelector(".quantity-display").textContent);
           total += price * quantity;
         });
-        cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+        cartTotalElement.textContent = `Total: ₹${total.toFixed(2)}`;
         checkoutBtn.disabled = items.length === 0;
       }
 
@@ -802,9 +802,9 @@
             data.cart.forEach(item => {
               const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
               if (cartItem) {
-                cartItem.querySelector(".product-price").textContent = `$${item.price.toFixed(2)}`;
+                cartItem.querySelector(".product-price").textContent = `₹${item.price.toFixed(2)}`;
                 cartItem.querySelector(".cart-item-price").dataset.price = item.price;
-                cartItem.querySelector(".cart-item-price").textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+                cartItem.querySelector(".cart-item-price").textContent = `₹${(item.price * item.quantity).toFixed(2)}`;
                 cartItem.querySelector(".quantity-display").dataset.stock = item.stock;
                 if (item.stock === 0) {
                   hasOutOfStock = true;
@@ -876,7 +876,7 @@
             quantityDisplay.textContent = newQuantity;
             const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
             const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
-            cartItem.querySelector(".cart-item-price").textContent = `$${(price * newQuantity).toFixed(2)}`;
+            cartItem.querySelector(".cart-item-price").textContent = `₹${(price * newQuantity).toFixed(2)}`;
             updateCartTotal();
           } else if (newQuantity < 1) {
             Swal.fire({
@@ -928,9 +928,9 @@
             quantityDisplay.textContent = newQuantity; // Ensure UI matches server response
             const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
             cartItem.querySelector(".cart-item-price").dataset.price = data.price;
-            cartItem.querySelector(".product-price").textContent = `$${data.price.toFixed(2)}`;
+            cartItem.querySelector(".product-price").textContent = `₹${data.price.toFixed(2)}`;
             const newTotalPrice = data.price * newQuantity;
-            cartItem.querySelector(".cart-item-price").textContent = `$${newTotalPrice.toFixed(2)}`;
+            cartItem.querySelector(".cart-item-price").textContent = `₹${newTotalPrice.toFixed(2)}`;
             quantityDisplay.setAttribute("data-stock", stock - change); // Update stock locally (approximate)
             updateCartTotal();
             Swal.fire({
@@ -948,7 +948,7 @@
             quantityDisplay.textContent = currentQuantity;
             const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
             const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
-            cartItem.querySelector(".cart-item-price").textContent = `$${(price * currentQuantity).toFixed(2)}`;
+            cartItem.querySelector(".cart-item-price").textContent = `₹${(price * currentQuantity).toFixed(2)}`;
             updateCartTotal();
             Swal.fire({
               icon: "error",
@@ -968,8 +968,14 @@
           quantityDisplay.textContent = currentQuantity;
           const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
           const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
-          cartItem.querySelector(".cart-item-price").textContent = `$${(price * currentQuantity).toFixed(2)}`;
+          cartItem.querySelector(".cart-item-price").textContent = `${(price * currentQuantity).toFixed(2)}`;
           updateCartTotal();
+
+
+
+
+
+          
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -1065,3 +1071,18 @@
     </script>
   </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

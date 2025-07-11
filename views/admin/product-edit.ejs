@@ -1,15 +1,17 @@
 <%- include("../../views/partials/admin/header") %>
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-        <style>
+    <!-- Add SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
         :root {
-      --primary-color: #3498db;
-      --secondary-color: #2c3e50;
-      --success-color: #2ecc71;
-      --danger-color: #e74c3c;
-      --info-color: #3498db;
-      --light-gray: #ecf0f1;
-    }
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+            --light-gray: #ecf0f1;
+        }
 
         .thumbnails-container {
             display: flex;
@@ -61,20 +63,24 @@
                     <label class="form-label">Description</label>
                     <textarea name="description" class="form-control" rows="4" required><%= product.description %></textarea>
                 </div>
- 
 
                 <div class="row">
-                    
+                    <div class="col-lg-3">
+                        <div class="mb-4">
+                            <label class="form-label">Regular Price</label>
+                            <input name="regularPrice" type="number" value="<%= product.regularPrice %>" class="form-control" required min="0" step="0.01">
+                        </div>
+                    </div>
                     <div class="col-lg-3">
                         <div class="mb-4">
                             <label class="form-label">Sale Price</label>
-                            <input name="salePrice" type="number" value="<%= product.salePrice %>" class="form-control" required>
+                            <input name="salePrice" type="number" value="<%= product.salePrice %>" class="form-control" required min="0" step="0.01">
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="mb-4">
                             <label class="form-label">Quantity</label>
-                            <input name="quantity" type="number" value="<%= product.quantity %>" class="form-control" required>
+                            <input name="quantity" type="number" value="<%= product.quantity %>" class="form-control" required min="0">
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -92,22 +98,18 @@
                             <input name="brand" type="text" value="<%= product.brand %>" class="form-control" required>
                         </div>
                     </div>
-                    
-                 
-
-                
-
-                
-
-                <div class="mb-4">
-                    <label class="form-label">Category</label>
-                    <select class="form-select" name="category" required>
-                        <% for(let i = 0; i < cat.length; i++) { %>
-                            <option value="<%= cat[i]._id %>" <%= product.category.equals(cat[i]._id) ? 'selected' : '' %>>
-                                <%= cat[i].name %>
-                            </option>
-                        <% } %>
-                    </select>
+                    <div class="col-lg-4">
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category" required>
+                                <% for(let i = 0; i < cat.length; i++) { %>
+                                    <option value="<%= cat[i]._id %>" <%= product.category.equals(cat[i]._id) ? 'selected' : '' %>>
+                                        <%= cat[i].name %>
+                                    </option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mb-4">
@@ -133,12 +135,6 @@
                     </div>
                 </div>
 
-                
-
-                <div id="cropperContainer" class="cropper-container" style="display: none;">
-                    <img id="cropperImage" src="/placeholder.svg" alt="Image to crop">
-                </div>
-
                 <div class="mb-4">
                     <button class="btn btn-primary" type="submit">Update Product</button>
                 </div>
@@ -148,62 +144,9 @@
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<!-- Add SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    let cropper;
-    const newImagesInput = document.getElementById('newImages');
-    const cropperContainer = document.getElementById('cropperContainer');
-    const cropperImage = document.getElementById('cropperImage');
-    const form = document.getElementById('editProductForm');
-
-    newImagesInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                cropperImage.src = e.target.result;
-                cropperContainer.style.display = 'block';
-                if (cropper) {
-                    cropper.destroy();
-                }
-                cropper = new Cropper(cropperImage, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                });
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        if (cropper) {
-            cropper.getCroppedCanvas().toBlob((blob) => {
-                const formData = new FormData(form);
-                formData.set('newImages', blob, 'cropped-image.jpg');
-                
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Product updated successfully');
-                        window.location.href = '/admin/products';
-                    } else {
-                        alert('Error updating product: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while updating the product');
-                });
-            }, 'image/jpeg');
-        } else {
-            form.submit();
-        }
-    });
-
     let croppers = {};
 
     function previewImage(event, index) {
@@ -215,10 +158,12 @@
                 preview.src = e.target.result;
                 preview.style.display = 'block';
 
+                // Destroy existing cropper if it exists
                 if (croppers[index]) {
                     croppers[index].destroy();
                 }
 
+                // Initialize new cropper
                 croppers[index] = new Cropper(preview, {
                     aspectRatio: 1,
                     viewMode: 1,
@@ -232,64 +177,139 @@
     }
 
     function deleteSingleImage(imageName, productId, index) {
-        if (confirm('Are you sure you want to delete this image?')) {
-            fetch('/admin/deleteImage', {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Delete this image?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/admin/deleteImage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        imageNameToServer: imageName,
+                        productIdToServer: productId,
+                        imageIndex: index
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to delete image',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the image',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            }
+        });
+    }
+
+    // Handle form submission
+    document.getElementById('editProductForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+
+ // Count existing images
+        const existingImages = document.querySelectorAll('.card-img-top').length;
+        // Count new image uploads
+        const newImages = Array.from(this.querySelectorAll('input[type="file"]'))
+            .filter(input => input.files && input.files.length > 0).length;
+        const totalImages = existingImages + newImages;
+
+        // Check if total images is exactly 4
+        if (totalImages !== 4) {
+            Swal.fire({
+                title: 'Error!',
+                text: '4 images are required',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+
+
+
+
+
+
+
+        const formData = new FormData(this);
+        let croppedImagesProcessed = 0;
+        const totalCroppedImages = Object.keys(croppers).length;
+
+        // Function to submit form
+        const submitForm = () => {
+            fetch(this.action, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    imageNameToServer: imageName,
-                    productIdToServer: productId,
-                    imageIndex: index
-                }),
+                body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    location.reload();
+            .then(response => {
+                if (response.ok) {
+                    // Show SweetAlert2 success message
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product updated successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/admin/products';
+                    });
                 } else {
-                    alert('Failed to delete image');
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Error updating product');
+                    });
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while deleting the image');
+                // Show SweetAlert2 error message
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while updating the product: ' + error.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        };
+
+        // Process cropped images if any
+        if (totalCroppedImages === 0) {
+            submitForm();
+        } else {
+            // Process each cropped image
+            Object.keys(croppers).forEach(index => {
+                croppers[index].getCroppedCanvas().toBlob((blob) => {
+                    formData.set(`image${parseInt(index)+1}`, blob, `cropped-image-${parseInt(index)+1}.jpg`);
+                    croppedImagesProcessed++;
+                    
+                    // Submit form when all cropped images are processed
+                    if (croppedImagesProcessed === totalCroppedImages) {
+                        submitForm();
+                    }
+                }, 'image/jpeg');
             });
         }
-    }
-
-    document.getElementById('editProductForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-
-        // Process cropped images
-        for (let i = 0; i < 4; i++) {
-            if (croppers[i]) {
-                croppers[i].getCroppedCanvas().toBlob((blob) => {
-                    formData.set(`image${i+1}`, blob, `cropped-image-${i+1}.jpg`);
-                }, 'image/jpeg');
-            }
-        }
-
-        fetch(this.action, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Product updated successfully');
-                window.location.href = '/admin/products';
-            } else {
-                alert('Error updating product: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while updating the product');
-        });
     });
 </script>
 

@@ -386,3 +386,13 @@ module.exports = {
   deleteSingleImage,
   deleteProduct
 };
+
+
+
+
+
+
+
+
+
+// ========== = == = = = = = == = = = = = = =

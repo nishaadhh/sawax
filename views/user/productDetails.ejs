@@ -551,7 +551,7 @@
   <div class="product-info">
     <h1 class="product-title"><%= product.productName %></h1>
     <div class="brand">Brand: <%= product.brand %></div>
-    <div class="product-price">$<%= product.salePrice.toFixed(2) %></div>
+    <div class="product-price">₹<%= product.salePrice.toFixed(2) %></div>
     <div class="product-stock <%= product.quantity <= 0 ? 'out-of-stock' : '' %>">
       <%= product.quantity > 0 ? `In Stock: ${product.quantity}` : 'Out of Stock' %>
     </div>
