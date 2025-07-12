@@ -164,7 +164,7 @@ const createCheckoutOrder = async (req, res) => {
         if (coupon.userId.includes(userId)) {
           return res.status(400).json({
             success: false,
-            message: 'Coupon already used',
+            message: 'Coupon already used or not eligible ',
           });
         }
 
