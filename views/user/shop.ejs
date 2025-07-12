@@ -135,10 +135,16 @@
         display: flex;
         justify-content: space-between;
         transition: color 0.3s;
+        cursor: pointer;
     }
 
     .category-link:hover {
         color: var(--accent);
+    }
+
+    .category-link.active {
+        color: var(--accent);
+        font-weight: 600;
     }
 
     .filter-group {
@@ -233,21 +239,23 @@
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        gap: 5px;
     }
 
     .pagination a {
         padding: 8px 12px;
-        margin: 0 5px;
         border: 1px solid var(--border);
         border-radius: 4px;
         color: var(--text);
         text-decoration: none;
         transition: background 0.3s;
+        cursor: pointer;
     }
 
     .pagination a:hover, .pagination a.active {
         background: var(--accent);
         color: var(--primary);
+        border-color: var(--accent);
     }
 
     .reset-filters {
@@ -266,6 +274,32 @@
         background: var(--accent);
         color: var(--primary);
     }
+
+    .loading {
+        text-align: center;
+        padding: 20px;
+        color: var(--light-text);
+    }
+
+    .shop-layout {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .shop-layout {
+            grid-template-columns: 1fr;
+        }
+        
+        .shop-sidebar {
+            order: 2;
+        }
+        
+        .shop-products {
+            order: 1;
+        }
+    }
 </style>
 
 <section class="page-title">
@@ -282,7 +316,7 @@
             <div class="shop-sidebar">
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">Search</h3>
-                    <form id="search-form" action="/filter" method="GET">
+                    <form id="search-form">
                         <div class="search-container">
                             <input type="text" name="query" id="search-input" class="search-input" placeholder="Search watches..." value="<%= searchQuery || '' %>">
                             <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -294,14 +328,14 @@
                     <h3 class="sidebar-title">Categories</h3>
                     <ul class="category-list">
                         <li class="category-item">
-                            <a href="/shop" class="category-link">
+                            <a class="category-link" data-category="" onclick="filterByCategory('')">
                                 <span>All Categories</span>
-                                <span class="category-count"></span>
+                                <span class="category-count">(<%= totalProducts %>)</span>
                             </a>
                         </li>
                         <% category.forEach(cat => { %>
                             <li class="category-item">
-                                <a href="/filter?category=<%= cat._id %>" class="category-link">
+                                <a class="category-link" data-category="<%= cat._id %>" onclick="filterByCategory('<%= cat._id %>')">
                                     <span><%= cat.name %></span>
                                     <span class="category-count">(<%= cat.productCount || 0 %>)</span>
                                 </a>
@@ -311,7 +345,38 @@
                 </div>
 
                 <div class="sidebar-section">
-                    <button type="button" class="reset-filters" onclick="location.href='/shop'">Reset Filters</button>
+                    <h3 class="sidebar-title">Price Range</h3>
+                    <div class="price-range">
+                        <div class="price-inputs">
+                            <input type="number" id="minPriceInput" class="price-input" placeholder="Min" value="<%= minPrice || '' %>" min="0">
+                            <input type="number" id="maxPriceInput" class="price-input" placeholder="Max" value="<%= maxPrice || '' %>" min="0">
+                        </div>
+                        <button type="button" class="apply-filter" onclick="applyPriceFilter()">Apply Price Filter</button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Alphabetical</h3>
+                    <div class="alpha-filter">
+                        <input type="radio" id="alpha-all" name="alpha" value="" class="alpha-checkbox" <%= !alphaFilter ? 'checked' : '' %>>
+                        <label for="alpha-all" class="alpha-label">All</label>
+                        
+                        <input type="radio" id="alpha-af" name="alpha" value="a-f" class="alpha-checkbox" <%= alphaFilter === 'a-f' ? 'checked' : '' %>>
+                        <label for="alpha-af" class="alpha-label">A-F</label>
+                        
+                        <input type="radio" id="alpha-gl" name="alpha" value="g-l" class="alpha-checkbox" <%= alphaFilter === 'g-l' ? 'checked' : '' %>>
+                        <label for="alpha-gl" class="alpha-label">G-L</label>
+                        
+                        <input type="radio" id="alpha-mr" name="alpha" value="m-r" class="alpha-checkbox" <%= alphaFilter === 'm-r' ? 'checked' : '' %>>
+                        <label for="alpha-mr" class="alpha-label">M-R</label>
+                        
+                        <input type="radio" id="alpha-sz" name="alpha" value="s-z" class="alpha-checkbox" <%= alphaFilter === 's-z' ? 'checked' : '' %>>
+                        <label for="alpha-sz" class="alpha-label">S-Z</label>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <button type="button" class="reset-filters" onclick="resetAllFilters()">Reset All Filters</button>
                 </div>
             </div>
 
@@ -322,12 +387,11 @@
                         Showing <%= (currentPage - 1) * 9 + 1 %>-<%= Math.min(currentPage * 9, totalProducts) %> of <%= totalProducts %> products
                     </div>
                     <div class="shop-actions">
-                        <button class="filter-toggle">Filters</button>
                         <div class="view-options">
                             <button class="view-btn active" data-view="grid">☰</button>
                             <button class="view-btn" data-view="list">≡</button>
                         </div>
-                        <select class="sort-select" id="sort-select" onchange="location = '/filter?sort=' + this.value + '<%= selectedCategory ? '&category=' + selectedCategory : '' %>'">
+                        <select class="sort-select" id="sort-select">
                             <option value="relevance" <%= sort === 'relevance' ? 'selected' : '' %>>Relevance</option>
                             <option value="price-low" <%= sort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
                             <option value="price-high" <%= sort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
@@ -362,13 +426,24 @@
                 </div>
 
                 <!-- Pagination -->
-<div class="pagination" id="pagination"></div>
+                <div class="pagination" id="pagination"></div>
             </div>
         </div>
     </div>
 </section>
 
 <script>
+// Global state to track current filters
+let currentFilters = {
+    query: '<%= searchQuery || "" %>',
+    category: '<%= selectedCategory || "" %>',
+    minPrice: '<%= minPrice || "" %>',
+    maxPrice: '<%= maxPrice || "" %>',
+    alpha: '<%= alphaFilter || "" %>',
+    sort: '<%= sort || "relevance" %>',
+    page: <%= currentPage || 1 %>
+};
+
 function debounce(func, delay) {
     let timeoutId;
     return function (...args) {
@@ -377,82 +452,65 @@ function debounce(func, delay) {
     };
 }
 
-function performSearch(page = 1) {
-    const searchQuery = document.getElementById('search-input').value.trim();
+function showLoading() {
     const productGrid = document.getElementById('product-grid');
-    const pagination = document.getElementById('pagination');
-    const productsFound = document.getElementById('products-found');
-    const minPriceInput = document.getElementById('minPriceInput')?.value || '';
-    const maxPriceInput = document.getElementById('maxPriceInput')?.value || '';
-    const alphaFilter = document.querySelector('.alpha-checkbox:checked')?.value || '';
-    const sortSelect = document.getElementById('sort-select')?.value || 'relevance';
-    const selectedCategory = '<%= selectedCategory %>' || ''; // From EJS
+    productGrid.innerHTML = '<div class="loading">Loading products...</div>';
+}
 
-    const queryParams = new URLSearchParams({
-        query: searchQuery,
-        page: page,
-        category: selectedCategory,
-        minPrice: minPriceInput,
-        maxPrice: maxPriceInput,
-        alpha: alphaFilter,
-        sort: sortSelect
-    }).toString();
+function updateActiveCategory() {
+    // Remove active class from all category links
+    document.querySelectorAll('.category-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Add active class to current category
+    const activeLink = document.querySelector(`[data-category="${currentFilters.category}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+}
 
-    fetch(`/filter?${queryParams}`, {
+function performSearch(resetPage = true) {
+    if (resetPage) {
+        currentFilters.page = 1;
+    }
+    
+    showLoading();
+    updateActiveCategory();
+    
+    const queryParams = new URLSearchParams();
+    
+    // Only add non-empty parameters
+    Object.keys(currentFilters).forEach(key => {
+        if (currentFilters[key] && currentFilters[key] !== '') {
+            queryParams.append(key, currentFilters[key]);
+        }
+    });
+
+    fetch(`/filter?${queryParams.toString()}`, {
         headers: {
             'Accept': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
-        productGrid.innerHTML = '';
-        if (data.products.length > 0) {
-            data.products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-image">
-                        <img src="/${product.productImage[0]}" alt="${product.productName}">
-                    </div>
-                    <div class="product-details">
-                        <h3 class="product-name">${product.productName}</h3>
-                        <p class="product-brand">Brand: ${product.brand}</p>
-                        <p class="product-price">₹${product.salePrice}</p>
-                        <p class="product-color">Color: ${product.color}</p>
-                        <p class="product-description">${product.description.slice(0, 100)}...</p>
-                        <a href="/product/${product._id}" class="view-button">View Product</a>
-                    </div>
-                `;
-                productGrid.appendChild(productCard);
-            });
-        } else {
-            productGrid.innerHTML = `
-                <p style="text-align: center; color: var(--light-text); font-size: 18px;">
-                    No products found. Try adjusting your filters.
-                </p>
-            `;
-        }
-
-        productsFound.textContent = `Showing ${(data.currentPage - 1) * 9 + 1}-${Math.min(data.currentPage * 9, data.totalProducts)} of ${data.totalProducts} products`;
-
-        pagination.innerHTML = '';
-        if (data.totalPages > 1) {
-            for (let i = 1; i <= data.totalPages; i++) {
-                const pageLink = document.createElement('a');
-                pageLink.href = '#';
-                pageLink.textContent = i;
-                pageLink.className = data.currentPage === i ? 'active' : '';
-                pageLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    performSearch(i);
-                });
-                pagination.appendChild(pageLink);
-            }
-        }
+        updateProductGrid(data);
+        updatePagination(data);
+        updateProductsFound(data);
+        
+        // Update URL without page reload
+        const newUrl = `/shop?${queryParams.toString()}`;
+        window.history.pushState(currentFilters, '', newUrl);
     })
     .catch(error => {
         console.error('Error fetching products:', error);
+        const productGrid = document.getElementById('product-grid');
         productGrid.innerHTML = `
             <p style="text-align: center; color: var(--light-text); font-size: 18px;">
                 Error loading products. Please try again.
@@ -461,92 +519,225 @@ function performSearch(page = 1) {
     });
 }
 
-// Handle search input with debounce
-const searchInput = document.getElementById('search-input');
-const debouncedSearch = debounce(() => performSearch(1), 300);
-searchInput.addEventListener('input', debouncedSearch);
-
-// Prevent default form submission
-document.getElementById('search-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    performSearch(1);
-});
-
-// Handle sort select change
-const sortSelect = document.getElementById('sort-select');
-if (sortSelect) {
-    sortSelect.addEventListener('change', () => performSearch(1));
+function updateProductGrid(data) {
+    const productGrid = document.getElementById('product-grid');
+    productGrid.innerHTML = '';
+    
+    if (data.products && data.products.length > 0) {
+        data.products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <div class="product-image">
+                    <img src="/${product.productImage[0]}" alt="${product.productName}">
+                </div>
+                <div class="product-details">
+                    <h3 class="product-name">${product.productName}</h3>
+                    <p class="product-brand">Brand: ${product.brand}</p>
+                    <p class="product-price">₹${product.salePrice}</p>
+                    <p class="product-color">Color: ${product.color}</p>
+                    <p class="product-description">${product.description.slice(0, 100)}...</p>
+                    <a href="/product/${product._id}" class="view-button">View Product</a>
+                </div>
+            `;
+            productGrid.appendChild(productCard);
+        });
+    } else {
+        productGrid.innerHTML = `
+            <p style="text-align: center; color: var(--light-text); font-size: 18px;">
+                No products found. Try adjusting your filters.
+            </p>
+        `;
+    }
 }
 
-// Trigger initial load with current page and parameters
-document.addEventListener('DOMContentLoaded', () => {
-    const initialPage = parseInt('<%= currentPage %>') || 1;
-    performSearch(initialPage);
-});
-
-// Existing scripts for sliders and filters remain unchanged
-const minPriceSlider = document.getElementById('minPrice');
-const maxPriceSlider = document.getElementById('maxPrice');
-const minPriceInput = document.getElementById('minPriceInput');
-const maxPriceInput = document.getElementById('maxPriceInput');
-
-if (minPriceSlider && maxPriceSlider && minPriceInput && maxPriceInput) {
-    minPriceSlider.addEventListener('input', () => {
-        minPriceInput.value = minPriceSlider.value;
-        if (parseInt(minPriceSlider.value) > parseInt(maxPriceSlider.value)) {
-            maxPriceSlider.value = minPriceSlider.value;
-            maxPriceInput.value = minPriceSlider.value;
+function updatePagination(data) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    
+    if (data.totalPages > 1) {
+        // Previous button
+        if (data.currentPage > 1) {
+            const prevLink = document.createElement('a');
+            prevLink.textContent = '‹ Previous';
+            prevLink.onclick = () => goToPage(data.currentPage - 1);
+            pagination.appendChild(prevLink);
         }
-        performSearch(1); // Refresh on slider change
-    });
-
-    maxPriceSlider.addEventListener('input', () => {
-        maxPriceInput.value = maxPriceSlider.value;
-        if (parseInt(maxPriceSlider.value) < parseInt(minPriceSlider.value)) {
-            minPriceSlider.value = maxPriceSlider.value;
-            minPriceInput.value = maxPriceSlider.value;
+        
+        // Page numbers
+        const startPage = Math.max(1, data.currentPage - 2);
+        const endPage = Math.min(data.totalPages, data.currentPage + 2);
+        
+        if (startPage > 1) {
+            const firstLink = document.createElement('a');
+            firstLink.textContent = '1';
+            firstLink.onclick = () => goToPage(1);
+            pagination.appendChild(firstLink);
+            
+            if (startPage > 2) {
+                const dots = document.createElement('span');
+                dots.textContent = '...';
+                dots.style.padding = '8px 12px';
+                pagination.appendChild(dots);
+            }
         }
-        performSearch(1); // Refresh on slider change
-    });
-
-    minPriceInput.addEventListener('change', () => {
-        minPriceSlider.value = minPriceInput.value;
-        if (parseInt(minPriceInput.value) > parseInt(maxPriceInput.value)) {
-            maxPriceInput.value = minPriceInput.value;
-            maxPriceSlider.value = minPriceInput.value;
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.textContent = i;
+            pageLink.className = data.currentPage === i ? 'active' : '';
+            pageLink.onclick = () => goToPage(i);
+            pagination.appendChild(pageLink);
         }
-        performSearch(1); // Refresh on input change
-    });
-
-    maxPriceInput.addEventListener('change', () => {
-        maxPriceSlider.value = maxPriceInput.value;
-        if (parseInt(maxPriceInput.value) < parseInt(minPriceInput.value)) {
-            minPriceInput.value = maxPriceInput.value;
-            minPriceSlider.value = maxPriceInput.value;
+        
+        if (endPage < data.totalPages) {
+            if (endPage < data.totalPages - 1) {
+                const dots = document.createElement('span');
+                dots.textContent = '...';
+                dots.style.padding = '8px 12px';
+                pagination.appendChild(dots);
+            }
+            
+            const lastLink = document.createElement('a');
+            lastLink.textContent = data.totalPages;
+            lastLink.onclick = () => goToPage(data.totalPages);
+            pagination.appendChild(lastLink);
         }
-        performSearch(1); // Refresh on input change
-    });
+        
+        // Next button
+        if (data.currentPage < data.totalPages) {
+            const nextLink = document.createElement('a');
+            nextLink.textContent = 'Next ›';
+            nextLink.onclick = () => goToPage(data.currentPage + 1);
+            pagination.appendChild(nextLink);
+        }
+    }
 }
 
-const alphaCheckboxes = document.querySelectorAll('.alpha-checkbox');
-alphaCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-        if (checkbox.checked) {
-            alphaCheckboxes.forEach(cb => {
-                if (cb !== checkbox) cb.checked = false;
-            });
-        }
-        performSearch(1); // Refresh on alpha filter change
-    });
-});
+function updateProductsFound(data) {
+    const productsFound = document.getElementById('products-found');
+    const start = (data.currentPage - 1) * 9 + 1;
+    const end = Math.min(data.currentPage * 9, data.totalProducts);
+    productsFound.textContent = `Showing ${start}-${end} of ${data.totalProducts} products`;
+}
 
-const filterForm = document.getElementById('filter-form');
-if (filterForm) {
-    filterForm.addEventListener('submit', (e) => {
+function goToPage(page) {
+    currentFilters.page = page;
+    performSearch(false);
+}
+
+function filterByCategory(categoryId) {
+    currentFilters.category = categoryId;
+    performSearch();
+}
+
+function applyPriceFilter() {
+    const minPrice = document.getElementById('minPriceInput').value;
+    const maxPrice = document.getElementById('maxPriceInput').value;
+    
+    currentFilters.minPrice = minPrice;
+    currentFilters.maxPrice = maxPrice;
+    performSearch();
+}
+
+function resetAllFilters() {
+    currentFilters = {
+        query: '',
+        category: '',
+        minPrice: '',
+        maxPrice: '',
+        alpha: '',
+        sort: 'relevance',
+        page: 1
+    };
+    
+    // Reset form inputs
+    document.getElementById('search-input').value = '';
+    document.getElementById('minPriceInput').value = '';
+    document.getElementById('maxPriceInput').value = '';
+    document.getElementById('sort-select').value = 'relevance';
+    
+    // Reset alpha filter
+    document.querySelectorAll('.alpha-checkbox').forEach(checkbox => {
+        checkbox.checked = checkbox.value === '';
+    });
+    
+    performSearch();
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Search input with debounce
+    const searchInput = document.getElementById('search-input');
+    const debouncedSearch = debounce(() => {
+        currentFilters.query = searchInput.value.trim();
+        performSearch();
+    }, 300);
+    searchInput.addEventListener('input', debouncedSearch);
+
+    // Search form submission
+    document.getElementById('search-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        performSearch(1);
+        currentFilters.query = searchInput.value.trim();
+        performSearch();
     });
-}
+
+    // Sort select change
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+        currentFilters.sort = e.target.value;
+        performSearch();
+    });
+
+    // Alpha filter change
+    document.querySelectorAll('.alpha-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                currentFilters.alpha = checkbox.value;
+                performSearch();
+            }
+        });
+    });
+
+    // Price input changes
+    document.getElementById('minPriceInput').addEventListener('change', () => {
+        currentFilters.minPrice = document.getElementById('minPriceInput').value;
+        performSearch();
+    });
+
+    document.getElementById('maxPriceInput').addEventListener('change', () => {
+        currentFilters.maxPrice = document.getElementById('maxPriceInput').value;
+        performSearch();
+    });
+
+    // Initialize pagination for current page
+    const initialData = {
+        currentPage: <%= currentPage || 1 %>,
+        totalPages: <%= totalPages || 1 %>,
+        totalProducts: <%= totalProducts || 0 %>
+    };
+    updatePagination(initialData);
+    updateActiveCategory();
+});
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', function(event) {
+    if (event.state) {
+        currentFilters = event.state;
+        
+        // Update form inputs to match state
+        document.getElementById('search-input').value = currentFilters.query || '';
+        document.getElementById('minPriceInput').value = currentFilters.minPrice || '';
+        document.getElementById('maxPriceInput').value = currentFilters.maxPrice || '';
+        document.getElementById('sort-select').value = currentFilters.sort || 'relevance';
+        
+        // Update alpha filter
+        document.querySelectorAll('.alpha-checkbox').forEach(checkbox => {
+            checkbox.checked = checkbox.value === (currentFilters.alpha || '');
+        });
+        
+        performSearch(false);
+    }
+});
 </script>
 
 <%- include("../../views/partials/user/footer") %>
