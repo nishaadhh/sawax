@@ -462,20 +462,20 @@
                         </div>
                     <% } %>
 
-                    <% if (order.orderedItems && order.orderedItems.length > 0) { %>
+                    <!-- <% if (order.orderedItems && order.orderedItems.length > 0) { %>
                         <div class="order-items">
                             <h3 class="items-header">
                                 <i class="fas fa-box"></i> Items Ordered
                             </h3>
                             
                             <% order.orderedItems.forEach(function(item) { %>
-                                <div class="item-card">
+                                <div class="item-card"> -->
                                     <!-- <img 
                                         src="<%= item.productImages && item.productImages.length > 0 ? item.productImages[0] : '/assets/images/placeholder.png' %>" 
                                         alt="<%= item.productName || 'Product' %>" 
                                         class="item-image"
                                     > -->
-                                    <div class="item-details">
+                                    <!-- <div class="item-details">
                                         <div class="item-name">
                                             <%= item.productName ? item.productName.split('|')[0].trim() : 'Unknown Product' %>
                                         </div>
@@ -487,9 +487,9 @@
                                         ₹<%= ((item.price || 0) * (item.quantity || 1)).toFixed(2) %>
                                     </div>
                                 </div>
-                            <% }); %>
+                            <% }); %> -->
 
-                            <div class="order-summary">
+                            <!-- <div class="order-summary">
                                 <div class="summary-row">
                                     <span class="summary-label">Subtotal</span>
                                     <span class="summary-value">₹<%= (order.totalPrice || 0).toFixed(2) %></span>
@@ -499,8 +499,8 @@
                                         <span class="summary-label">Discount</span>
                                         <span class="summary-value" style="color: var(--success);">-₹<%= order.discount.toFixed(2) %></span>
                                     </div>
-                                <% } %>
-                                <% if (order.couponApplied && order.couponCode) { %>
+                                <% } %> -->
+                                <!-- <% if (order.couponApplied && order.couponCode) { %>
                                     <div class="summary-row">
                                         <span class="summary-label">Coupon Applied (<%= order.couponCode %>)</span>
                                         <span class="summary-value" style="color: var(--success);">✓ Applied</span>
@@ -509,23 +509,23 @@
                                 <div class="summary-row">
                                     <span class="summary-label">Delivery Charge</span>
                                     <span class="summary-value">₹<%= (order.deliveryCharge || 0).toFixed(2) %></span>
-                                </div>
-                                <div class="summary-row total-row">
+                                </div> -->
+                                <!-- <div class="summary-row total-row">
                                     <span class="summary-label">Total Amount</span>
                                     <span class="summary-value">₹<%= (order.finalAmount || 0).toFixed(2) %></span>
                                 </div>
                             </div>
                         </div>
                     <% } %>
-                </div>
-            <% } else { %>
+                </div> -->
+            <!-- <% } else { %>
                 <div class="order-details">
                     <p style="text-align: center; color: var(--light-text); font-size: 18px;">
                         <i class="fas fa-exclamation-triangle" style="color: #f39c12; margin-right: 10px;"></i>
                         Order details are currently unavailable. Please check your orders page for more information.
                     </p>
                 </div>
-            <% } %>
+            <% } %> -->
 
             <div class="action-buttons">
                 <a href="/orders" class="btn btn-primary">

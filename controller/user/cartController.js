@@ -12,7 +12,7 @@ const getCart = async (req, res) => {
       productId: item.productId._id,
       name: item.productId.name,
       image: item.productId.image,
-      price: item.productId.price,
+      price: item.productId.salePrice, // Use salePrice directly
       quantity: item.quantity,
     }));
     res.render("addToCart", { cart, message: req.query.message ? decodeURIComponent(req.query.message) : null });
@@ -104,8 +104,8 @@ const addToCart = async (req, res) => {
       cart = new Cart({ userId, items: [] });
     }
 
-    // Calculate effective price with proper discount
-    const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+    // Use salePrice directly - it already has the discount applied
+    const effectivePrice = product.salePrice;
 
     const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
     if (itemIndex > -1) {
@@ -202,8 +202,8 @@ const updateQuantity = async (req, res) => {
       });
     }
 
-    // Calculate effective price with proper discount
-    const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+    // Use salePrice directly - it already has the discount applied
+    const effectivePrice = product.salePrice;
     
     item.quantity = quantity;
     item.price = effectivePrice;
@@ -217,7 +217,6 @@ const updateQuantity = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error updating quantity" });
   }
 };
-
 
 const refreshCart = async (req, res) => {
   try {
@@ -248,8 +247,8 @@ const refreshCart = async (req, res) => {
 
       const product = item.productId; // Already populated
 
-      // Calculate effective price with proper discount formula
-      const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+      // Use salePrice directly - it already has the discount applied
+      const effectivePrice = product.salePrice;
 
       if (item.price !== effectivePrice) priceChanged = true;
 
@@ -282,53 +281,11 @@ const refreshCart = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   getCart,
   updateCart,
   updateQuantity,
   addToCart,
   removeFromCart,
-   refreshCart ,
-
-
+  refreshCart,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

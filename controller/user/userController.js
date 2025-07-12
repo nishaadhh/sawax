@@ -196,40 +196,6 @@ const forgetpasswordOtp  = async (req, res) => {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-
-
-
-
-
-
-
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -796,8 +762,8 @@ const cart = async (req, res) => {
       return res.status(400).json({ success: false, message: `Only ${product.quantity} items in stock` });
     }
 
-    // Calculate effective price with discount
-    const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+    // Use salePrice directly - it already has the discount applied
+    const effectivePrice = product.salePrice;
     
     if (typeof effectivePrice !== 'number' || isNaN(effectivePrice) || effectivePrice <= 0) {
       return res.status(400).json({ success: false, message: "Invalid product price" });
@@ -911,8 +877,8 @@ const loadCart = async (req, res) => {
           return null;
         }
 
-        // Calculate effective price with proper discount formula
-        const effectivePrice = item.productId.salePrice * (1 - (item.productId.productOffer || 0) / 100);
+        // Use salePrice directly - it already has the discount applied
+        const effectivePrice = item.productId.salePrice;
 
         // Check for price changes
         if (item.price !== effectivePrice) {
@@ -982,12 +948,15 @@ const updateCart = async (req, res) => {
     }
     const item = cart.items.find(item => item.productId._id.toString() === productId);
     if (item) {
-      // Update price to reflect current product price with proper discount calculation
+      // Update price to reflect current product price
       const product = await Product.findById(productId);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
-      const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+      
+      // Use salePrice directly - it already has the discount applied
+      const effectivePrice = product.salePrice;
+      
       item.quantity = quantity;
       item.price = effectivePrice;
       item.totalPrice = quantity * effectivePrice;
@@ -1269,8 +1238,8 @@ const addToWishlist = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Product already in wishlist.' });
         }
 
-        // Add product to wishlist with correct price calculation
-        const effectivePrice = product.salePrice * (1 - (product.productOffer || 0) / 100);
+        // Use salePrice directly - it already has the discount applied
+        const effectivePrice = product.salePrice;
         
         user.wishlist.push({
             id: productId,
