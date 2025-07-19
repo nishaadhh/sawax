@@ -110,7 +110,6 @@ const createRazorpayOrder = async (req, res) => {
         };
 
         console.log('Creating Razorpay order with options:', {
-            // amount: options.amount,
             receipt: options.receipt,
             receipt_length: options.receipt.length
         });

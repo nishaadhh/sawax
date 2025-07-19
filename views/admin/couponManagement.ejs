@@ -61,7 +61,7 @@
             font-size: 36px;
             font-weight: 700;
             margin-bottom: 10px;
-            background: var(--gradient-accent);
+            background: rgb(52, 51, 51);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -121,7 +121,7 @@
 
         .form-btn {
             padding: 12px 30px;
-            background: var(--gradient-accent);
+            background: #088178;
             color: white;
             border: none;
             border-radius: 12px;
@@ -136,6 +136,8 @@
         .form-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+           
+            
         }
 
         /* Coupons Table */
@@ -166,8 +168,8 @@
         }
 
         .coupons-table th {
-            background: var(--gradient-primary);
-            color: white;
+            background: #f8f9fa;
+            color: #495057;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -340,14 +342,12 @@
     <%- include("../../views/partials/admin/header") %>
 
     <!-- Header Section -->
-    <section class="header-section container fade-in">
-        <h1 class="header-title">
-            <i class="fas fa-tags"></i> Coupon Management
-        </h1>
-        <p class="header-subtitle">
-            Create, edit, and manage coupons to enhance customer engagement and boost sales.
-        </p>
-    </section>
+    <section>
+        <h2 class="header-title">
+               <i class="fas fa-tags"></i>   Coupon Management
+        </h2>
+     </section> 
+   
 
     <!-- Add Coupon Section -->
     <section class="add-coupon-section container slide-in-left">
@@ -365,9 +365,9 @@
                 <label for="type">Type</label>
                 <select id="type" class="form-input" required>
                     <option value="percentage">Percentage Off</option>
-                    <option value="fixed">Fixed Amount</option>
+                    <!-- <option value="fixed">Fixed Amount</option>
                     <option value="shipping">Free Shipping</option>
-                    <option value="bogo">Buy One Get One</option>
+                    <option value="bogo">Buy One Get One</option> -->
                 </select>
             </div>
             <div class="form-group">

@@ -27,7 +27,7 @@ const userSchema = new Schema({
     },
     cart: {
         type: Schema.Types.ObjectId,
-        ref: 'Cart' // Changed from array to single reference
+        ref: 'Cart'
     },
     wallet: {
         type: Number,
@@ -47,15 +47,36 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    referalCode: {
-        type: Boolean
+    referId: {
+        type: String,
+        unique: true,
     },
-    redeemed: {
-        type: Boolean
+    referredBy: {
+        type: String, // Referral code of the person who referred this user
     },
-    redeemedUsers: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+    referredUsers: [{
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        name: String,
+        email: String,
+        joinedDate: {
+            type: Date,
+            default: Date.now
+        },
+        bonusEarned: {
+            type: Number,
+            default: 100
+        }
+    }],
+    totalReferralEarnings: {
+        type: Number,
+        default: 0
+    },
+    joiningBonus: {
+        type: Number,
+        default: 0
     },
     searchHistory: [{
         category: {
@@ -71,6 +92,24 @@ const userSchema = new Schema({
         }
     }]
 });
+
+// Generate unique referral code before saving
+userSchema.pre('save', function(next) {
+    if (!this.referId) {
+        this.referId = this.generateReferralCode();
+    }
+    next();
+});
+
+// Method to generate unique referral code
+userSchema.methods.generateReferralCode = function() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = 'SAW'; // Brand prefix
+    for (let i = 0; i < 5; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Program | SAWAX</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: wheat;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .referral-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .referral-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .referral-header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .referral-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background:  #d4a017;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .referral-code-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .referral-code-box {
+            background: #d4a017;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .referral-code-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+        
+        .referral-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .copy-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .copy-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .how-it-works {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4a017, #5c4d24);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .referred-users {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-info h6 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .user-info small {
+            color: #666;
+        }
+        
+        .earning-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .bonus-info {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .bonus-info h4 {
+            margin-bottom: 10px;
+        }
+        
+        .bonus-info p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .referral-header h1 {
+                font-size: 2rem;
+            }
+            
+            .referral-code {
+                font-size: 1.5rem;
+            }
+            
+            .steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include("../../views/partials/user/header") %>
+    
+    <div class="referral-container">
+        <!-- Header -->
+        <div class="referral-header">
+            <h1 style="color: #d4a017;"><i class="fas fa-gift"></i> Referral Program</h1>
+            <p style="color: black;">Invite friends and earn rewards together!</p>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3><%= referredUsers.length %></h3>
+                <p>Friends Referred</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <h3>₹<%= totalEarnings %></h3>
+                <p>Total Earnings</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h3>₹<%= wallet.balance %></h3>
+                <p>Wallet Balance</p>
+            </div>
+            
+            <% if (joiningBonus > 0) { %>
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>₹<%= joiningBonus %></h3>
+                <p>Joining Bonus Received</p>
+            </div>
+            <% } %>
+        </div>
+        
+        <!-- Referral Code Section -->
+        <div class="referral-code-section">
+            <h2 class="text-center mb-4">Your Referral Code</h2>
+            <div class="referral-code-box text-center">
+                <div class="referral-code" id="referralCode"><%= referralCode %></div>
+                <button class="copy-btn mt-3" onclick="copyReferralCode()">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+            
+            <div class="bonus-info">
+                <h4><i class="fas fa-gift"></i> Referral Rewards</h4>
+                <p>You earn ₹100 for each friend who joins using your code, and they get ₹50 as a welcome bonus!</p>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted">Share your code with friends and family to start earning!</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <button class="btn btn-primary " style="border-radius: 45px;" onclick="shareWhatsApp()">
+                        <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                    </button>
+                    <button class="btn btn-info" style="border-radius: 45px;"  onclick="shareTwitter()">
+                        <i class="fab fa-twitter"></i> Share on Twitter
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- How It Works -->
+        <div class="how-it-works">
+            <h2 class="text-center mb-4">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Share Your Code</h4>
+                    <p>Share your unique referral code with friends and family through WhatsApp, SMS, or social media.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Friend Signs Up</h4>
+                    <p>Your friend creates an account using your referral code and gets ₹50 as a welcome bonus.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>You Earn Rewards</h4>
+                    <p>You receive ₹100 in your wallet instantly when your friend successfully signs up.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Keep Earning</h4>
+                    <p>There's no limit! Keep referring friends and continue earning rewards for each successful referral.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Referred Users -->
+        <% if (referredUsers.length > 0) { %>
+        <div class="referred-users">
+            <h2 class="mb-4">Your Referrals</h2>
+            <% referredUsers.forEach(user => { %>
+            <div class="user-item">
+                <div class="user-info">
+                    <h6><%= user.name %></h6>
+                    <small class="text-muted">
+                        Joined on <%= new Date(user.joinedDate).toLocaleDateString('en-IN', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) %>
+                    </small>
+                </div>
+                <div class="earning-badge">
+                    +₹<%= user.bonusEarned %>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } else { %>
+        <div class="referred-users text-center">
+            <h2 class="mb-4">No Referrals Yet</h2>
+            <p class="text-muted">Start sharing your referral code to see your referrals here!</p>
+            <i class="fas fa-user-friends" style="font-size: 4rem; color: #ddd; margin: 20px 0;"></i>
+        </div>
+        <% } %>
+    </div>
+    
+  
+    
+    <script>
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                // Show success feedback
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = 'rgba(40, 167, 69, 0.8)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'rgba(255,255,255,0.2)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                alert('Referral code copied to clipboard!');
+            });
+        }
+        
+        function shareWhatsApp() {
+            const code = '<%= referralCode %>';
+            const message = `Hey! Join SAWAX Premium Timepieces using my referral code "${code}" and get ₹50 bonus instantly! 🎁\n\nCheck out their amazing collection of watches: ${window.location.origin}/signup`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function shareTwitter() {
+            const code = '<%= referralCode %>';
+            const message = `Join SAWAX Premium Timepieces with my referral code "${code}" and get ₹50 bonus! 🎁 ${window.location.origin}/signup`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`;
+            window.open(twitterUrl, '_blank');
+        }
+        
+        // Add some entrance animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stat-card, .referral-code-section, .how-it-works, .referred-users');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

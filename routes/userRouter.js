@@ -12,7 +12,7 @@ const walletController = require("../controller/user/walletController");
 const path = require("path");
 const Coupon = require("../models/couponSchema");
 const couponController = require("../controller/user/couponController");
-
+const referralController = require("../controller/user/referralController");
 // Home & Pages
 router.get("/", userController.loadHomePage);
 router.get("/signup", userController.loadSignUpPage);
@@ -48,10 +48,39 @@ router.post("/login", userController.login);
 router.get("/logout", userController.logout);
 
 // Forgot Password Routes
+// Forgot Password Routes
 router.get('/forgot-password', userController.renderForgotPassword);
 router.post('/forgot-password', userController.forgotPassword);
+router.get('/otp-verification2', userController.renderForgotPasswordOtp);
+router.post('/verify-forgot-password-otp', userController.verifyForgotPasswordOtp);
+router.post('/resend-forgot-password-otp', userController.resendForgotPasswordOtp);
+router.get('/reset-password', userController.renderResetPassword);
 router.post('/reset-password', userController.resetPassword);
-router.get('/otp-verification', userController.forgetpasswordOtp);
+
+
+
+// Referral Routes
+
+router.get('/referral', userController.loadReferralPage);
+router.post('/validate-referral', userController.validateReferralCode);
+
+
+
+
+// router.get('/referral', userAuth, referralController.loadReferralPage);
+// router.post('/referral/validate', referralController.validateReferralCode);
+// router.get('/referral/stats', userAuth, referralController.getReferralStats);
+
+//  router.post('/wallet/verify-payment', userAuth, walletController.verifyPayment);
+//  router.post('/wallet/withdraw-money', userAuth, walletController.withdrawMoney);
+
+
+
+
+
+
+
+
 
 // Static Pages
 router.get("/about", userController.about);

@@ -9,15 +9,12 @@
 </head>
 <body>
 
-
  <header>
             <div class="container">
                 <div class="header-content">
                     <div class="logo">SA<span>WAX</span></div>
                    
 </header>
-
-
 
     <!-- Signup Section -->
     <section class="signup-section">
@@ -52,7 +49,16 @@
                         <div class="form-error">Passwords do not match</div>
                         <div id="error4" class="error-message"></div>
                     </div>
-                    
+                    <div class="form-group">
+                        <label for="referralCode">Referral Code (Optional)</label>
+                        <input type="text" id="referralCode" name="referralCode" class="form-control" placeholder="Enter referral code to get ₹50 bonus" >
+                        <div class="referral-info">
+                            <small class="text-muted">🎁 Get ₹50 joining bonus with a valid referral code!</small>
+                        </div>
+                        <div id="referralValidation" class="referral-validation"></div>
+                        <div id="error5" class="error-message"></div>
+                    </div>
+
                     <div class="terms-agreement">
                         By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
                     </div>
@@ -101,16 +107,19 @@
         const emailid = document.getElementById("email");
         const passid = document.getElementById("password");
         const cpassid = document.getElementById("confirm-password");
+        const referralCodeid = document.getElementById("referralCode");
         const error1 = document.getElementById("error1");
         const error2 = document.getElementById("error2");
         const error3 = document.getElementById("error3");
         const error4 = document.getElementById("error4");
+        const error5 = document.getElementById("error5");
+        const referralValidation = document.getElementById("referralValidation");
         const signupform = document.getElementById("signupform");
         const signupButton = document.querySelector(".btn");
         const spinner = document.querySelector(".spinner");
 
         // Check if all elements are found
-        if (!nameid || !emailid || !passid || !cpassid || !error1 || !error2 || !error3 || !error4 || !signupform || !signupButton || !spinner) {
+        if (!nameid || !emailid || !passid || !cpassid || !error1 || !error2 || !error3 || !error4 ||  !signupform || !signupButton || !spinner) {
             console.error("One or more DOM elements not found");
             throw new Error("Required DOM elements missing");
         }
@@ -197,17 +206,74 @@
             }
         }
 
+        // Referral Code Validation
+        function validateReferralCode() {
+            const referralCode = referralCodeid.value.trim();
+            
+            if (!referralCode) {
+                referralValidation.innerHTML = "";
+                referralValidation.className = "referral-validation";
+                return true; // Optional field
+            }
+
+            // Show loading state
+            referralValidation.innerHTML = '<span style="color: #666;">Checking referral code...</span>';
+            
+            // Make AJAX request to validate referral code
+            fetch('/validate-referral', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ referralCode: referralCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    referralValidation.innerHTML = `<span style="color: #28a745;">✓ ${data.message}</span>`;
+                    referralValidation.className = "referral-validation valid";
+                } else {
+                    referralValidation.innerHTML = `<span style="color: #dc3545;">✗ ${data.message}</span>`;
+                    referralValidation.className = "referral-validation invalid";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                referralValidation.innerHTML = '<span style="color: #dc3545;">Error validating referral code</span>';
+                referralValidation.className = "referral-validation invalid";
+            });
+        }
+
         // Real-time validation on input
         nameid.addEventListener("input", nameValidateChecking);
         emailid.addEventListener("input", emailValidateChecking);
         passid.addEventListener("input", passValidateChecking);
         cpassid.addEventListener("input", passValidateChecking);
+        
+        // Debounced referral code validation
+        let referralTimeout;
+        referralCodeid.addEventListener("input", function() {
+            clearTimeout(referralTimeout);
+            referralTimeout = setTimeout(validateReferralCode, 500); // Wait 500ms after user stops typing
+        });
 
         // Form submission validation
         signupform.addEventListener("submit", function(e) {
             const isNameValid = nameValidateChecking();
             const isEmailValid = emailValidateChecking();
             const isPassValid = passValidateChecking();
+            
+            // Check if referral code validation is in progress or invalid
+            const referralValidationClass = referralValidation.className;
+            if (referralCodeid.value.trim() && referralValidationClass.includes('invalid')) {
+                e.preventDefault();
+                error5.style.display = "block";
+                error5.innerHTML = "Please enter a valid referral code or leave it empty";
+                return;
+            } else {
+                error5.style.display = "none";
+                error5.innerHTML = "";
+            }
 
             if (!isNameValid || !isEmailValid || !isPassValid) {
                 e.preventDefault();
@@ -223,7 +289,7 @@
                 };
 
                 // Add a timeout as a fallback since we can't directly detect server response
-                setTimeout(handleFormCompletion, 2000); // Adjust timeout as needed
+                setTimeout(handleFormCompletion, 3000); // Adjust timeout as needed
             }
         });
     </script>
@@ -263,4 +329,53 @@
             opacity: 0.7;
             cursor: not-allowed;
         }
+
+        .referral-info {
+            margin-top: 5px;
+        }
+
+        .referral-validation {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .referral-validation.valid {
+            color: #28a745;
+        }
+
+        .referral-validation.invalid {
+            color: #dc3545;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        #referralCode {
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+
+        #referralCode:focus {
+            border-color: #DF8A00;
+            box-shadow: 0 0 0 0.2rem rgba(223, 138, 0, 0.25);
+        }
+
+        .referral-validation.valid + #referralCode {
+            border-color: #28a745;
+        }
+
+        .referral-validation.invalid + #referralCode {
+            border-color: #dc3545;
+        }
     </style>
+</body>
+</html>
