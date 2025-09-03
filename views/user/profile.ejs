@@ -1,4 +1,5 @@
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,9 @@
             --light-text: #636e72;
             --border: #dfe6e9;
             --gradient: linear-gradient(135deg, #d4a017, #e7c156);
+            --success: #00b894;
+            --error: #e74c3c;
+            --warning: #f39c12;
         }
 
         * {
@@ -26,7 +30,8 @@
         body {
             color: var(--text);
             overflow-x: hidden;
-            background: linear-gradient(to bottom, var(--secondary), #e8ecef);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
         }
 
         a {
@@ -59,9 +64,6 @@
             padding: 25px 0;
         }
 
-       
-
-      
         nav ul {
             display: flex;
             list-style: none;
@@ -148,108 +150,151 @@
 
         /* Profile Section */
         .profile {
-            padding: 100px 0;
-            background: var(--secondary);
+            padding: 60px 0 100px;
+            background: transparent;
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
+            position: relative;
         }
 
         .section-title h2 {
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 15px;
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 20px;
             color: var(--primary);
-            letter-spacing: 1px;
+            letter-spacing: -1px;
+            position: relative;
         }
 
         .section-title h2::after {
             content: '';
             position: absolute;
-            bottom: -2px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
+            width: 120px;
+            height: 4px;
             background: var(--gradient);
+            border-radius: 2px;
         }
 
         .section-title p {
             color: var(--light-text);
-            font-size: 20px;
-            max-width: 700px;
+            font-size: 18px;
+            max-width: 600px;
             margin: 0 auto;
-            font-weight: 300;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .profile-content {
             display: grid;
-            grid-template-columns: 1fr 3fr;
+            grid-template-columns: 350px 1fr;
             gap: 40px;
+            align-items: start;
         }
 
         .profile-sidebar {
             background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(212, 160, 23, 0.1);
+            position: sticky;
+            top: 120px;
         }
 
         .profile-sidebar h3 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: var(--primary);
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .profile-sidebar ul {
+        .sidebar-menu {
             list-style: none;
         }
 
-        .profile-sidebar ul li {
-            margin-bottom: 15px;
+        .sidebar-menu li {
+            margin-bottom: 8px;
         }
 
-        .profile-sidebar ul li a {
-            font-size: 17px;
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
             color: var(--text);
-            transition: color 0.3s ease, padding-left 0.3s ease;
+            padding: 15px 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        .profile-sidebar ul li a:hover {
-            color: var(--accent);
-            padding-left: 10px;
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: linear-gradient(135deg, #d4a017, #e7c156);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(212, 160, 23, 0.3);
+        }
+
+        .sidebar-menu li a i {
+            width: 20px;
+            text-align: center;
         }
 
         .profile-main {
             background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(212, 160, 23, 0.1);
         }
 
-        .profile-image-section {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            margin margin-bottom: 40px;
+        .profile-header {
+            background: var(--gradient);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .profile-image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
         }
 
         .profile-image {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            overflow: hidden;
-            background: black;
-            padding: 4px;
+            border: 6px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .profile-image:hover {
@@ -261,138 +306,291 @@
             height: 100%;
             object-fit: cover;
             border-radius: 50%;
-            border: 2px solid white;
         }
 
-        .profile-image-upload {
+        .image-upload-overlay {
+            position: absolute;
+            bottom: 10px;
+            right: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            width: 34px;
+            height: 30px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .profile-image-upload label {
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            padding: 12px 25px;
-            background: var(--gradient);
-            color: white;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 700;
-            text-transform: uppercase;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 3;
+            border: 3px solid white;
         }
 
-        .profile-image-upload label:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+        .image-upload-overlay:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.4);
         }
 
-        .profile-image-upload input[type="file"] {
-            display: none;
+        .image-upload-overlay i {
+            color: white;
+            font-size: 14px;
+        }
+
+        .user-info h3 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .user-email {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-body {
+            padding: 50px;
         }
 
         .profile-form h3 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
             color: var(--primary);
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            position: relative;
         }
 
         .form-group label {
             display: block;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
             font-size: 16px;
-            background: #fafafa;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 8px rgba(212, 160, 23, 0.2);
+            box-shadow: 0 0 0 4px rgba(212, 160, 23, 0.1);
+            background: white;
+        }
+
+        .form-group input:valid {
+            border-color: var(--success);
+        }
+
+        .form-group input:invalid:not(:placeholder-shown) {
+            border-color: var(--error);
+        }
+
+        .username-group {
+            position: relative;
+        }
+
+        .username-feedback {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .username-feedback.checking {
+            opacity: 1;
+            color: var(--warning);
+            animation: spin 1s linear infinite;
+        }
+
+        .username-feedback.available {
+            opacity: 1;
+            color: var(--success);
+        }
+
+        .username-feedback.taken {
+            opacity: 1;
+            color: var(--error);
+        }
+
+        @keyframes spin {
+            from { transform: translateY(-50%) rotate(0deg); }
+            to { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .username-message {
+            font-size: 13px;
+            margin-top: 8px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .username-message.show {
+            opacity: 1;
+        }
+
+        .username-message.available {
+            color: var(--success);
+        }
+
+        .username-message.taken {
+            color: var(--error);
         }
 
         .btn {
-            display: inline-block;
-            padding: 14px 35px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
             background: var(--gradient);
             color: white;
             font-weight: 700;
-            border-radius: 6px;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            letter-spacing: 1px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.2);
         }
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+            box-shadow: 0 8px 25px rgba(212, 160, 23, 0.4);
         }
 
-        .order-history {
-            margin-top: 40px;
+        .btn:active {
+            transform: translateY(-1px);
         }
 
-        .order-history h3 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            color: var(--primary);
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .order-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .order-table th,
-        .order-table td {
-            padding: 18px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .order-table th {
-            font-weight: 700;
-            color: var(--primary);
-            background: #fafafa;
-        }
-
-        .order-table td {
-            color: var(--light-text);
-        }
-
-        .order-table a {
+        .btn-secondary {
+            background: transparent;
             color: var(--accent);
-            font-weight: 600;
-            transition: color 0.3s;
+            border: 2px solid var(--accent);
+            margin-left: 15px;
         }
 
-        .order-table a:hover {
-            color: #b38e12;
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 35px;
+            padding-top: 35px;
+            border-top: 2px solid #f1f3f4;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideInFromTop 0.5s ease;
+        }
+
+        .alert-success {
+            background: rgba(0, 184, 148, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 184, 148, 0.2);
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Upload Progress */
+        .upload-progress {
+            margin-top: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-progress.show {
+            opacity: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--light-text);
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        /* File Input Styling */
+        #image-upload {
+            display: none;
         }
 
         /* Footer */
@@ -401,6 +599,7 @@
             color: white;
             padding: 80px 0 40px;
             border-top: 3px solid var(--accent);
+            margin-top: 60px;
         }
 
         .footer-content {
@@ -417,10 +616,6 @@
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        .footer-logo span {
-            color: var(--accent);
         }
 
         .footer-about p {
@@ -451,31 +646,12 @@
             transform: scale(1.1);
         }
 
-        /* .footer-links h4 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .footer-links h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--gradient);
-        } */
-
         .footer-links ul {
             list-style: none;
         }
 
         .footer-links ul li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .footer-links ul li a {
@@ -514,11 +690,16 @@
         @media (max-width: 992px) {
             .profile-content {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
-            .profile-image {
-                width: 120px;
-                height: 120px;
+            .profile-sidebar {
+                position: static;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
 
             .footer-content {
@@ -536,28 +717,32 @@
             }
 
             .profile {
-                padding: 80px 0;
+                padding: 40px 0 80px;
             }
 
-            .profile-main {
-                padding: 25px;
+            .profile-body {
+                padding: 30px 25px;
             }
 
-            .profile-image-section {
+            .profile-header {
+                padding: 30px 25px;
+            }
+
+            .section-title h2 {
+                font-size: 36px;
+            }
+
+            .profile-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            .action-buttons {
                 flex-direction: column;
-                align-items: flex-start;
             }
 
-            .order-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-
-            .order-table th,
-            .order-table td {
-                padding: 12px;
-                font-size: 15px;
+            .btn {
+                justify-content: center;
             }
 
             .footer-content {
@@ -574,11 +759,11 @@
 
         @media (max-width: 576px) {
             .section-title h2 {
-                font-size: 32px;
+                font-size: 28px;
             }
 
             .section-title p {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             .profile-image {
@@ -586,102 +771,182 @@
                 height: 100px;
             }
 
+            .image-upload-overlay {
+                width: 35px;
+                height: 35px;
+            }
+
             .form-group input {
                 font-size: 15px;
+                padding: 14px 16px;
             }
 
             .btn {
                 font-size: 13px;
-                padding: 12px 25px;
+                padding: 14px 24px;
             }
 
-            .profile-form h3,
-            .order-history h3 {
-                font-size: 22px;
+            .profile-form h3 {
+                font-size: 24px;
             }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading .btn {
+            background: #ccc;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <%- include("../../views/partials/user/header") %>
+    
     <!-- Profile Section -->
     <section class="profile">
         <div class="container">
             <div class="section-title">
                 <h2>Your Profile</h2>
-                <p>Manage your personal details, update your profile picture, and view your order history.</p>
+                <p>Manage your personal details, update your profile picture, and customize your account settings.</p>
             </div>
+            
             <div class="profile-content">
                 <div class="profile-sidebar">
-                    <h3>Account Menu</h3>
-                    <ul>
-                        <li><a href="profile">Edit Profile</a></li>
-                        <li><a href="/orders">Order History</a></li>
-                        <li><a href="wishlist">Wishlist</a></li>
-                        <li><a href="/address">Add Address</a></li>
-                        <li><a href="/wallet">Wallet</a></li>
-                        <li><a href="/coupon">Coupons</a></li>
-                        <li><a href="/referral">Your Referrals </a></li>
-                        <li><a href="/logout" style="color: red;">Logout <i class="fa-solid fa-right-from-bracket"></i></a></li>
+                    <h3><i class="fas fa-user-cog"></i>Account Menu</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="#profile" class="active"><i class="fas fa-user-edit"></i>Edit Profile</a></li>
+                        <li><a href="/orders"><i class="fas fa-shopping-bag"></i>Order History</a></li>
+                        <li><a href="/wishlist"><i class="fas fa-heart"></i>Wishlist</a></li>
+                        <li><a href="/address"><i class="fas fa-map-marker-alt"></i>Addresses</a></li>
+                        <li><a href="/wallet"><i class="fas fa-wallet"></i>Wallet</a></li>
+                        <li><a href="/coupon"><i class="fas fa-ticket-alt"></i>Coupons</a></li>
+                        <li><a href="/referral"><i class="fas fa-users"></i>Referrals</a></li>
+                        <li><a href="/logout" style="color: #e74c3c;"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                     </ul>
                 </div>
+                
                 <div class="profile-main">
-                    <div class="profile-image-section" id="profile">
-                        <div class="profile-image">
-                            <!-- <img src="<%= user.profileImage || '/api/placeholder/120/120' %>" id="profile-img" alt="Profile Image"> -->
+                    <!-- Alert Messages -->
+                    <% if (message) { %>
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <%= message %>
                         </div>
-                        <div class="profile-image-upload">
-                            <h5 style="font-weight: 900;"><%= user.name %></h5>
-                            <!-- <label for="image-upload">Change Profile Picture</label> -->
-                            <input type="file" id="image-upload" accept="image/*">
+                    <% } %>
+                    <% if (error) { %>
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <%= error %>
+                        </div>
+                    <% } %>
+
+                    <div class="profile-header">
+                        <div class="profile-image-container">
+                            <div class="profile-image">
+                                <img src="<%= user.profileImage || '/images/default-avatar.png' %>" 
+                                     id="profile-img" 
+                                     alt="<%= user.name %>'s Profile">
+                            </div>
+                            <div class="image-upload-overlay tooltip" onclick="document.getElementById('image-upload').click()">
+                                <i class="fas fa-camera"></i>
+                                <span class="tooltiptext">Change profile picture</span>
+                            </div>
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="user-info">
+                            <h3><%= user.name %></h3>
+                            <p class="user-email"><%= user.email %></p>
+                        </div>
+                        <div class="upload-progress" id="upload-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">Uploading...</div>
                         </div>
                     </div>
-                    <div class="profile-form">
-                        <h3>Edit Profile</h3>
-                        <form action="/userProfile" method="POST">
-                            <div class="form-group">
-                                <label for="name">Full Name</label>
-                                <input type="text" id="name" name="name" value="<%= user.name %>" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" name="email" value="<%= user.email %>" required>
-                            </div>
-                            <a href="/change-email" class="btn">Change Email</a>
-                            <a href="/change-password" class="btn">Change Password</a>
-                        </form>
+
+                    <div class="profile-body">
+                        <div class="profile-form">
+                            <h3><i class="fas fa-edit"></i>Edit Profile Information</h3>
+                            <form action="/userProfile" method="POST" id="profile-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="name">Full Name</label>
+                                        <input type="text" id="name" name="name" value="<%= user.name %>" required>
+                                    </div>
+                                    <div class="form-group username-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" 
+                                               id="username" 
+                                               name="username" 
+                                               value="<%= user.username || '' %>" 
+                                               placeholder="Enter a unique username"
+                                               pattern="^[a-zA-Z0-9_]{3,30}$"
+                                               title="Username can only contain letters, numbers, and underscores (3-30 characters)">
+                                        <div class="username-feedback" id="username-feedback">
+                                            <i class="fas fa-spinner"></i>
+                                        </div>
+                                        <div class="username-message" id="username-message"></div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" name="email" value="<%= user.email %>" required readonly title="Use 'Change Email' button to update email">
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn">
+                                        <i class="fas fa-save"></i>
+                                        Update Profile
+                                    </button>
+                                    <a href="/change-email" class="btn btn-secondary">
+                                        <i class="fas fa-envelope"></i>
+                                        Change Email
+                                    </a>
+                                    <a href="/change-password" class="btn btn-secondary">
+                                        <i class="fas fa-lock"></i>
+                                        Change Password
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <!-- <div class="order-history" id="orders">
-                        <h3>Order History</h3>
-                        <table class="order-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Date</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>#12345</td>
-                                    <td>2025-04-20</td>
-                                    <td>$299.00</td>
-                                    <td>Delivered</td>
-                                    <td><a href="#">View Details</a></td>
-                                </tr>
-                                <tr>
-                                    <td>#12346</td>
-                                    <td>2025-03-15</td>
-                                    <td>$189.00</td>
-                                    <td>Shipped</td>
-                                    <td><a href="#">View Details</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -690,28 +955,224 @@
     <!-- Footer -->
     <%- include("../../views/partials/user/footer") %>
 
-    <!-- JavaScript for Image Preview -->
+    <!-- JavaScript -->
     <script>
+        let usernameTimeout;
+        let currentUsername = '<%= user.username || "" %>';
+
+        // Profile Image Upload
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+                    return;
+                }
+
+                // Show preview immediately
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-img').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                // Upload the file
+                uploadProfileImage(file);
+            }
+        });
+
         async function uploadProfileImage(file) {
+            const progressElement = document.getElementById('upload-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+
             try {
+                // Show progress
+                progressElement.classList.add('show');
+                progressFill.style.width = '20%';
+                progressText.textContent = 'Preparing upload...';
+
                 const formData = new FormData();
                 formData.append('profileImage', file);
+
+                progressFill.style.width = '60%';
+                progressText.textContent = 'Uploading...';
 
                 const response = await fetch('/upload-profile-image', {
                     method: 'POST',
                     body: formData
                 });
 
+                progressFill.style.width = '90%';
+                progressText.textContent = 'Processing...';
+
                 const data = await response.json();
+                
                 if (data.success) {
-                    alert('Profile picture updated successfully!');
-                    window.location.reload();
+                    progressFill.style.width = '100%';
+                    progressText.textContent = 'Upload complete!';
+                    progressFill.style.background = 'linear-gradient(135deg, #00b894, #55efc4)';
+                    
+                    // Hide progress after success
+                    setTimeout(() => {
+                        progressElement.classList.remove('show');
+                        progressFill.style.width = '0%';
+                        progressFill.style.background = 'var(--gradient)';
+                    }, 2000);
+
+                    // Show success message
+                    showAlert('Profile picture updated successfully!', 'success');
                 } else {
-                    alert('Error uploading profile picture: ' + (data.message || 'Unknown error'));
+                    throw new Error(data.message || 'Upload failed');
                 }
             } catch (error) {
                 console.error('Error uploading profile picture:', error);
-                alert('Error uploading profile picture. Please try again.');
+                progressElement.classList.remove('show');
+                progressFill.style.width = '0%';
+                
+                // Revert image on error
+                document.getElementById('profile-img').src = '<%= user.profileImage || "/images/default-avatar.png" %>';
+                showAlert('Error uploading profile picture: ' + error.message, 'error');
             }
         }
+
+        // Username availability checking
+        document.getElementById('username').addEventListener('input', function(e) {
+            const username = e.target.value.trim();
+            const feedback = document.getElementById('username-feedback');
+            const message = document.getElementById('username-message');
+
+            // Clear previous timeout
+            clearTimeout(usernameTimeout);
+
+            if (username === '' || username === currentUsername) {
+                feedback.className = 'username-feedback';
+                message.className = 'username-message';
+                message.textContent = '';
+                return;
+            }
+
+            // Validate username format
+            const usernameRegex = /^[a-zA-Z0-9_]{3,30}$/;
+            if (!usernameRegex.test(username)) {
+                feedback.className = 'username-feedback taken';
+                feedback.innerHTML = '<i class="fas fa-times"></i>';
+                message.className = 'username-message taken show';
+                message.textContent = 'Username can only contain letters, numbers, and underscores (3-30 characters)';
+                return;
+            }
+
+            // Show checking state
+            feedback.className = 'username-feedback checking';
+            feedback.innerHTML = '<i class="fas fa-spinner"></i>';
+            message.className = 'username-message show';
+            message.textContent = 'Checking availability...';
+
+            // Debounce API call
+            usernameTimeout = setTimeout(async () => {
+                try {
+                    const response = await fetch(`/check-username?username=${encodeURIComponent(username)}`);
+                    const data = await response.json();
+
+                    if (data.available) {
+                        feedback.className = 'username-feedback available';
+                        feedback.innerHTML = '<i class="fas fa-check"></i>';
+                        message.className = 'username-message available show';
+                        message.textContent = 'Username is available!';
+                    } else {
+                        feedback.className = 'username-feedback taken';
+                        feedback.innerHTML = '<i class="fas fa-times"></i>';
+                        message.className = 'username-message taken show';
+                        message.textContent = data.message || 'Username is not available';
+                    }
+                } catch (error) {
+                    console.error('Error checking username:', error);
+                    feedback.className = 'username-feedback taken';
+                    feedback.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                    message.className = 'username-message taken show';
+                    message.textContent = 'Error checking username availability';
+                }
+            }, 500);
+        });
+
+        // Form submission with enhanced validation
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value.trim();
+            const feedback = document.getElementById('username-feedback');
+
+            // If username is provided and not available, prevent submission
+            if (username && username !== currentUsername && feedback.classList.contains('taken')) {
+                e.preventDefault();
+                showAlert('Please choose a different username', 'error');
+                return false;
+            }
+
+            // Show loading state
+            this.classList.add('loading');
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+
+            // Reset after 5 seconds in case of errors
+            setTimeout(() => {
+                this.classList.remove('loading');
+                submitBtn.innerHTML = originalText;
+            }, 5000);
+        });
+
+        // Alert system
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+
+            // Create new alert
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+
+            // Insert at the top of profile-body
+            const profileBody = document.querySelector('.profile-body');
+            profileBody.insertBefore(alert, profileBody.firstChild);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
+        // Smooth scrolling for sidebar links
+        document.querySelectorAll('.sidebar-menu a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add loading animation on page load
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
     </script>
+</body>
+</html>

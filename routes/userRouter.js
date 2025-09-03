@@ -67,15 +67,6 @@ router.post('/validate-referral', userController.validateReferralCode);
 
 
 
-// router.get('/referral', userAuth, referralController.loadReferralPage);
-// router.post('/referral/validate', referralController.validateReferralCode);
-// router.get('/referral/stats', userAuth, referralController.getReferralStats);
-
-//  router.post('/wallet/verify-payment', userAuth, walletController.verifyPayment);
-//  router.post('/wallet/withdraw-money', userAuth, walletController.withdrawMoney);
-
-
-
 
 
 
@@ -87,12 +78,22 @@ router.get("/about", userController.about);
 
 // Profile Routes
 router.get("/profile", userAuth, profileController.userProfile);
+router.post("/userProfile", userAuth, profileController.updateProfile);
+router.post("/upload-profile-image", userAuth, profileController.upload.single('profileImage'), profileController.uploadProfileImage);
+router.get("/check-username", userAuth, profileController.checkUsernameAvailability);
 router.get("/orderdetails", userAuth, userController.orderdetails);
 router.get("/change-email", userAuth, profileController.changeEmail);
 router.post("/change-email", userAuth, profileController.changeEmailValid);
 router.get("/change-password", userAuth, profileController.changePassword);
 router.post("/change-password", userAuth, profileController.changePasswordValid);
 
+// Address Routes
+router.get("/address", userAuth, profileController.loadAddressPage);
+router.get("/add-address", userAuth, profileController.addAddress);
+router.post("/add-address", userAuth, profileController.postAddAddress);
+router.get("/edit-address", userAuth, profileController.editAddress);
+router.post("/edit-address", userAuth, profileController.postEditAddress);
+router.get("/delete-address", userAuth, profileController.deleteAddress);
 // Cart Routes
 router.get("/cart", userAuth, userController.loadCart);
 router.get("/refresh-cart", userAuth, cartController.refreshCart);

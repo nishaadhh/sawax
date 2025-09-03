@@ -1,49 +1,200 @@
 <%- include("../../views/partials/admin/header") %>
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <!-- Add SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --info-color: #3498db;
-            --light-gray: #ecf0f1;
+            --primary-color: #3b82f6;
+            --secondary-color: #1f2937;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --light-gray: #f3f4f6;
+            --background-color: #ffffff;
+            --text-color: #111827;
+            --border-color: #e5e7eb;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #111827;
+            --text-color: #f9fafb;
+            --border-color: #374151;
+            --light-gray: #1f2937;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .content-main {
+            padding: 1.5rem;
+        }
+
+        .content-header {
+            padding: 1.5rem 0;
+            background-color: var(--light-gray);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .content-title {
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--secondary-color);
+        }
+
+        .card {
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger.btn-sm {
+            background-color: var(--danger-color);
+            color: #ffffff;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-danger.btn-sm:hover {
+            background-color: #dc2626;
         }
 
         .thumbnails-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 1rem;
         }
+
         .thumbnail {
             position: relative;
             width: 150px;
         }
+
         .thumbnail img {
             width: 100%;
             height: 150px;
             object-fit: cover;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border-color);
         }
+
         .delete-btn {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: rgba(255, 0, 0, 0.7);
-            color: white;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--danger-color);
+            color: #ffffff;
             border: none;
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            font-size: 12px;
+            width: 1.5rem;
+            height: 1.5rem;
+            font-size: 0.75rem;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
         }
+
+        .delete-btn:hover {
+            background-color: #dc2626;
+        }
+
         .cropper-container {
             width: 100%;
             max-width: 500px;
-            margin: 20px auto;
+            margin: 1.5rem auto;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+        }
+
+        .col-lg-3, .col-lg-4, .col-md-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            flex: 1;
+        }
+
+        @media (min-width: 992px) {
+            .col-lg-3 {
+                flex: 0 0 25%;
+                max-width: 25%;
+            }
+            .col-lg-4 {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .col-md-3 {
+                flex: 0 0 25%;
+                max-width: 25%;
+            }
         }
     </style>
 </head>
@@ -58,12 +209,10 @@
                     <label for="product_name" class="form-label">Product Name</label>
                     <input type="text" name="productName" value="<%= product.productName %>" class="form-control" id="product_name" required>
                 </div>
-                
                 <div class="mb-4">
                     <label class="form-label">Description</label>
                     <textarea name="description" class="form-control" rows="4" required><%= product.description %></textarea>
                 </div>
-
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="mb-4">
@@ -90,7 +239,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="mb-4">
@@ -111,7 +259,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="mb-4">
                     <label class="form-label">Product Images</label>
                     <div class="row">
@@ -134,7 +281,6 @@
                         <% } %>
                     </div>
                 </div>
-
                 <div class="mb-4">
                     <button class="btn btn-primary" type="submit">Update Product</button>
                 </div>
@@ -142,13 +288,10 @@
         </div>
     </div>
 </section>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-<!-- Add SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let croppers = {};
-
     function previewImage(event, index) {
         const input = event.target;
         if (input.files && input.files[0]) {
@@ -157,13 +300,9 @@
                 const preview = document.getElementById(`preview${index}`);
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-
-                // Destroy existing cropper if it exists
                 if (croppers[index]) {
                     croppers[index].destroy();
                 }
-
-                // Initialize new cropper
                 croppers[index] = new Cropper(preview, {
                     aspectRatio: 1,
                     viewMode: 1,
@@ -175,7 +314,6 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
-
     function deleteSingleImage(imageName, productId, index) {
         Swal.fire({
             title: 'Are you sure?',
@@ -223,20 +361,12 @@
             }
         });
     }
-
-    // Handle form submission
     document.getElementById('editProductForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
-
- // Count existing images
         const existingImages = document.querySelectorAll('.card-img-top').length;
-        // Count new image uploads
         const newImages = Array.from(this.querySelectorAll('input[type="file"]'))
             .filter(input => input.files && input.files.length > 0).length;
         const totalImages = existingImages + newImages;
-
-        // Check if total images is exactly 4
         if (totalImages !== 4) {
             Swal.fire({
                 title: 'Error!',
@@ -246,19 +376,9 @@
             });
             return;
         }
-
-
-
-
-
-
-
-
         const formData = new FormData(this);
         let croppedImagesProcessed = 0;
         const totalCroppedImages = Object.keys(croppers).length;
-
-        // Function to submit form
         const submitForm = () => {
             fetch(this.action, {
                 method: 'POST',
@@ -266,7 +386,6 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Show SweetAlert2 success message
                     Swal.fire({
                         title: 'Success!',
                         text: 'Product updated successfully',
@@ -283,7 +402,6 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Show SweetAlert2 error message
                 Swal.fire({
                     title: 'Error!',
                     text: 'An error occurred while updating the product: ' + error.message,
@@ -292,18 +410,13 @@
                 });
             });
         };
-
-        // Process cropped images if any
         if (totalCroppedImages === 0) {
             submitForm();
         } else {
-            // Process each cropped image
             Object.keys(croppers).forEach(index => {
                 croppers[index].getCroppedCanvas().toBlob((blob) => {
                     formData.set(`image${parseInt(index)+1}`, blob, `cropped-image-${parseInt(index)+1}.jpg`);
                     croppedImagesProcessed++;
-                    
-                    // Submit form when all cropped images are processed
                     if (croppedImagesProcessed === totalCroppedImages) {
                         submitForm();
                     }
@@ -312,5 +425,4 @@
         }
     });
 </script>
-
 <%- include("../../views/partials/admin/footer") %>

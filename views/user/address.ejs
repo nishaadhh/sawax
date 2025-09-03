@@ -517,6 +517,53 @@ body {
 
 
 <script>
+     // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // Edit Address with SweetAlert2
+        function editAddress(addressId) {
+            Swal.fire({
+                title: 'Edit Address',
+                text: 'You will be redirected to the address editing page.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#d4af37',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fas fa-edit"></i> Edit Address',
+                cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+                customClass: {
+                    popup: 'swal-custom-popup',
+                    title: 'swal-custom-title',
+                    confirmButton: 'swal-custom-confirm',
+                    cancelButton: 'swal-custom-cancel'
+                },
+                backdrop: `
+                    rgba(0,0,0,0.4)
+                    url("/images/nyan-cat.gif")
+                    left top
+                    no-repeat
+                `,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    window.location.href = `/edit-address?id=${addressId}`;
+                }
+            });
+        }
+
     // function previewImage(event) {
     //     const imagePreview = document.getElementById('imagePreview');
     //     const file = event.target.files[0];
@@ -571,7 +618,59 @@ body {
         });
     }
 
-    
+     // Delete Address with SweetAlert2
+        function deleteAddress(addressId) {
+            Swal.fire({
+                title: 'Delete Address?',
+                text: 'This action cannot be undone. Are you sure you want to delete this address?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fas fa-trash-alt"></i> Yes, Delete',
+                cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+                customClass: {
+                    popup: 'swal-custom-popup',
+                    title: 'swal-custom-title',
+                    confirmButton: 'swal-custom-confirm',
+                    cancelButton: 'swal-custom-cancel'
+                },
+                backdrop: `
+                    rgba(0,0,0,0.4)
+                    left top
+                    no-repeat
+                `,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    
+                    // Show success message first
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Your address has been successfully deleted.',
+                        icon: 'success',
+                        confirmButtonColor: '#10b981',
+                        confirmButtonText: 'OK',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'swal-custom-popup',
+                            title: 'swal-custom-title',
+                            confirmButton: 'swal-custom-confirm'
+                        }
+                    }).then(() => {
+                        window.location.href = `/delete-address?id=${addressId}`;
+                    });
+                }
+            });
+        }
+
 </script>
 
 <!-- Bootstrap JS and dependencies -->

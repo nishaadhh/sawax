@@ -6,6 +6,15 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    username: {
+        type: String,
+        required: false,
+        unique: true,
+        sparse: true, // Allows null values but enforces uniqueness when present
+        minlength: 3,
+        maxlength: 30,
+        match: /^[a-zA-Z0-9_]+$/ // Only alphanumeric and underscore
+    },
     email: {
         type: String,
         required: true,
@@ -16,6 +25,10 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: false
+    },
+    profileImage: {
+        type: String,
+        default: '/images/default-avatar.png'
     },
     isBlocked: {
         type: Boolean,
@@ -52,7 +65,7 @@ const userSchema = new Schema({
         unique: true,
     },
     referredBy: {
-        type: String, // Referral code of the person who referred this user
+        type: String,
     },
     referredUsers: [{
         userId: {
@@ -104,7 +117,7 @@ userSchema.pre('save', function(next) {
 // Method to generate unique referral code
 userSchema.methods.generateReferralCode = function() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = 'SAW'; // Brand prefix
+    let result = 'SAW';
     for (let i = 0; i < 5; i++) {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }

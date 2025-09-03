@@ -4,6 +4,41 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 const env = require("dotenv").config();
 const Address = require("../../models/addressSchema");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// Configure multer for profile image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = 'public/images/profiles/';
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'));
+    }
+  }
+});
 
 // Utility function for OTP generation
 function generateOtp() {
@@ -13,7 +48,7 @@ function generateOtp() {
 // Shared utility for sending verification email
 const sendVerificationEmail = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransporter({
       service: "gmail",
       port: 587,
       secure: false,
@@ -46,10 +81,180 @@ const userProfile = async (req, res) => {
     if (!userData) {
       return res.redirect("/errorpage?message=user-not-found");
     }
-    res.render("profile", { user: userData });
+    res.render("profile", { 
+      user: userData,
+      message: req.query.message || null,
+      error: req.query.error || null
+    });
   } catch (error) {
     console.error("Error fetching profile data:", error);
     res.redirect("/errorpage?message=profile-fetch-error");
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.session.user;
+    const { name, email, username } = req.body;
+
+    // Validate inputs
+    if (!name || !email) {
+      return res.redirect("/profile?error=Name and email are required");
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.redirect("/profile?error=Invalid email format");
+    }
+
+    if (username) {
+      // Validate username format
+      const usernameRegex = /^[a-zA-Z0-9_]+$/;
+      if (!usernameRegex.test(username)) {
+        return res.redirect("/profile?error=Username can only contain letters, numbers, and underscores");
+      }
+
+      if (username.length < 3 || username.length > 30) {
+        return res.redirect("/profile?error=Username must be between 3 and 30 characters");
+      }
+
+      // Check if username is already taken
+      const existingUser = await User.findOne({ 
+        username: username, 
+        _id: { $ne: userId } 
+      });
+      if (existingUser) {
+        return res.redirect("/profile?error=Username is already taken");
+      }
+    }
+
+    // Check if email is already taken by another user
+    const existingEmail = await User.findOne({ 
+      email: email, 
+      _id: { $ne: userId } 
+    });
+    if (existingEmail) {
+      return res.redirect("/profile?error=Email is already in use");
+    }
+
+    // Update user data
+    const updateData = { name, email };
+    if (username) {
+      updateData.username = username;
+    }
+
+    await User.findByIdAndUpdate(userId, updateData);
+    res.redirect("/profile?message=Profile updated successfully");
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.redirect("/profile?error=Error updating profile");
+  }
+};
+
+const uploadProfileImage = async (req, res) => {
+  try {
+    const userId = req.session.user;
+    
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'No image file provided' 
+      });
+    }
+
+    const imagePath = '/images/profiles/' + req.file.filename;
+    
+    // Get current user to check for old profile image
+    const user = await User.findById(userId);
+    
+    // Delete old profile image if it exists and is not the default
+    if (user.profileImage && 
+        user.profileImage !== '/images/default-avatar.png' && 
+        !user.profileImage.includes('placeholder')) {
+      try {
+        const oldImagePath = path.join('public', user.profileImage);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      } catch (deleteError) {
+        console.error("Error deleting old profile image:", deleteError);
+      }
+    }
+    
+    // Update user's profile image in database
+    await User.findByIdAndUpdate(userId, { profileImage: imagePath });
+    
+    res.json({ 
+      success: true, 
+      message: 'Profile picture updated successfully!',
+      imagePath: imagePath
+    });
+  } catch (error) {
+    console.error("Error uploading profile image:", error);
+    
+    // Delete uploaded file if database update failed
+    if (req.file) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (deleteError) {
+        console.error("Error deleting uploaded file:", deleteError);
+      }
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error uploading profile picture' 
+    });
+  }
+};
+
+const checkUsernameAvailability = async (req, res) => {
+  try {
+    const { username } = req.query;
+    const userId = req.session.user;
+    
+    if (!username) {
+      return res.json({ available: false, message: 'Username is required' });
+    }
+
+    // Validate username format
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(username)) {
+      return res.json({ 
+        available: false, 
+        message: 'Username can only contain letters, numbers, and underscores' 
+      });
+    }
+
+    if (username.length < 3 || username.length > 30) {
+      return res.json({ 
+        available: false, 
+        message: 'Username must be between 3 and 30 characters' 
+      });
+    }
+
+    // Check if username exists (excluding current user)
+    const existingUser = await User.findOne({ 
+      username: username, 
+      _id: { $ne: userId } 
+    });
+    
+    if (existingUser) {
+      return res.json({ 
+        available: false, 
+        message: 'Username is already taken' 
+      });
+    }
+
+    res.json({ 
+      available: true, 
+      message: 'Username is available' 
+    });
+  } catch (error) {
+    console.error("Error checking username:", error);
+    res.status(500).json({ 
+      available: false, 
+      message: 'Error checking username availability' 
+    });
   }
 };
 
@@ -69,54 +274,47 @@ const changeEmailValid = async (req, res) => {
     const { currentEmail, newEmail, confirmEmail, password } = req.body;
     const userId = req.session.user;
 
-    // 1. Check if the user is logged in
     if (!userId) {
       return res.render("change-email", { message: "Please log in to change your email", user: { email: currentEmail } });
     }
 
-    // 2. Find the user in the database
     const user = await User.findById(userId);
     if (!user) {
       return res.render("change-email", { message: "User not found", user: { email: currentEmail } });
     }
 
-    // 3. Verify the current email matches the user's email
     if (user.email !== currentEmail) {
       return res.render("change-email", { message: "Current email does not match", user: { email: currentEmail } });
     }
 
-    // 4. Validate the new email
     if (!validator.isEmail(newEmail)) {
       return res.render("change-email", { message: "Invalid new email format", user: { email: currentEmail } });
     }
 
-    // 5. Check if new email matches confirm email
     if (newEmail !== confirmEmail) {
       return res.render("change-email", { message: "New email and confirm email do not match", user: { email: currentEmail } });
     }
 
-    // 6. Check if the new email is already in use
     const emailExists = await User.findOne({ email: newEmail });
     if (emailExists) {
       return res.render("change-email", { message: "New email is already in use", user: { email: currentEmail } });
     }
 
-    // 7. Verify the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.render("change-email", { message: "Incorrect password", user: { email: currentEmail } });
     }
 
-    // 8. Update the user's email
     user.email = newEmail;
     await user.save();
     
-res.render("change-email", { message: "Email updated successfully", user: { email: newEmail }, redirect: "/profile" });
+    res.render("change-email", { message: "Email updated successfully", user: { email: newEmail }, redirect: "/profile" });
   } catch (error) {
     console.error("Error in changeEmail:", error);
     res.redirect("/errorpage?message=email-change-error");
   }
 };
+
 const changePassword = async (req, res) => {
   try {
     res.render("change-password", { message: null });
@@ -131,26 +329,21 @@ const changePasswordValid = async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
     const userId = req.session.user;
 
-    // Log form data for debugging
     console.log("Form data:", { currentPassword, newPassword, confirmPassword, userId });
 
-    // Validate form inputs
     if (!currentPassword || !newPassword || !confirmPassword) {
       console.log("Missing form fields");
       return res.render("change-password", { message: "All fields are required" });
     }
 
-    // Fetch user
     const user = await User.findById(userId);
     if (!user) {
       console.log("User not found for ID:", userId);
       return res.render("change-password", { message: "User not found" });
     }
 
-    // Log user data for debugging
     console.log("User data:", { email: user.email, hasPassword: !!user.password });
 
-    // Check if user has a password (handle OAuth users)
     if (!user.password) {
       console.log("No password found for user:", user.email);
       return res.render("change-password", {
@@ -158,26 +351,22 @@ const changePasswordValid = async (req, res) => {
       });
     }
 
-    // Verify current password
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
       console.log("Current password incorrect for user:", user.email);
       return res.render("change-password", { message: "Incorrect current password" });
     }
 
-    // Check if new passwords match
     if (newPassword !== confirmPassword) {
       console.log("New passwords do not match");
       return res.render("change-password", { message: "New passwords do not match" });
     }
 
-    // Validate new password
     if (newPassword.length < 8) {
       console.log("New password too short");
       return res.render("change-password", { message: "New password must be at least 8 characters long" });
     }
 
-    // Additional password validation (e.g., complexity)
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       console.log("New password does not meet complexity requirements");
@@ -186,13 +375,11 @@ const changePasswordValid = async (req, res) => {
       });
     }
 
-    // Hash and update password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     await user.save();
     console.log("Password updated successfully for user:", user.email);
 
-    // Redirect to profile with success message
     res.redirect("/profile?message=Password+updated+successfully");
   } catch (error) {
     console.error("Error in changePasswordValid:", error);
@@ -200,40 +387,14 @@ const changePasswordValid = async (req, res) => {
   }
 };
 
-
-
-// const addToCart = async (req, res) => {
-//   try {
-//     const userId = req.session.user;
-//     const productId = req.body.productId;
-
-//     // Validate input
-//     if (!userId || !productId) {
-//       return res.status(400).json({ message: "Invalid input" });
-//     }
-
-//     // Add product to cart logic here
-//     // ...
-
-//     res.status(200).json({ message: "Product added to cart" });
-//   } catch (error) {
-//     console.error("Error adding to cart:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// }
-
 const cart = async (req, res) => {
   try{
-
     res.render("addToCart", { message: null });
   }catch (error) {
     console.error("Error rendering cart page:", error);
     res.redirect("/errorpage?message=render-error");
   }
 } 
-
-
-
 
 const loadAddressPage = async (req,res) => {
     try {
@@ -244,38 +405,28 @@ const loadAddressPage = async (req,res) => {
         res.render("address",{
             user:userData,
             userAddress:addressData,
-
         })
-
     } catch (error) {
-
         console.error("Error in Address loading",error);
         res.redirect("/pageNotFound");
-        
     }
 }
 
 const addAddress = async (req,res) => {
     try {
-        
         const user = req.session.user;
         const userData = await User.findById(user);
         res.render("add-address",{
-            
             theUser:user,
             user:userData
         })
-
     } catch (error) {
-
         res.redirect("/pageNotFound")
-        
     }
 }
 
 const postAddAddress = async (req,res) => {
     try {
-        
         const userId = req.session.user;
         const userData = await User.findOne({_id:userId})
         const { addressType, name, country, city, landMark, state, streetAddress, pincode, phone, email, altPhone } = req.body;
@@ -286,7 +437,6 @@ const postAddAddress = async (req,res) => {
             const newAddress = new Address({
                 userId:userData,
                 address: [{addressType, name, country, city, landMark, state, streetAddress, pincode, phone, email, altPhone}]
-
             });
             await newAddress.save();
         }else{
@@ -295,24 +445,18 @@ const postAddAddress = async (req,res) => {
         }
 
         res.redirect("/address")
-
     } catch (error) {
-
         console.error("Error adding address",error)
-
         res.redirect("/pageNotFound")
-        
     }
 }
 
 const editAddress = async (req,res) => {
     try {
-        
         const addressId = req.query.id;
         const user = req.session.user;
         const currAddress = await Address.findOne({
             "address._id":addressId,
-
         });
         if(!currAddress){
             return res.redirect("/pageNotFound")
@@ -320,7 +464,6 @@ const editAddress = async (req,res) => {
 
         const addressData = currAddress.address.find((item) => {
             return item._id.toString() === addressId.toString();
-
         })
 
         if(!addressData){
@@ -331,19 +474,14 @@ const editAddress = async (req,res) => {
             address:addressData,
             user:user
         })
-
     } catch (error) {
-
         console.error("Error in edit Address",error)
         res.redirect("/pageNotFound")
-        
     }
 }
 
-
 const postEditAddress = async (req,res) => {
     try {
-
         const data = req.body;
         const addressId = req.query.id;
         const user = req.session.user;
@@ -374,18 +512,14 @@ const postEditAddress = async (req,res) => {
         )
 
         res.redirect("/address")
-        
     } catch (error) {
-
         console.error("Error in editing address",error)
         res.redirect("/pageNotFound")
-        
     }
 }
 
 const deleteAddress = async (req,res) => {
     try {
-        
         const addressId = req.query.id;
         const findAddress = await Address.findOne({"address._id":addressId})
 
@@ -406,31 +540,27 @@ const deleteAddress = async (req,res) => {
         })
 
         res.redirect("/address")
-
     } catch (error) {
-
         console.error("Error in deleting in address",error)
         res.redirect("/pageNotFound")
-        
     }
 }
 
-
-
-
-
-
 module.exports = {
   userProfile,
+  updateProfile,
+  uploadProfileImage,
+  checkUsernameAvailability,
   changeEmail,
   changeEmailValid,
   sendVerificationEmail,
   changePassword,
   changePasswordValid,
   loadAddressPage,
-    addAddress,
-    postAddAddress,
-    editAddress,
-    postEditAddress,
-    deleteAddress,
+  addAddress,
+  postAddAddress,
+  editAddress,
+  postEditAddress,
+  deleteAddress,
+  upload
 };
