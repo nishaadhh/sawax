@@ -262,7 +262,7 @@
         }
 
         .profile-header {
-            background: var(--gradient);
+            background: linear-gradient(135deg, #d4a017, #000000);
             padding: 40px;
             text-align: center;
             position: relative;
@@ -829,6 +829,7 @@
             visibility: visible;
             opacity: 1;
         }
+        
     </style>
 </head>
 <body>
@@ -854,7 +855,8 @@
                         <li><a href="/wallet"><i class="fas fa-wallet"></i>Wallet</a></li>
                         <li><a href="/coupon"><i class="fas fa-ticket-alt"></i>Coupons</a></li>
                         <li><a href="/referral"><i class="fas fa-users"></i>Referrals</a></li>
-                        <li><a href="/logout" style="color: #e74c3c;"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                        <li><a href="#" style="color: red;" onclick="confirmLogout()">Logout
+                        <i class="fas fa-sign-out-alt"></i></a></li>
                     </ul>
                 </div>
                 
@@ -1173,6 +1175,36 @@
                 document.body.style.opacity = '1';
             }, 100);
         });
+    </script>
+    <script>
+        function confirmLogout() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to logout?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Logout',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Call the /logout endpoint
+            fetch('/logout')
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url; // Redirect to /login
+                    } else {
+                        window.location.reload(); // Fallback reload
+                    }
+                })
+                .catch(error => {
+                    console.error("Logout error:", error);
+                    window.location.reload(); // Fallback reload
+                });
+        }
+    });
+}
     </script>
 </body>
 </html>

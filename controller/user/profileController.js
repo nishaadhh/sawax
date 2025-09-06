@@ -546,6 +546,21 @@ const deleteAddress = async (req,res) => {
     }
 }
 
+const logout = async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                console.log("Session destruction error:", err.message);
+                return res.redirect('/pageNotFound');
+            }
+            return res.redirect('/login?refresh=true');
+        });
+    } catch (error) {
+        console.log("Logout error:", error);
+        res.redirect("/pageNotFound");
+    }
+};
+
 module.exports = {
   userProfile,
   updateProfile,
@@ -562,5 +577,6 @@ module.exports = {
   editAddress,
   postEditAddress,
   deleteAddress,
-  upload
+  upload,
+  logout
 };

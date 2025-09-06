@@ -243,11 +243,35 @@
                 grid-template-columns: 1fr;
             }
         }
+
+
+        .go-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--primary), #2c3e50);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 40px;
+        }
+
+        .go-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(26, 26, 26, 0.3);
+        }
     </style>
 </head>
 <body>
     <%- include("../../views/partials/user/header") %>
-    
+    <div style="padding-left:10px ;">
+        <a href="/profile" class="go-button" style="text-decoration: none;">
+                             <i class="fa-solid fa-arrow-left"></i> Go Profile
+        </a>
+        </div>
     <div class="referral-container">
         <!-- Header -->
         <div class="referral-header">
@@ -380,6 +404,7 @@
         </div>
         <% } %>
     </div>
+    
     
   
     

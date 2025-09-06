@@ -22,10 +22,13 @@ const userSchema = new Schema({
     googleId: {
         type: String,
     },
-    password: {
-        type: String,
-        required: false
-    },
+   password: {
+    type: String,
+    required: function() {
+        return !this.googleId; // Only required if not a Google user
+    }
+}
+,
     profileImage: {
         type: String,
         default: '/images/default-avatar.png'

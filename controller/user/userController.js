@@ -434,26 +434,39 @@ const loadLoginPage = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const {email,password} = req.body;
-        const findUser = await User.findOne({isAdmin:0,email:email});
-
-        if(!findUser){
-            return res.render('login',{message:'User not found'})
+        const {email, password} = req.body;
+        
+        // Check if password is provided in the request
+        if (!password) {
+            return res.render('login', {message: 'Password is required'});
         }
-        if(findUser.isBlocked){
-            return res.render('login',{message:'User is Blocked by Admin'})
+        
+        const findUser = await User.findOne({isAdmin: 0, email: email});
+
+        if (!findUser) {
+            return res.render('login', {message: 'User not found'});
+        }
+        
+        if (findUser.isBlocked) {
+            return res.render('login', {message: 'User is Blocked by Admin'});
         }
 
-        const passwordMatch = await bcrypt.compare(password,findUser.password);
-        if(!passwordMatch){
-            return res.render('login',{message:'Invalid Password'})
+        // Check if user has a password (important for Google OAuth users)
+        if (!findUser.password) {
+            return res.render('login', {message: 'This account was created with Google. Please use Google Sign-In.'});
+        }
+
+        const passwordMatch = await bcrypt.compare(password, findUser.password);
+        if (!passwordMatch) {
+            return res.render('login', {message: 'Invalid Password'});
         }
 
         req.session.user = findUser._id;
-        res.redirect('/')
+        res.redirect('/');
+        
     } catch (error) {
-        console.error('Login Error',error);
-        res.render('login',{message:'Login Failed Try again'})
+        console.error('Login Error', error);
+        res.render('login', {message: 'Login Failed Try again'});
     }
 }
 

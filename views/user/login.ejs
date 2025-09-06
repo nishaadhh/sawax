@@ -57,7 +57,7 @@
 
         .header-content {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 20px 0;
         }
@@ -348,12 +348,12 @@
         .password-toggle {
             position: absolute;
             right: 15px;
-            top: 70%;
-            transform: translateY(-50%);
+            top: 38px;
             cursor: pointer;
             color: var(--light-text);
             font-size: 16px;
             transition: color 0.3s;
+            z-index: 10;
         }
 
         .password-toggle:hover {
@@ -422,6 +422,10 @@
                 gap: 10px;
                 text-align: center;
             }
+
+            .logo {
+                font-size: 28px;
+            }
         }
 
         @media (max-width: 576px) {
@@ -437,6 +441,14 @@
             
             .login-form {
                 padding: 20px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .header-content {
+                padding: 15px 0;
             }
         }
 
@@ -572,81 +584,21 @@
         .mobile-dropdown-content a:hover {
             color: var(--accent);
         }
-
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            nav ul {
-                display: none;
-            }
-
-            .mobile-menu {
-                display: block;
-            }
-
-            .header-icons {
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .logo {
-                font-size: 28px;
-            }
-
-            .header-icon {
-                font-size: 18px;
-            }
-
-            .mobile-menu {
-                font-size: 22px;
-            }
-
-            .mobile-nav ul li a {
-                font-size: 14px;
-                padding: 8px;
-            }
-
-            .mobile-sign-in-link {
-                font-size: 14px;
-                padding: 8px;
-            }
-
-            .mobile-dropdown-content a {
-                font-size: 13px;
-                padding: 6px 0;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .logo {
-                font-size: 24px;
-            }
-
-            .header-content {
-                padding: 15px 0;
-            }
-
-            .header-icons {
-                gap: 10px;
-            }
-
-            .header-icon {
-                font-size: 16px;
-            }
-
-            .mobile-menu {
-                font-size: 20px;
-            }
-
-            .mobile-nav {
-                padding: 15px;
-            }
-        }
     </style>
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    S<span>A</span>W<span>A</span>X
+                </div>
+            </div>
+        </div>
+    </header>
 
     <!-- Login Section -->
     <section class="login-section">
@@ -716,9 +668,11 @@
         const mobileMenu = document.querySelector('.mobile-menu');
         const mobileNav = document.querySelector('#mobile-nav');
 
-        mobileMenu.addEventListener('click', () => {
-            mobileNav.classList.toggle('active');
-        });
+        if (mobileMenu && mobileNav) {
+            mobileMenu.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+            });
+        }
 
         // Toggle mobile dropdown for user profile
         function toggleMobileDropdown(event) {
@@ -729,7 +683,7 @@
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (event) => {
-            if (!mobileNav.contains(event.target) && !mobileMenu.contains(event.target)) {
+            if (mobileNav && !mobileNav.contains(event.target) && mobileMenu && !mobileMenu.contains(event.target)) {
                 mobileNav.classList.remove('active');
             }
         });
@@ -797,40 +751,52 @@
             }
         }
 
-        // Password toggle functionality
-        passwordToggle.addEventListener('click', () => {
-            const type = passid.getAttribute('type') === 'password' ? 'text' : 'password';
-            passid.setAttribute('type', type);
-            passwordToggle.classList.toggle('fa-eye');
-            passwordToggle.classList.toggle('fa-eye-slash');
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            loginform.addEventListener("submit", function (e) {
-                emailValidateChecking();
-                passValidateChecking();
-
-                if (!emailid || !passid || !error1 || !error2 || !loginform) {
-                    console.error("One or more elements not found");
-                }
-
-                if (error1.innerHTML || error2.innerHTML) {
-                    e.preventDefault();
+        // Password toggle functionality - Fixed
+        if (passwordToggle && passid) {
+            passwordToggle.addEventListener('click', function() {
+                const type = passid.getAttribute('type') === 'password' ? 'text' : 'password';
+                passid.setAttribute('type', type);
+                
+                // Toggle the eye icon
+                if (type === 'password') {
+                    passwordToggle.classList.remove('fa-eye-slash');
+                    passwordToggle.classList.add('fa-eye');
                 } else {
-                    loginButton.classList.add("loading");
-                    loginButton.disabled = true;
-
-                    const handleFormCompletion = () => {
-                        loginButton.classList.remove("loading");
-                        loginButton.disabled = false;
-                    };
-
-                    loginform.addEventListener("submit", function handleSubmit() {
-                        setTimeout(handleFormCompletion, 2000);
-                        loginform.removeEventListener("submit", handleSubmit);
-                    }, { once: true });
+                    passwordToggle.classList.remove('fa-eye');
+                    passwordToggle.classList.add('fa-eye-slash');
                 }
             });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (loginform) {
+                loginform.addEventListener("submit", function (e) {
+                    emailValidateChecking();
+                    passValidateChecking();
+
+                    if (!emailid || !passid || !error1 || !error2 || !loginform) {
+                        console.error("One or more elements not found");
+                    }
+
+                    if (error1.innerHTML || error2.innerHTML) {
+                        e.preventDefault();
+                    } else {
+                        if (loginButton) {
+                            loginButton.classList.add("loading");
+                            loginButton.disabled = true;
+                        }
+
+                        const handleFormCompletion = () => {
+                            if (loginButton) {
+                                loginButton.classList.remove("loading");
+                                loginButton.disabled = false;
+                            }
+                        };
+
+                        setTimeout(handleFormCompletion, 2000);
+                    }
+                });
+            }
         });
     </script>
 </body>
