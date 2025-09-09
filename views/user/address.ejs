@@ -2,6 +2,8 @@
 
 <!-- Include SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- Include Animate.css for animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
 <style>
 :root {
@@ -13,6 +15,8 @@
     --border: #e5e7eb;
     --shadow: rgba(0, 0, 0, 0.05);
     --gradient: linear-gradient(135deg, #d4af37 0%, #1a1a1a 100%);
+    --danger: #e74c3c;
+    --success: #2ecc71;
 }
 
 * {
@@ -238,11 +242,13 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 15px var(--shadow);
     margin-bottom: 25px;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--accent);
 }
 
 .bg-white.p-4.shadow-sm.mb-4:hover {
     transform: translateY(-3px);
+    box-shadow: 0 8px 25px var(--shadow);
 }
 
 .d-flex.justify-content-between.align-items-center.border-bottom.pb-2.mb-2 {
@@ -284,21 +290,34 @@ body {
 .text-primary {
     color: var(--accent) !important;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 10px;
 }
 
 .text-primary:hover {
     color: #b89c2f !important;
+    background-color: rgba(212, 175, 55, 0.1);
+    text-decoration: none;
 }
 
 .text-danger {
-    color: #ef4444 !important;
+    color: var(--danger) !important;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
 .text-danger:hover {
-    color: #dc2626 !important;
+    color: #c0392b !important;
+    background-color: rgba(231, 76, 60, 0.1);
+    text-decoration: none;
 }
 
 /* Button */
@@ -321,6 +340,126 @@ body {
     background-color: #b89c2f;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.go-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, var(--primary), #2c3e50);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: -25px;
+}
+
+.go-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(26, 26, 26, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+/* Custom SweetAlert2 styles */
+.swal-custom-popup {
+    border-radius: 15px !important;
+    font-family: 'Poppins', sans-serif !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal-custom-title {
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+    font-size: 24px !important;
+}
+
+.swal-custom-content {
+    color: var(--text) !important;
+    font-size: 16px !important;
+}
+
+.swal-custom-confirm {
+    background-color: var(--accent) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 25px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.swal-custom-confirm:hover {
+    background-color: #b89c2f !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal-custom-confirm-danger {
+    background-color: var(--danger) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 25px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.swal-custom-confirm-danger:hover {
+    background-color: #c0392b !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.15) !important;
+}
+
+.swal-custom-cancel {
+    background-color: var(--light-text) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 25px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.swal-custom-cancel:hover {
+    background-color: #4b5563 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(107, 114, 128, 0.15) !important;
+}
+
+.swal-custom-icon {
+    border: 3px solid var(--danger) !important;
+}
+
+/* No Address State */
+.no-address-container {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow);
+    margin-bottom: 25px;
+}
+
+.no-address-container h2 {
+    color: var(--primary);
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.no-address-container p {
+    color: var(--light-text);
+    font-size: 16px;
+    margin-bottom: 30px;
 }
 
 /* Responsive Design */
@@ -386,26 +525,6 @@ body {
         height: 70px;
     }
 }
-
-
- .go-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px 25px;
-            background: linear-gradient(135deg, var(--primary), #2c3e50);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-top: -25px;
-        }
-
-        .go-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(26, 26, 26, 0.3);
-        }
 </style>
 
 <section class="banner-area organic-breadcrumb">
@@ -433,47 +552,56 @@ body {
     <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="previewImage(event)">
 </section>
 
-
-<div style="padding-left:10px ;">
-        <a href="/profile" class="go-button" style="text-decoration: none;">
-                             <i class="fa-solid fa-arrow-left"></i> Go Profile
-        </a>
-        </div>
-
-
+<div style="padding-left:10px;">
+    <a href="/profile" class="go-button" style="text-decoration: none;">
+        <i class="fa-solid fa-arrow-left"></i> Go Profile
+    </a>
+</div>
 
 <div class="container mt-5">
     <div class="row">
-        <!-- Sidebar -->
-        
         <!-- Main Content -->
         <div class="col-md-9 main-content">
-            <%if(userAddress){%>
-                <%userAddress.address.forEach((address) => {%>
+            <% if(userAddress && userAddress.address && userAddress.address.length > 0) { %>
+                <% userAddress.address.forEach((address) => { %>
                 <div class="bg-white p-4 shadow-sm mb-4">
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                        <h3 class="font-weight-bold">Shipping Address: <%=address.addressType%></h3>
+                        <h3 class="font-weight-bold">Shipping Address: <%= address.addressType %></h3>
                         <div class="text-muted">
-                            <span>Name: <%=address.name%></span><br>
-                            <span class="ml-4">Ph No: +91 <%=address.phone%></span>
+                            <span>Name: <%= address.name %></span><br>
+                            <span class="ml-4">Ph No: +91 <%= address.phone %></span>
                         </div>
                     </div>
                     <p>
-                        <%=address.streetAddress%><br>
-                        <%=address.landMark%><br>
-                        Near <%=address.landMark%><br>
-                        <%=address.city%>, <%=address.pincode%><br>
-                        <%=address.state%>, <%=address.country%>
+                        <%= address.streetAddress %><br>
+                        <%= address.landMark %><br>
+                        Near <%= address.landMark %><br>
+                        <%= address.city %>, <%= address.pincode %><br>
+                        <%= address.state %>, <%= address.country %>
                     </p>
                     <div class="mt-2">
-                        <a href="/editAddress?id=<%=address._id%>" class="text-primary mr-4" onclick="editAddress('<%=address._id%>'); return false;">Edit</a>
-                        <a href="/deleteAddress?id=<%=address._id%>" class="text-danger" onclick="deleteAddress('<%=address._id%>'); return false;">Delete</a>
+                        <a href="#" class="text-primary" onclick="editAddress('<%= address._id %>'); return false;">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="#" class="text-danger" onclick="deleteAddress('<%= address._id %>'); return false;">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
                     </div>
                 </div>
-                <%})%><%} else{%>
-                    <h1>Add New Address</h1>
-                <%}%>
-                <a href="/addAddress"><button class="btn btn-orange">Add New Address</button></a>
+                <% }) %>
+            <% } else { %>
+                <div class="no-address-container">
+                    <i class="fas fa-map-marker-alt" style="font-size: 48px; color: var(--light-text); margin-bottom: 20px;"></i>
+                    <h2>No Addresses Found</h2>
+                    <p>You haven't added any addresses yet. Add your first address to get started with deliveries.</p>
+                </div>
+            <% } %>
+            
+            <a href="/addAddress">
+                <button class="btn btn-orange">
+                    <i class="fas fa-plus"></i> Add New Address
+                </button>
+            </a>
         </div>
     </div>
 </div>
@@ -483,13 +611,22 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
 
 <script>
     // Show loading overlay
-    function showLoading() {
+    function showLoading(title = 'Processing...', text = 'Please wait...') {
         Swal.fire({
-            title: 'Processing...',
+            title: title,
+            text: text,
             allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'swal-custom-popup',
+                title: 'swal-custom-title',
+                content: 'swal-custom-content'
+            },
             didOpen: () => {
                 Swal.showLoading();
             }
@@ -499,6 +636,20 @@ body {
     // Hide loading overlay
     function hideLoading() {
         Swal.close();
+    }
+
+    // Preview uploaded image
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            document.getElementById('profileImage').src = e.target.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     }
 
     // Edit Address with SweetAlert2
@@ -515,42 +666,127 @@ body {
             customClass: {
                 popup: 'swal-custom-popup',
                 title: 'swal-custom-title',
+                content: 'swal-custom-content',
                 confirmButton: 'swal-custom-confirm',
                 cancelButton: 'swal-custom-cancel'
             },
-            backdrop: `
-                rgba(0,0,0,0.4)
-                url("/images/nyan-cat.gif")
-                left top
-                no-repeat
-            `,
+            backdrop: `rgba(0,0,0,0.4)`,
             showClass: {
-                popup: 'animate__animated animate__fadeInDown'
+                popup: 'animate__animated animate__fadeInDown animate__faster'
             },
             hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                showLoading();
+                showLoading('Redirecting...', 'Taking you to the edit page...');
                 window.location.href = `/editAddress?id=${addressId}`;
             }
         });
     }
 
-    function previewImage(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            document.getElementById('profileImage').src = e.target.result;
-        }
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+    // Delete Address with enhanced SweetAlert2 confirmation
+    function deleteAddress(addressId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone! Your address will be permanently deleted.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-trash"></i> Yes, Delete It!',
+            cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+            customClass: {
+                popup: 'swal-custom-popup',
+                title: 'swal-custom-title',
+                content: 'swal-custom-content',
+                confirmButton: 'swal-custom-confirm-danger',
+                cancelButton: 'swal-custom-cancel',
+                icon: 'swal-custom-icon'
+            },
+            backdrop: `rgba(0,0,0,0.4)`,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
+            },
+            focusCancel: true,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading while deleting
+                showLoading('Deleting Address...', 'Please wait while we remove your address.');
+                
+                // Redirect to delete endpoint
+                setTimeout(() => {
+                    window.location.href = `/deleteAddress?id=${addressId}`;
+                }, 500);
+            }
+        });
     }
 
+    // Check for URL parameters and show appropriate messages
+    window.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Handle deletion success
+        if (urlParams.get('deleted') === 'true') {
+            Swal.fire({
+                title: 'Deleted Successfully!',
+                text: 'Your address has been permanently removed.',
+                icon: 'success',
+                confirmButtonColor: '#2ecc71',
+                confirmButtonText: '<i class="fas fa-check"></i> OK',
+                customClass: {
+                    popup: 'swal-custom-popup',
+                    title: 'swal-custom-title',
+                    content: 'swal-custom-content',
+                    confirmButton: 'swal-custom-confirm'
+                },
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp animate__faster'
+                },
+                timer: 3000,
+                timerProgressBar: true
+            }).then(() => {
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            });
+        }
+        
+        // Handle deletion error
+        if (urlParams.get('error')) {
+            const errorMessage = urlParams.get('error').replace(/\+/g, ' ');
+            Swal.fire({
+                title: 'Error!',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonColor: '#e74c3c',
+                confirmButtonText: '<i class="fas fa-times"></i> OK',
+                customClass: {
+                    popup: 'swal-custom-popup',
+                    title: 'swal-custom-title',
+                    content: 'swal-custom-content',
+                    confirmButton: 'swal-custom-confirm-danger'
+                },
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp animate__faster'
+                }
+            }).then(() => {
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            });
+        }
+    });
+
+    // Optional: Reset Password function (if needed)
     function resetPassword() {
         Swal.fire({
             title: 'Reset Password',
@@ -558,4 +794,94 @@ body {
             icon: 'info',
             showCancelButton: true,
             confirmButtonColor: '#d4af37',
-            cancelButtonColor: '#
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '<i class="fas fa-key"></i> Reset Password',
+            cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+            customClass: {
+                popup: 'swal-custom-popup',
+                title: 'swal-custom-title',
+                content: 'swal-custom-content',
+                confirmButton: 'swal-custom-confirm',
+                cancelButton: 'swal-custom-cancel'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showLoading('Redirecting...', 'Taking you to the reset page...');
+                window.location.href = '/reset-password';
+            }
+        });
+    }
+
+    // Add some interactive feedback for buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add ripple effect to buttons
+        const buttons = document.querySelectorAll('.btn, .go-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    });
+</script>
+
+<style>
+/* Ripple effect for buttons */
+.btn, .go-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Additional hover effects */
+.text-primary, .text-danger {
+    position: relative;
+    overflow: hidden;
+}
+
+.text-primary::before, .text-danger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.text-primary:hover::before, .text-danger:hover::before {
+    left: 100%;
+}
+</style>
+
+<%- include("../../views/partials/user/footer") %>

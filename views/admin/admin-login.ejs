@@ -3,234 +3,636 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>SAWAX Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap");
-
-        /* Define CSS custom properties for color animation */
-        @property --color-1 {
-            syntax: "<color>";
-            inherits: false;
-            initial-value: hsl(0, 0%, 0%);
-        }
-
-        @property --color-2 {
-            syntax: "<color>";
-            inherits: false;
-            initial-value: hsl(0, 0%, 100%);
-        }
-
-        /* Keyframes for gradient color change */
-        @keyframes gradient-change {
-            to {
-                --color-1: hsl(0, 0%, 0%);
-                --color-2: hsl(309, 78%, 4%);
-            }
-        }
-
         * {
-            padding: 0;
             margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow: hidden;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #000000;
             position: relative;
-            overflow: hidden;
         }
 
-        .background-container {
-            width: 100%;
-            height: 100%;
-            position: absolute;
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
             top: 0;
             left: 0;
-            z-index: 1;
-            display: grid;
-            place-items: center;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
             overflow: hidden;
         }
 
-        .title {
+        .particle {
             position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            z-index: 3;
+            background: radial-gradient(circle, #d4af37 0%, transparent 50%);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
         }
 
-        .title article {
-            display: grid;
-            gap: 1lh;
-            text-align: center;
+        .particle:nth-child(1) {
+            width: 4px;
+            height: 4px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 25s;
         }
 
-        .title h1 {
-            font-size: 15vmin;
-            font-weight: 900;
-            font-family: "Montserrat", sans-serif;
-            animation: gradient-change 2s linear infinite alternate;
-            background: linear-gradient(to right in oklch, var(--color-1), var(--color-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.25cap;
+        .particle:nth-child(2) {
+            width: 6px;
+            height: 6px;
+            top: 60%;
+            left: 80%;
+            animation-delay: -5s;
+            animation-duration: 30s;
         }
 
-        .ghost {
-            width: 8vmin;
-            height: 12vmin;
-            background-color: #e7e6e6;
-            background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
-            background-image: radial-gradient(ellipse at 35% 40%, #000 8%, transparent 0%),
-                radial-gradient(ellipse at 65% 40%, #000 8%, transparent 0%),
-                radial-gradient(ellipse at 50% 60%, #000 8%, transparent 0%);
-            border-radius: 100% / 70% 70% 0% 0%;
-            transform: translateX(100em) rotateZ(-90deg);
-            position: relative;
-            opacity: 0.9;
-            mix-blend-mode: exclusion;
-            animation: ghostMove 4s ease-out infinite;
+        .particle:nth-child(3) {
+            width: 3px;
+            height: 3px;
+            top: 40%;
+            left: 60%;
+            animation-delay: -10s;
+            animation-duration: 20s;
         }
 
-        @keyframes ghostMove {
+        .particle:nth-child(4) {
+            width: 5px;
+            height: 5px;
+            top: 80%;
+            left: 30%;
+            animation-delay: -15s;
+            animation-duration: 35s;
+        }
+
+        .particle:nth-child(5) {
+            width: 7px;
+            height: 7px;
+            top: 10%;
+            left: 90%;
+            animation-delay: -20s;
+            animation-duration: 40s;
+        }
+
+        @keyframes float {
             0% {
-                transform: translateX(30em) rotateZ(-90deg);
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.3;
             }
             100% {
-                transform: translateX(-35em) rotateZ(-90deg);
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
             }
         }
 
-        .ghost div {
+        .wave {
             position: absolute;
-            width: 20%;
-            background-color: #e7e6e6;
-            background-image: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+            animation: wave 15s infinite ease-in-out;
+            border-radius: 50%;
         }
 
-        .ghost div:nth-of-type(1) {
-            height: 7vmin;
-            left: 0;
-            bottom: -6vmin;
-            border-radius: 100% / 0% 0% 50% 50%;
+        .wave1 {
+            top: -100%;
+            left: -50%;
+            animation-delay: 0s;
         }
 
-        .ghost div:nth-of-type(2),
-        .ghost div:nth-of-type(4) {
-            height: 4vmin;
-            left: 20%;
-            bottom: -3vmin;
-            border-radius: 100% / 50% 50% 0% 0%;
-            background-color: transparent;
+        .wave2 {
+            top: -120%;
+            left: -60%;
+            animation-delay: -5s;
         }
 
-        .ghost div:nth-of-type(3) {
-            height: 4vmin;
-            left: 40%;
-            bottom: -3.95vmin;
-            border-radius: 100% / 0% 0% 60% 60%;
-            background-color: #e7e6e6;
+        .wave3 {
+            top: -140%;
+            left: -70%;
+            animation-delay: -10s;
         }
 
-        .ghost div:nth-of-type(4) {
-            left: 60%;
+        @keyframes wave {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
         }
 
-        .ghost div:nth-of-type(5) {
-            height: 3vmin;
-            left: 80%;
-            bottom: -2.9vmin;
-            border-radius: 100% / 0% 0% 70% 70%;
-            background-color: #e7e6e6;
-        }
-
+        /* Login Container */
         .login-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            z-index: 2;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             position: relative;
+            overflow: hidden;
+            animation: cardGlow 3s ease-in-out infinite alternate, slideIn 0.8s ease-out;
+            margin: 2rem;
         }
 
-        .login-container article {
-            display: grid;
-            gap: 1lh;
+        @keyframes cardGlow {
+            0% {
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 rgba(212, 175, 55, 0.2);
+            }
+            100% {
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(212, 175, 55, 0.1);
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .brand-section {
             text-align: center;
+            margin-bottom: 2.5rem;
         }
 
-        .login-container h2 {
-            margin-bottom: 20px;
-            font-size: 5vmin;
-            animation: gradient-change 2s linear infinite alternate;
-            background: linear-gradient(to right in oklch, var(--color-1), var(--color-2));
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #d4af37, #f4d03f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #0a0a0a;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .brand-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #d4af37, #f4d03f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
-            line-height: 1.25cap;
+            margin: 0;
+            letter-spacing: 2px;
         }
 
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            font-weight: 300;
+            margin: 0;
         }
 
-        .login-container button {
+        .login-form-section {
+            text-align: center;
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+
+        .input-container input {
             width: 100%;
-            padding: 10px;
-            background-color: #d4af37;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
+            padding: 1.2rem 1rem 1.2rem 3rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        .login-container button:hover {
-            background-color: rgb(185, 141, 18);
+        .input-container input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-container input:focus {
+            border-color: #d4af37;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .input-container input:focus ~ .input-icon {
+            color: #d4af37;
+        }
+
+        .input-border {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #d4af37, #f4d03f);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .input-container input:focus ~ .input-border {
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        .password-toggle:hover {
+            color: #d4af37;
+        }
+
+        .login-btn {
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #d4af37, #f4d03f);
+            border: none;
+            border-radius: 12px;
+            color: #0a0a0a;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn.loading {
+            pointer-events: none;
+        }
+
+        .btn-text, .btn-loader {
+            transition: all 0.3s ease;
+        }
+
+        .btn-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+
+        .btn-loader i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .login-btn.loading .btn-text {
+            opacity: 0;
+        }
+
+        .login-btn.loading .btn-loader {
+            opacity: 1;
+        }
+
+        /* Error Alert */
+        .error-alert {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(220, 38, 38, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .error-alert.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .error-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .error-content i {
+            color: #fbbf24;
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .error-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .error-close:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Shake animation for form */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .brand-title {
+                font-size: 2.5rem;
+            }
+            
+            .error-alert {
+                right: 1rem;
+                left: 1rem;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+            
+            .brand-title {
+                font-size: 2rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- <div class="background-container">
-        <div class="ghost">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div> -->
-
-    <div class="title">
-        <article>
-            <h1>SAWAX</h1>
-        </article>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
     </div>
 
+    <!-- Login Container -->
     <div class="login-container">
-        <article>
-            <h2>Admin Login</h2>
-        </article>
-        <form action="/admin/login" method="POST">
-            <input type="text" name="email" placeholder="email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
+        <div class="brand-section">
+            <div class="logo-container">
+                
+                <h1 class="brand-title">SAWAX</h1>
+                <p class="brand-subtitle">Admin Portal</p>
+            </div>
+        </div>
+        
+        <div class="login-form-section">
+            <h2 class="form-title">Welcome Back</h2>
+            <p class="form-subtitle">Please sign in to your account</p>
+            
+            <form id="loginForm" class="login-form" action="/admin/login" method="POST">
+                <div class="input-group">
+                    <div class="input-container">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" name="email" placeholder="Email Address" required>
+                        <div class="input-border"></div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-container">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <div class="input-border"></div>
+                        <button type="button" class="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader">
+                        <i class="fas fa-spinner"></i>
+                    </span>
+                </button>
+            </form>
+        </div>
     </div>
+    
+    <!-- Error Alert -->
+    <div id="errorAlert" class="error-alert">
+        <div class="error-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span class="error-message">Invalid credentials. Please try again.</span>
+        </div>
+        <button class="error-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script>
+        // Check for error message from server
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            document.addEventListener('DOMContentLoaded', function() {
+                showErrorAlert('<%= errorMessage %>');
+                
+                // Add shake animation to form
+                const loginForm = document.getElementById('loginForm');
+                loginForm.classList.add('shake');
+                setTimeout(() => {
+                    loginForm.classList.remove('shake');
+                }, 500);
+            });
+        <% } %>
+
+        // Password toggle functionality
+        document.querySelector('.password-toggle').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Form submission with loading state
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            const loginBtn = document.querySelector('.login-btn');
+            loginBtn.classList.add('loading');
+        });
+
+        // Error alert functions
+        function showErrorAlert(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.querySelector('.error-message');
+            
+            errorMessage.textContent = message;
+            errorAlert.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                hideErrorAlert();
+            }, 5000);
+        }
+
+        function hideErrorAlert() {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.classList.remove('show');
+        }
+
+        // Error alert close button
+        document.querySelector('.error-close').addEventListener('click', hideErrorAlert);
+
+        // Input focus animations
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

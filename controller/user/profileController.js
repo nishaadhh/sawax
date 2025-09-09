@@ -261,7 +261,7 @@ const checkUsernameAvailability = async (req, res) => {
 const changeEmail = async (req, res) => {
   try {
     const userId = req.session.user;
-    const userData = await User.findOne({_id:userId})
+    const userData = await User.findById(userId);
     res.render("change-email", { message: null ,user:userData});
   } catch (error) {
     console.error("Error rendering change email page:", error);
@@ -485,12 +485,18 @@ const postEditAddress = async (req,res) => {
         const data = req.body;
         const addressId = req.query.id;
         const user = req.session.user;
+        
         const findAddress = await Address.findOne({
             "address._id":addressId
         });
+        
         if(!findAddress){
-            res.redirect("/pageNotFound")
+            if (req.headers['content-type'] === 'application/json') {
+                return res.status(404).json({ success: false, message: 'Address not found' });
+            }
+            return res.redirect("/pageNotFound");
         }
+        
         await Address.updateOne(
             {"address._id":addressId},
             {$set:{
@@ -509,12 +515,23 @@ const postEditAddress = async (req,res) => {
                     altPhone:data.altPhone
                 }
             }}
-        )
+        );
 
-        res.redirect("/address")
+        // Handle JSON requests (AJAX)
+        if (req.headers['content-type'] === 'application/json') {
+            return res.json({ success: true, message: 'Address updated successfully' });
+        }
+        
+        // Fallback for regular form submissions
+        res.redirect("/address");
     } catch (error) {
-        console.error("Error in editing address",error)
-        res.redirect("/pageNotFound")
+        console.error("Error in editing address",error);
+        
+        if (req.headers['content-type'] === 'application/json') {
+            return res.status(500).json({ success: false, message: 'Error updating address' });
+        }
+        
+        res.redirect("/pageNotFound");
     }
 }
 
@@ -524,7 +541,7 @@ const deleteAddress = async (req,res) => {
         const findAddress = await Address.findOne({"address._id":addressId})
 
         if(!findAddress){
-            return res.status(404).send("Address Not Found")
+            return res.redirect("/address?error=Address+not+found");
         }
 
         await Address.updateOne(
@@ -539,10 +556,11 @@ const deleteAddress = async (req,res) => {
             }
         })
 
-        res.redirect("/address")
+        // Redirect with success message
+        res.redirect("/address?deleted=true")
     } catch (error) {
         console.error("Error in deleting in address",error)
-        res.redirect("/pageNotFound")
+        res.redirect("/address?error=Error+deleting+address")
     }
 }
 

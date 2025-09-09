@@ -130,11 +130,11 @@
 
         /* Filter Section */
         .filter-section {
-            background: rgba(255, 255, 255, 0.95);
+            background: transparent;
             padding: 30px;
             border-radius: 20px;
             margin: 40px auto;
-            box-shadow: var(--shadow-medium);
+            /* box-shadow: var(--shadow-medium); */
             backdrop-filter: blur(10px);
         }
 
@@ -826,315 +826,324 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // Initialize coupon data from server
-        let allCoupons = <%- JSON.stringify(coupons) %>;
-        let filteredCoupons = [...allCoupons];
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Initialize coupon data from server
+    let allCoupons = <%- JSON.stringify(coupons) %>;
+    let filteredCoupons = [...allCoupons];
 
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                loadCoupons();
-                updateStats();
-                animateElements();
-            }, 1000);
-        });
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            loadCoupons();
+            updateStats();
+            animateElements();
+        }, 1000);
+    });
 
-        // Load and display coupons
-        function loadCoupons() {
-            const container = document.getElementById('couponsContainer');
-            const loadingState = document.getElementById('loadingState');
-            
-            // Hide loading
-            loadingState.style.display = 'none';
-            
-            if (filteredCoupons.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state fade-in">
-                        <i class="fas fa-ticket-alt"></i>
-                        <h3>No Coupons Found</h3>
-                        <p>We couldn't find any coupons matching your criteria. Try adjusting your filters or check back later for new offers!</p>
+    // Load and display coupons
+    function loadCoupons() {
+        const container = document.getElementById('couponsContainer');
+        const loadingState = document.getElementById('loadingState');
+        
+        // Hide loading
+        loadingState.style.display = 'none';
+        
+        if (filteredCoupons.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state fade-in">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>No Coupons Found</h3>
+                    <p>We couldn't find any coupons matching your criteria. Try adjusting your filters or check back later for new offers!</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = filteredCoupons.map((coupon, index) => `
+            <div class="coupon-card ${coupon.isPremium ? 'premium' : ''} fade-in" style="animation-delay: ${index * 0.1}s">
+                ${getExpiryBadge(coupon)}
+                
+                <div class="coupon-header">
+                    <span class="coupon-type">${getCouponTypeLabel(coupon.type)}</span>
+                    <h3 class="coupon-title">${coupon.title}</h3>
+                    <p class="coupon-description">${coupon.description}</p>
+                </div>
+                
+                <div class="coupon-content">
+                    <div class="coupon-value">
+                        <span class="discount-amount">${coupon.discountValue}${coupon.type === 'percentage' ? '%' : ''}</span>
+                        <span class="discount-type">${coupon.discountType}</span>
                     </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = filteredCoupons.map((coupon, index) => `
-                <div class="coupon-card ${coupon.isPremium ? 'premium' : ''} fade-in" style="animation-delay: ${index * 0.1}s">
-                    ${getExpiryBadge(coupon)}
                     
-                    <div class="coupon-header">
-                        <span class="coupon-type">${getCouponTypeLabel(coupon.type)}</span>
-                        <h3 class="coupon-title">${coupon.title}</h3>
-                        <p class="coupon-description">${coupon.description}</p>
+                    <div class="coupon-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Min Order</span>
+                            <span class="detail-value">₹${coupon.minOrder}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Max Discount</span>
+                            <span class="detail-value">₹${coupon.maxDiscount}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Valid Until</span>
+                            <span class="detail-value">${formatDate(coupon.expireOn)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Usage</span>
+                            <span class="detail-value">${coupon.usedCount}/${coupon.usageLimit}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">${coupon.usageMessage}</span>
+                        </div>
                     </div>
                     
-                    <div class="coupon-content">
-                        <div class="coupon-value">
-                            <span class="discount-amount">${coupon.discountValue}${coupon.type === 'percentage' ? '%' : ''}</span>
-                            <span class="discount-type">${coupon.discountType}</span>
-                        </div>
-                        
-                        <div class="coupon-details">
-                            <div class="detail-item">
-                                <span class="detail-label">Min Order</span>
-                                <span class="detail-value">₹${coupon.minOrder}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Max Discount</span>
-                                <span class="detail-value">₹${coupon.maxDiscount}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Valid Until</span>
-                                <span class="detail-value">${formatDate(coupon.expireOn)}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Usage</span>
-                                <span class="detail-value">${coupon.usedCount}/${coupon.usageLimit}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Status</span>
-                                <span class="detail-value">${coupon.usageMessage}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="coupon-code" onclick="copyCouponCode('${coupon.code}')">
-                            <div class="code-label">Coupon Code</div>
-                            <div class="code-value">${coupon.code}</div>
-                        </div>
-                        
-                        <div class="coupon-actions">
-                           
-                            <button class="btn btn-secondary" onclick="shareCoupon('${coupon.code}')">
-                                <i class="fas fa-share"></i> Share
-                            </button>
-                        </div>
+                    <div class="coupon-code" onclick="copyCouponCode('${coupon.code}')">
+                        <div class="code-label">Coupon Code</div>
+                        <div class="code-value">${coupon.code}</div>
+                    </div>
+                    
+                    <div class="coupon-actions">
+                       
+                        <button class="btn btn-secondary" onclick="shareCoupon('${coupon.code}')">
+                            <i class="fas fa-share"></i> Share
+                        </button>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
+    }
 
-        // Get expiry badge
-        function getExpiryBadge(coupon) {
-            const today = new Date();
-            const expiryDate = new Date(coupon.expireOn);
-            const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
-            
-            if (daysLeft < 0) {
-                return '<div class="expiry-badge">Expired</div>';
-            } else if (daysLeft <= 3) {
-                return `<div class="expiry-badge warning">${daysLeft} days left</div>`;
-            } else if (daysLeft <= 7) {
-                return `<div class="expiry-badge warning">${daysLeft} days left</div>`;
-            } else if (coupon.createdOn && new Date(coupon.createdOn) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) {
-                return '<div class="expiry-badge success">New</div>';
+    // Get expiry badge
+    function getExpiryBadge(coupon) {
+        const today = new Date();
+        const expiryDate = new Date(coupon.expireOn);
+        const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+        
+        if (daysLeft < 0) {
+            return '<div class="expiry-badge">Expired</div>';
+        } else if (daysLeft <= 3) {
+            return `<div class="expiry-badge warning">${daysLeft} days left</div>`;
+        } else if (daysLeft <= 7) {
+            return `<div class="expiry-badge warning">${daysLeft} days left</div>`;
+        } else if (coupon.createdOn && new Date(coupon.createdOn) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) {
+            return '<div class="expiry-badge success">New</div>';
+        }
+        return '';
+    }
+
+    // Get coupon type label
+    function getCouponTypeLabel(type) {
+        const labels = {
+            'percentage': 'Percentage Discount',
+            'fixed': 'Fixed Amount',
+            'shipping': 'Free Shipping',
+            'bogo': 'Buy One Get One'
+        };
+        return labels[type] || 'Special Offer';
+    }
+
+    // Format date
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+    }
+
+    // Update statistics
+    function updateStats() {
+        const totalCoupons = allCoupons.length;
+        const activeCoupons = allCoupons.filter(c => !c.isUsed && new Date(c.expireOn) > new Date()).length;
+        
+        // Fixed: Robust calculation for maxDiscount to handle empty array, invalid/non-numeric values
+        const discounts = allCoupons
+            .map(c => parseFloat(c.discountValue) || 0)
+            .filter(isFinite);  // Remove NaN, Infinity, -Infinity
+        const maxDiscount = discounts.length > 0 ? Math.max(...discounts) : 0;
+        
+        animateCounter('totalCoupons', totalCoupons);
+        animateCounter('activeCoupons', activeCoupons);
+        animateCounter('maxDiscount', maxDiscount, '%');
+    }
+
+    // Animate counter
+    function animateCounter(elementId, targetValue, suffix = '') {
+        const element = document.getElementById(elementId);
+        let currentValue = 0;
+        const increment = targetValue / 50;
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= targetValue) {
+                currentValue = targetValue;
+                clearInterval(timer);
             }
-            return '';
-        }
+            element.textContent = Math.floor(currentValue) + suffix;
+        }, 30);
+    }
 
-        // Get coupon type label
-        function getCouponTypeLabel(type) {
-            const labels = {
-                'percentage': 'Percentage Discount',
-                'fixed': 'Fixed Amount',
-                'shipping': 'Free Shipping',
-                'bogo': 'Buy One Get One'
-            };
-            return labels[type] || 'Special Offer';
-        }
-
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            });
-        }
-
-        // Update statistics
-        function updateStats() {
-            const totalCoupons = allCoupons.length;
-            const activeCoupons = allCoupons.filter(c => !c.isUsed && new Date(c.expireOn) > new Date()).length;
-            const maxDiscount = Math.max(...allCoupons.map(c => c.discountValue));
-            
-            animateCounter('totalCoupons', totalCoupons);
-            animateCounter('activeCoupons', activeCoupons);
-            animateCounter('maxDiscount', maxDiscount, '%');
-        }
-
-        // Animate counter
-        function animateCounter(elementId, targetValue, suffix = '') {
-            const element = document.getElementById(elementId);
-            let currentValue = 0;
-            const increment = targetValue / 50;
-            
-            const timer = setInterval(() => {
-                currentValue += increment;
-                if (currentValue >= targetValue) {
-                    currentValue = targetValue;
-                    clearInterval(timer);
+    // Apply filters
+    function applyFilters() {
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const discountFilter = parseInt(document.getElementById('discountFilter').value) || 0;
+        const statusFilter = document.getElementById('statusFilter').value;
+        
+        filteredCoupons = allCoupons.filter(coupon => {
+            const categoryMatch = !categoryFilter || coupon.type === categoryFilter;
+            const discountMatch = coupon.discountValue >= discountFilter;
+            let statusMatch = true;
+            if (statusFilter) {
+                if (statusFilter === 'active') {
+                    statusMatch = !coupon.isUsed && new Date(coupon.expireOn) > new Date();
+                } else if (statusFilter === 'expiring') {
+                    const daysLeft = Math.ceil((new Date(coupon.expireOn) - new Date()) / (1000 * 60 * 60 * 24));
+                    statusMatch = daysLeft > 0 && daysLeft <= 7 && !coupon.isUsed;
+                } else if (statusFilter === 'new') {
+                    statusMatch = coupon.createdOn && new Date(coupon.createdOn) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
                 }
-                element.textContent = Math.floor(currentValue) + suffix;
-            }, 30);
-        }
-
-        // Apply filters
-        function applyFilters() {
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const discountFilter = parseInt(document.getElementById('discountFilter').value) || 0;
-            const statusFilter = document.getElementById('statusFilter').value;
+            }
             
-            filteredCoupons = allCoupons.filter(coupon => {
-                const categoryMatch = !categoryFilter || coupon.type === categoryFilter;
-                const discountMatch = coupon.discountValue >= discountFilter;
-                let statusMatch = true;
-                if (statusFilter) {
-                    if (statusFilter === 'active') {
-                        statusMatch = !coupon.isUsed && new Date(coupon.expireOn) > new Date();
-                    } else if (statusFilter === 'expiring') {
-                        const daysLeft = Math.ceil((new Date(coupon.expireOn) - new Date()) / (1000 * 60 * 60 * 24));
-                        statusMatch = daysLeft > 0 && daysLeft <= 7 && !coupon.isUsed;
-                    } else if (statusFilter === 'new') {
-                        statusMatch = coupon.createdOn && new Date(coupon.createdOn) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                    }
-                }
-                
-                return categoryMatch && discountMatch && statusMatch;
+            return categoryMatch && discountMatch && statusMatch;
+        });
+        
+        loadCoupons();
+        showNotification('Filters applied successfully!', 'success');
+    }
+
+    // Copy coupon code
+    function copyCouponCode(code) {
+        navigator.clipboard.writeText(code).then(() => {
+            showNotification(`Coupon code "${code}" copied to clipboard!`, 'success');
+        }).catch(() => {
+            showNotification('Failed to copy coupon code', 'error');
+        });
+    }
+
+    // Apply coupon
+    async function applyCoupon(code) {
+        try {
+            const response = await fetch('/coupon/apply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
             });
+            const result = await response.json();
             
-            loadCoupons();
-            showNotification('Filters applied successfully!', 'success');
-        }
-
-        // Copy coupon code
-        function copyCouponCode(code) {
-            navigator.clipboard.writeText(code).then(() => {
-                showNotification(`Coupon code "${code}" copied to clipboard!`, 'success');
-            }).catch(() => {
-                showNotification('Failed to copy coupon code', 'error');
-            });
-        }
-
-        // Apply coupon
-        async function applyCoupon(code) {
-            try {
-                const response = await fetch('/coupon/apply', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code })
+            if (result.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: `Coupon "${code}" has been applied to your cart!`,
+                    icon: 'success',
+                    confirmButtonText: 'Continue Shopping',
+                    confirmButtonColor: '#d4af37'
+                }).then(() => {
+                    window.location.href = '/cart';
                 });
-                const result = await response.json();
-                
-                if (result.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: `Coupon "${code}" has been applied to your cart!`,
-                        icon: 'success',
-                        confirmButtonText: 'Continue Shopping',
-                        confirmButtonColor: '#d4af37'
-                    }).then(() => {
-                        window.location.href = '/cart';
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: result.message || 'Failed to apply coupon',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#d4af37'
-                    });
-                }
-            } catch (error) {
+            } else {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Error applying coupon',
+                    text: result.message || 'Failed to apply coupon',
                     icon: 'error',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#d4af37'
                 });
             }
-        }
-
-        // Share coupon
-        function shareCoupon(code) {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'SAWAX Coupon',
-                    text: `Check out this amazing coupon: ${code}`,
-                    url: window.location.href
-                });
-            } else {
-                copyCouponCode(code);
-                showNotification('Coupon code copied! Share it with your friends.', 'success');
-            }
-        }
-
-        // Show notification
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                ${message}
-            `;
-            
-            container.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 100);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => container.removeChild(notification), 300);
-            }, 3000);
-        }
-
-        // Animate elements on scroll
-        function animateElements() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
-                    }
-                });
-            });
-
-            document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
-                el.style.animationPlayState = 'paused';
-                observer.observe(el);
+        } catch (error) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Error applying coupon',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#d4af37'
             });
         }
+    }
 
-        // Search functionality
-        function searchCoupons(query) {
-            if (!query) {
-                filteredCoupons = [...allCoupons];
-            } else {
-                filteredCoupons = allCoupons.filter(coupon => 
-                    coupon.title.toLowerCase().includes(query.toLowerCase()) ||
-                    coupon.description.toLowerCase().includes(query.toLowerCase()) ||
-                    coupon.code.toLowerCase().includes(query.toLowerCase())
-                );
-            }
-            loadCoupons();
+    // Share coupon
+    function shareCoupon(code) {
+        if (navigator.share) {
+            navigator.share({
+                title: 'SAWAX Coupon',
+                text: `Check out this amazing coupon: ${code}`,
+                url: window.location.href
+            });
+        } else {
+            copyCouponCode(code);
+            showNotification('Coupon code copied! Share it with your friends.', 'success');
         }
+    }
 
-        // Add search input event listener
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.createElement('input');
-            searchInput.type = 'text';
-            searchInput.placeholder = 'Search coupons...';
-            searchInput.className = 'filter-input';
-            searchInput.addEventListener('input', (e) => searchCoupons(e.target.value));
-            
-            // Add search input to filter controls
-            const filterControls = document.querySelector('.filter-controls');
-            const searchGroup = document.createElement('div');
-            searchGroup.className = 'filter-group';
-            searchGroup.innerHTML = '<label><i class="fas fa-search"></i> Search</label>';
-            searchGroup.appendChild(searchInput);
-            filterControls.insertBefore(searchGroup, filterControls.lastElementChild);
+    // Show notification
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+            ${message}
+        `;
+        
+        container.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => container.removeChild(notification), 300);
+        }, 3000);
+    }
+
+    // Animate elements on scroll
+    function animateElements() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
         });
-    </script>
+
+        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    }
+
+    // Search functionality
+    function searchCoupons(query) {
+        if (!query) {
+            filteredCoupons = [...allCoupons];
+        } else {
+            filteredCoupons = allCoupons.filter(coupon => 
+                coupon.title.toLowerCase().includes(query.toLowerCase()) ||
+                coupon.description.toLowerCase().includes(query.toLowerCase()) ||
+                coupon.code.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+        loadCoupons();
+    }
+
+    // Add search input event listener
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Search coupons...';
+        searchInput.className = 'filter-input';
+        searchInput.addEventListener('input', (e) => searchCoupons(e.target.value));
+        
+        // Add search input to filter controls
+        const filterControls = document.querySelector('.filter-controls');
+        const searchGroup = document.createElement('div');
+        searchGroup.className = 'filter-group';
+        searchGroup.innerHTML = '<label><i class="fas fa-search"></i> Search</label>';
+        searchGroup.appendChild(searchInput);
+        filterControls.insertBefore(searchGroup, filterControls.lastElementChild);
+    });
+</script>
+<!--  -->
+
+
 </body>

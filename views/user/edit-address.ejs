@@ -1,5 +1,3 @@
-
-
 <%- include("../../views/partials/user/header") %>
 
 <style>
@@ -7,7 +5,6 @@
     height: calc(2.25rem + 2px) !important; /* Matches Bootstrap input field height */
     padding-top: 5px !important; /* Adjust vertical alignment */
 }
-
 
 /* Edit Address Theme */
 :root {
@@ -186,6 +183,29 @@ select.form-control {
     box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
 }
 
+.btn-primary:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading spinner */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .banner-area.organic-breadcrumb {
@@ -267,8 +287,8 @@ select.form-control {
 </section>
 
 <div class="container mt-4">
-   <h3 class="mt-3" style="color: #046963; margin-bottom:70px">Create User Address</h3>
-   <form id="addressForm" method="POST" action="/editAddress?id=<%= address._id.toLocaleString() %>" class="border-0 p-3">
+   <h3 class="mt-3" style="color: #046963; margin-bottom:70px">Update User Address</h3>
+   <form id="addressForm" class="border-0 p-3">
        <div class="row mb-50">
            <div class="form-group col-md-4">
                <label for="addressType">Address Type:</label>
@@ -280,8 +300,13 @@ select.form-control {
            </div>
            <div class="form-group col-md-4">
             <label for="country">Country:</label>
-            <select class="form-control border-3" value="<%=address.country%>" id="country" name="country" required>
-                <option value="India">India</option>
+            <select class="form-control border-3" id="country" name="country" required>
+                <option value="">Select Country</option>
+                <option value="India" <%= address.country === 'India' ? 'selected' : '' %>>India</option>
+                <option value="United States" <%= address.country === 'United States' ? 'selected' : '' %>>United States</option>
+                <option value="United Kingdom" <%= address.country === 'United Kingdom' ? 'selected' : '' %>>United Kingdom</option>
+                <option value="Canada" <%= address.country === 'Canada' ? 'selected' : '' %>>Canada</option>
+                <option value="Australia" <%= address.country === 'Australia' ? 'selected' : '' %>>Australia</option>
             </select>
         </div>
        </div>
@@ -297,12 +322,19 @@ select.form-control {
            <div class="form-group col-md-4">
             <label for="state">State:</label>
             <select class="form-control border-3" id="state" name="state" required>
-                
-                <option value="Kerala">Kerala</option>
-                
+                <option value="">Select State</option>
+                <option value="Kerala" <%= address.state === 'Kerala' ? 'selected' : '' %>>Kerala</option>
+                <option value="Karnataka" <%= address.state === 'Karnataka' ? 'selected' : '' %>>Karnataka</option>
+                <option value="Tamil Nadu" <%= address.state === 'Tamil Nadu' ? 'selected' : '' %>>Tamil Nadu</option>
+                <option value="Maharashtra" <%= address.state === 'Maharashtra' ? 'selected' : '' %>>Maharashtra</option>
+                <option value="Gujarat" <%= address.state === 'Gujarat' ? 'selected' : '' %>>Gujarat</option>
+                <option value="Rajasthan" <%= address.state === 'Rajasthan' ? 'selected' : '' %>>Rajasthan</option>
+                <option value="Punjab" <%= address.state === 'Punjab' ? 'selected' : '' %>>Punjab</option>
+                <option value="Haryana" <%= address.state === 'Haryana' ? 'selected' : '' %>>Haryana</option>
+                <option value="Delhi" <%= address.state === 'Delhi' ? 'selected' : '' %>>Delhi</option>
+                <option value="West Bengal" <%= address.state === 'West Bengal' ? 'selected' : '' %>>West Bengal</option>
             </select>
         </div>
-        
        </div>
        <div class="row mb-3">
            <div class="form-group col-md-4">
@@ -328,129 +360,155 @@ select.form-control {
                <input type="text" class="form-control border-3" value="<%=address.altPhone%>" id="altPhone" name="altPhone" required>
            </div>
        </div>
-       <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+       <button type="submit" id="submitButton" class="btn btn-primary">
+           <span id="buttonText">Update Address</span>
+       </button>
    </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   document.getElementById('addressForm').addEventListener('submit', function(event) {
+   document.getElementById('addressForm').addEventListener('submit', async function(event) {
+       event.preventDefault();
+       
        if (!validateForm()) {
-           event.preventDefault();
+           return;
+       }
+
+       const submitButton = document.getElementById('submitButton');
+       const buttonText = document.getElementById('buttonText');
+       
+       // Disable button and show loading state
+       submitButton.disabled = true;
+       buttonText.innerHTML = '<span class="spinner"></span>Updating...';
+
+       try {
+           const formData = new FormData(this);
+           const data = Object.fromEntries(formData);
+
+           const response = await fetch(`/editAddress?id=<%= address._id.toString() %>`, {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify(data)
+           });
+
+           const result = await response.json();
+
+           if (response.ok && result.success) {
+               // Show success SweetAlert
+               const swalResult = await Swal.fire({
+                   title: 'Success!',
+                   text: 'Address updated successfully!',
+                   icon: 'success',
+                   confirmButtonText: 'OK',
+                   confirmButtonColor: '#d4af37',
+                   showClass: {
+                       popup: 'animate__animated animate__fadeInDown'
+                   },
+                   hideClass: {
+                       popup: 'animate__animated animate__fadeOutUp'
+                   }
+               });
+
+               if (swalResult.isConfirmed) {
+                   window.location.href = '/address';
+               }
+           } else {
+               throw new Error(result.message || 'Failed to update address');
+           }
+       } catch (error) {
+           console.error('Error updating address:', error);
+           Swal.fire({
+               title: 'Error!',
+               text: error.message || 'Failed to update address. Please try again.',
+               icon: 'error',
+               confirmButtonText: 'OK',
+               confirmButtonColor: '#e74c3c'
+           });
+       } finally {
+           // Re-enable button
+           submitButton.disabled = false;
+           buttonText.innerHTML = 'Update Address';
        }
    });
 
    function validateForm() {
        let isValid = true;
+       
+       // Clear previous errors
+       document.querySelectorAll('.text-danger').forEach(error => error.remove());
+
        const requiredFields = ["addressType", "name", "country", "city", "landMark", "state", "streetAddress", "pincode", "phone", "email", "altPhone"];
+       
+       // Check required fields
        requiredFields.forEach(function(field) {
            const input = document.getElementById(field);
            const inputValue = input.value.trim();
-           const errorElement = document.getElementById(field + '-error');
 
            if (inputValue === "") {
-               if (!errorElement) {
-                   const errorMessage = "This field is required.";
-                   const errorDiv = document.createElement('div');
-                   errorDiv.className = "text-danger";
-                   errorDiv.textContent = errorMessage;
-                   errorDiv.id = field + '-error';
-                   input.parentNode.appendChild(errorDiv);
-               }
+               showFieldError(input, "This field is required.");
                isValid = false;
-           } else {
-               if (errorElement) {
-                   errorElement.remove();
-               }
            }
        });
 
+       if (!isValid) {
+           return false;
+       }
+
+       // Pattern validations
        const namePattern = /^[A-Za-z\s]+$/;
        const pincodePattern = /^\d{6}$/;
        const phonePattern = /^\d{10}$/;
        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-       const name = document.getElementById('name').value;
-       const city = document.getElementById('city').value;
-       const landMark = document.getElementById('landMark').value;
-       const state = document.getElementById('state').value;
-       const pincode = document.getElementById('pincode').value;
+       const validations = [
+           { field: 'name', pattern: namePattern, message: 'Name should contain alphabets only.' },
+           { field: 'city', pattern: namePattern, message: 'City should contain alphabets only.' },
+           { field: 'landMark', pattern: namePattern, message: 'Landmark should contain alphabets only.' },
+           { field: 'pincode', pattern: pincodePattern, message: 'Pincode should be a 6-digit number.' },
+           { field: 'phone', pattern: phonePattern, message: 'Phone number should be a 10-digit number.' },
+           { field: 'altPhone', pattern: phonePattern, message: 'Alternate phone number should be a 10-digit number.' },
+           { field: 'email', pattern: emailPattern, message: 'Please enter a valid email address.' }
+       ];
+
+       for (let validation of validations) {
+           const input = document.getElementById(validation.field);
+           if (input.value && !validation.pattern.test(input.value)) {
+               showFieldError(input, validation.message);
+               isValid = false;
+               break; // Show one error at a time
+           }
+       }
+
+       // Check if phone numbers are different
        const phone = document.getElementById('phone').value;
        const altPhone = document.getElementById('altPhone').value;
-       const email = document.getElementById('email').value;
+       if (phone && altPhone && phone === altPhone) {
+           showFieldError(document.getElementById('altPhone'), 'Phone number and alternate phone number should be different.');
+           isValid = false;
+       }
 
-       if (!namePattern.test(name)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Name should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!namePattern.test(city)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'City should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!namePattern.test(landMark)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Landmark should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!namePattern.test(state)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'State should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!pincodePattern.test(pincode)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Pincode should be a 6-digit number.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!phonePattern.test(phone)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Phone number should be a 10-digit number.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!phonePattern.test(altPhone)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Alternate phone number should be a 10-digit number.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (phone === altPhone) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Phone number and alternate phone number should be different.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!emailPattern.test(email)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Please enter a valid email address.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
        return isValid;
    }
+
+   function showFieldError(input, message) {
+       const errorDiv = document.createElement('div');
+       errorDiv.className = "text-danger";
+       errorDiv.textContent = message;
+       input.parentNode.appendChild(errorDiv);
+   }
+
+   // Real-time validation - clear errors when user starts typing
+   document.querySelectorAll('.form-control').forEach(input => {
+       input.addEventListener('input', function() {
+           const existingError = this.parentNode.querySelector('.text-danger');
+           if (existingError) {
+               existingError.remove();
+           }
+       });
+   });
 </script>
+
+<%- include("../../views/partials/user/footer") %>
