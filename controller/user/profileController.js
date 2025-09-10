@@ -12,7 +12,6 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadPath = 'public/images/profiles/';
-    // Create directory if it doesn't exist
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -20,7 +19,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalName));
   }
 });
 
@@ -29,7 +28,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: function (req, file, cb) {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const extname = allowedTypes.test(path.extname(file.originalName).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
     
     if (mimetype && extname) {
@@ -48,7 +47,7 @@ function generateOtp() {
 // Shared utility for sending verification email
 const sendVerificationEmail = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       port: 587,
       secure: false,
@@ -97,7 +96,6 @@ const updateProfile = async (req, res) => {
     const userId = req.session.user;
     const { name, email, username } = req.body;
 
-    // Validate inputs
     if (!name || !email) {
       return res.redirect("/profile?error=Name and email are required");
     }
@@ -107,7 +105,6 @@ const updateProfile = async (req, res) => {
     }
 
     if (username) {
-      // Validate username format
       const usernameRegex = /^[a-zA-Z0-9_]+$/;
       if (!usernameRegex.test(username)) {
         return res.redirect("/profile?error=Username can only contain letters, numbers, and underscores");
@@ -117,7 +114,6 @@ const updateProfile = async (req, res) => {
         return res.redirect("/profile?error=Username must be between 3 and 30 characters");
       }
 
-      // Check if username is already taken
       const existingUser = await User.findOne({ 
         username: username, 
         _id: { $ne: userId } 
@@ -127,7 +123,6 @@ const updateProfile = async (req, res) => {
       }
     }
 
-    // Check if email is already taken by another user
     const existingEmail = await User.findOne({ 
       email: email, 
       _id: { $ne: userId } 
@@ -136,7 +131,6 @@ const updateProfile = async (req, res) => {
       return res.redirect("/profile?error=Email is already in use");
     }
 
-    // Update user data
     const updateData = { name, email };
     if (username) {
       updateData.username = username;
@@ -163,10 +157,8 @@ const uploadProfileImage = async (req, res) => {
 
     const imagePath = '/images/profiles/' + req.file.filename;
     
-    // Get current user to check for old profile image
     const user = await User.findById(userId);
     
-    // Delete old profile image if it exists and is not the default
     if (user.profileImage && 
         user.profileImage !== '/images/default-avatar.png' && 
         !user.profileImage.includes('placeholder')) {
@@ -180,7 +172,6 @@ const uploadProfileImage = async (req, res) => {
       }
     }
     
-    // Update user's profile image in database
     await User.findByIdAndUpdate(userId, { profileImage: imagePath });
     
     res.json({ 
@@ -191,7 +182,6 @@ const uploadProfileImage = async (req, res) => {
   } catch (error) {
     console.error("Error uploading profile image:", error);
     
-    // Delete uploaded file if database update failed
     if (req.file) {
       try {
         fs.unlinkSync(req.file.path);
@@ -216,7 +206,6 @@ const checkUsernameAvailability = async (req, res) => {
       return res.json({ available: false, message: 'Username is required' });
     }
 
-    // Validate username format
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     if (!usernameRegex.test(username)) {
       return res.json({ 
@@ -232,7 +221,6 @@ const checkUsernameAvailability = async (req, res) => {
       });
     }
 
-    // Check if username exists (excluding current user)
     const existingUser = await User.findOne({ 
       username: username, 
       _id: { $ne: userId } 
@@ -262,55 +250,255 @@ const changeEmail = async (req, res) => {
   try {
     const userId = req.session.user;
     const userData = await User.findById(userId);
-    res.render("change-email", { message: null ,user:userData});
+    if (!userData) {
+      return res.redirect("/errorpage?message=user-not-found");
+    }
+    res.render("change-email", { 
+      message: req.query.message || null,
+      user: userData
+    });
   } catch (error) {
     console.error("Error rendering change email page:", error);
     res.redirect("/errorpage?message=render-error");
   }
 };
 
-const changeEmailValid = async (req, res) => {
+const sendCurrentEmailOtp = async (req, res) => {
   try {
-    const { currentEmail, newEmail, confirmEmail, password } = req.body;
+    const { currentEmail, password } = req.body;
     const userId = req.session.user;
 
     if (!userId) {
-      return res.render("change-email", { message: "Please log in to change your email", user: { email: currentEmail } });
+      return res.render("change-email", { 
+        message: "Please log in to change your email", 
+        user: { email: currentEmail } 
+      });
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.render("change-email", { message: "User not found", user: { email: currentEmail } });
+      return res.render("change-email", { 
+        message: "User not found", 
+        user: { email: currentEmail } 
+      });
     }
 
     if (user.email !== currentEmail) {
-      return res.render("change-email", { message: "Current email does not match", user: { email: currentEmail } });
-    }
-
-    if (!validator.isEmail(newEmail)) {
-      return res.render("change-email", { message: "Invalid new email format", user: { email: currentEmail } });
-    }
-
-    if (newEmail !== confirmEmail) {
-      return res.render("change-email", { message: "New email and confirm email do not match", user: { email: currentEmail } });
-    }
-
-    const emailExists = await User.findOne({ email: newEmail });
-    if (emailExists) {
-      return res.render("change-email", { message: "New email is already in use", user: { email: currentEmail } });
+      return res.render("change-email", { 
+        message: "Current email does not match", 
+        user: { email: currentEmail } 
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.render("change-email", { message: "Incorrect password", user: { email: currentEmail } });
+      return res.render("change-email", { 
+        message: "Incorrect password", 
+        user: { email: currentEmail } 
+      });
     }
 
-    user.email = newEmail;
-    await user.save();
+    // Generate OTP and send to current email
+    const otp = generateOtp();
+    console.log(otp)
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+
+    // Store pending email verification data in session
+    req.session.pendingEmailVerification = {
+      userId: userId,
+      currentEmail: currentEmail,
+      otp: otp,
+      otpExpiry: otpExpiry,
+      createdAt: new Date()
+    };
+
+    // Send OTP to current email
+    const emailSent = await sendVerificationEmail(currentEmail, otp);
     
-    res.render("change-email", { message: "Email updated successfully", user: { email: newEmail }, redirect: "/profile" });
+    if (!emailSent) {
+      return res.render("change-email", { 
+        message: "Failed to send verification email. Please try again.", 
+        user: { email: currentEmail } 
+      });
+    }
+
+    res.redirect(`/verify-current-email-otp-page?message=OTP+sent+to+${encodeURIComponent(currentEmail)}`);
   } catch (error) {
-    console.error("Error in changeEmail:", error);
+    console.error("Error in sendCurrentEmailOtp:", error);
+    res.redirect("/errorpage?message=email-otp-send-error");
+  }
+};
+
+const verifyCurrentEmailOtpPage = async (req, res) => {
+  try {
+    if (!req.session.pendingEmailVerification) {
+      return res.redirect("/change-email?message=Session+expired");
+    }
+
+    const { currentEmail } = req.session.pendingEmailVerification;
+    
+    res.render("otp-verification-email", { 
+      message: req.query.message || null,
+      currentEmail: currentEmail
+    });
+  } catch (error) {
+    console.error("Error rendering OTP verification page:", error);
+    res.redirect("/errorpage?message=render-error");
+  }
+};
+
+const verifyCurrentEmailOtp = async (req, res) => {
+  try {
+    const { digit1, digit2, digit3, digit4, digit5, digit6 } = req.body;
+    const enteredOtp = digit1 + digit2 + digit3 + digit4 + digit5 + digit6;
+
+    if (!req.session.pendingEmailVerification) {
+      return res.render("otp-verification-email", { 
+        message: "Session expired. Please try changing your email again.",
+        currentEmail: ""
+      });
+    }
+
+    const { userId, currentEmail, otp, otpExpiry } = req.session.pendingEmailVerification;
+
+    // Check if OTP has expired
+    if (new Date() > new Date(otpExpiry)) {
+      delete req.session.pendingEmailVerification;
+      return res.render("otp-verification-email", { 
+        message: "OTP has expired. Please request a new one.",
+        currentEmail: currentEmail
+      });
+    }
+
+    // Verify OTP
+    if (enteredOtp !== otp) {
+      return res.render("otp-verification-email", { 
+        message: "Invalid OTP. Please try again.",
+        currentEmail: currentEmail
+      });
+    }
+
+    // OTP is valid, proceed to new email input page
+    res.redirect("/new-email");
+  } catch (error) {
+    console.error("Error verifying email OTP:", error);
+    res.redirect("/errorpage?message=otp-verification-error");
+  }
+};
+
+const resendCurrentEmailOtp = async (req, res) => {
+  try {
+    if (!req.session.pendingEmailVerification) {
+      return res.json({ 
+        success: false, 
+        message: "No pending email verification found. Please start the process again." 
+      });
+    }
+
+    const { currentEmail } = req.session.pendingEmailVerification;
+
+    // Generate new OTP
+    const newOtp = generateOtp();
+    const newOtpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+
+    // Update session with new OTP
+    req.session.pendingEmailVerification.otp = newOtp;
+    req.session.pendingEmailVerification.otpExpiry = newOtpExpiry;
+
+    // Send new OTP to email
+    const emailSent = await sendVerificationEmail(currentEmail, newOtp);
+    
+    if (!emailSent) {
+      return res.json({ 
+        success: false, 
+        message: "Failed to send verification email. Please try again." 
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: "New OTP sent successfully" 
+    });
+  } catch (error) {
+    console.error("Error resending email OTP:", error);
+    res.json({ 
+      success: false, 
+      message: "Error resending OTP. Please try again." 
+    });
+  }
+};
+
+const newEmailPage = async (req, res) => {
+  try {
+    if (!req.session.pendingEmailVerification) {
+      return res.redirect("/change-email?message=Session+expired");
+    }
+
+    const { currentEmail } = req.session.pendingEmailVerification;
+    
+    res.render("new-email", { 
+      message: null,
+      currentEmail: currentEmail
+    });
+  } catch (error) {
+    console.error("Error rendering new email page:", error);
+    res.redirect("/errorpage?message=render-error");
+  }
+};
+
+const updateNewEmail = async (req, res) => {
+  try {
+    const { newEmail, confirmEmail } = req.body;
+    const userId = req.session.user;
+
+    if (!req.session.pendingEmailVerification) {
+      return res.render("new-email", { 
+        message: "Session expired. Please try changing your email again.", 
+        currentEmail: ""
+      });
+    }
+
+    const { currentEmail } = req.session.pendingEmailVerification;
+
+    // Validate new email
+    if (!validator.isEmail(newEmail)) {
+      return res.render("new-email", { 
+        message: "Invalid new email format", 
+        currentEmail: currentEmail 
+      });
+    }
+
+    if (newEmail !== confirmEmail) {
+      return res.render("new-email", { 
+        message: "New email and confirm email do not match", 
+        currentEmail: currentEmail 
+      });
+    }
+
+    if (newEmail === currentEmail) {
+      return res.render("new-email", { 
+        message: "New email must be different from current email", 
+        currentEmail: currentEmail 
+      });
+    }
+
+    const emailExists = await User.findOne({ email: newEmail });
+    if (emailExists) {
+      return res.render("new-email", { 
+        message: "New email is already in use", 
+        currentEmail: currentEmail 
+      });
+    }
+
+    // Update user email
+    await User.findByIdAndUpdate(userId, { email: newEmail });
+
+    // Clear session data
+    delete req.session.pendingEmailVerification;
+
+    res.redirect("/profile?message=Email+updated+successfully");
+  } catch (error) {
+    console.error("Error in updateNewEmail:", error);
     res.redirect("/errorpage?message=email-change-error");
   }
 };
@@ -517,12 +705,10 @@ const postEditAddress = async (req,res) => {
             }}
         );
 
-        // Handle JSON requests (AJAX)
         if (req.headers['content-type'] === 'application/json') {
             return res.json({ success: true, message: 'Address updated successfully' });
         }
         
-        // Fallback for regular form submissions
         res.redirect("/address");
     } catch (error) {
         console.error("Error in editing address",error);
@@ -556,7 +742,6 @@ const deleteAddress = async (req,res) => {
             }
         })
 
-        // Redirect with success message
         res.redirect("/address?deleted=true")
     } catch (error) {
         console.error("Error in deleting in address",error)
@@ -585,7 +770,12 @@ module.exports = {
   uploadProfileImage,
   checkUsernameAvailability,
   changeEmail,
-  changeEmailValid,
+  sendCurrentEmailOtp,
+  verifyCurrentEmailOtpPage,
+  verifyCurrentEmailOtp,
+  resendCurrentEmailOtp,
+  newEmailPage,
+  updateNewEmail,
   sendVerificationEmail,
   changePassword,
   changePasswordValid,

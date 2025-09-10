@@ -76,16 +76,22 @@ router.post('/validate-referral', userController.validateReferralCode);
 // Static Pages
 router.get("/about", userController.about);
 
-// Profile Routes
+// Profile Routes changed new emaiil 
 router.get("/profile", userAuth, profileController.userProfile);
 router.post("/userProfile", userAuth, profileController.updateProfile);
 router.post("/upload-profile-image", userAuth, profileController.upload.single('profileImage'), profileController.uploadProfileImage);
 router.get("/check-username", userAuth, profileController.checkUsernameAvailability);
 router.get("/orderdetails", userAuth, userController.orderdetails);
 router.get("/change-email", userAuth, profileController.changeEmail);
-router.post("/change-email", userAuth, profileController.changeEmailValid);
+router.post("/send-current-email-otp", userAuth, profileController.sendCurrentEmailOtp);
+router.get("/verify-current-email-otp-page", userAuth, profileController.verifyCurrentEmailOtpPage);
+router.post("/verify-current-email-otp", userAuth, profileController.verifyCurrentEmailOtp);
+router.post("/resend-current-email-otp", userAuth, profileController.resendCurrentEmailOtp);
+router.get("/new-email", userAuth, profileController.newEmailPage);
+router.post("/update-new-email", userAuth, profileController.updateNewEmail);
 router.get("/change-password", userAuth, profileController.changePassword);
 router.post("/change-password", userAuth, profileController.changePasswordValid);
+
 
 // Address Routes
 router.get("/address", userAuth, profileController.loadAddressPage);

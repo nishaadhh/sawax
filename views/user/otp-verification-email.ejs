@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>SAWAX | Email Verification</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #d4af37;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            overflow-x: hidden;
+            background-color: var(--secondary);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        /* OTP Verification Section */
+        .otp-verification {
+            padding: 80px 0;
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .otp-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .otp-icon {
+            font-size: 60px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .otp-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .otp-subtitle {
+            color: var(--light-text);
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .otp-email {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            transition: border-color 0.3s;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .otp-input.filled {
+            border-color: var(--accent);
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--accent);
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .btn:hover {
+            background-color: #c1a033;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .timer-section {
+            margin: 20px 0;
+            color: var(--light-text);
+        }
+
+        .timer {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .resend-link {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .resend-link:hover {
+            color: #c1a033;
+        }
+
+        .back-link {
+            color: var(--light-text);
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-about p {
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .social-icon:hover {
+            background-color: var(--accent);
+        }
+
+        .footer-links h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            opacity: 0.7;
+            transition: opacity 0.3s, color 0.3s;
+        }
+
+        .footer-links ul li a:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .contact-icon {
+            font-size: 18px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .otp-card {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .otp-inputs {
+                gap: 8px;
+            }
+
+            .otp-input {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .otp-title {
+                font-size: 24px;
+            }
+
+            .otp-subtitle {
+                font-size: 14px;
+            }
+
+            .otp-inputs {
+                gap: 6px;
+            }
+
+            .otp-input {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <%- include("../../views/partials/user/header") %>
+
+    <!-- OTP Verification Section -->
+    <section class="otp-verification">
+        <div class="otp-card">
+            <div class="otp-icon">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <h2 class="otp-title">Verify Your Email</h2>
+            <p class="otp-subtitle">
+                We've sent a 6-digit verification code to your current email address
+                <span class="otp-email"><%= currentEmail %></span>
+                <br>Please enter the code below to proceed.
+            </p>
+
+            <form id="otpForm" action="/verify-current-email-otp" method="POST">
+                <div class="otp-inputs">
+                    <input type="text" class="otp-input" maxlength="1" name="digit1" required>
+                    <input type="text" class="otp-input" maxlength="1" name="digit2" required>
+                    <input type="text" class="otp-input" maxlength="1" name="digit3" required>
+                    <input type="text" class="otp-input" maxlength="1" name="digit4" required>
+                    <input type="text" class="otp-input" maxlength="1" name="digit5" required>
+                    <input type="text" class="otp-input" maxlength="1" name="digit6" required>
+                </div>
+                
+                <button type="submit" class="btn" id="verifyBtn">Verify Email</button>
+            </form>
+
+            <div class="timer-section">
+                <p id="timerText">
+                    Didn't receive the code? You can resend it in <span class="timer" id="countdown">60</span> seconds
+                </p>
+                <p id="resendSection" style="display: none;">
+                    Didn't receive the code? <span class="resend-link" onclick="resendOTP()">Resend OTP</span>
+                </p>
+            </div>
+
+            <a href="/change-email" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Change Email
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // OTP Input handling
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                
+                // Only allow numbers
+                if (!/^\d$/.test(value)) {
+                    e.target.value = '';
+                    return;
+                }
+
+                e.target.classList.add('filled');
+
+                // Move to next input
+                if (value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+
+                // Check if all inputs are filled
+                checkAllInputsFilled();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                // Handle backspace
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                    otpInputs[index - 1].classList.remove('filled');
+                }
+                
+                // Handle delete
+                if (e.key === 'Delete' || e.key === 'Backspace') {
+                    input.value = '';
+                    input.classList.remove('filled');
+                    checkAllInputsFilled();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = paste.replace(/\D/g, '').slice(0, 6);
+                
+                digits.split('').forEach((digit, i) => {
+                    if (otpInputs[i]) {
+                        otpInputs[i].value = digit;
+                        otpInputs[i].classList.add('filled');
+                    }
+                });
+                
+                checkAllInputsFilled();
+            });
+        });
+
+        function checkAllInputsFilled() {
+            const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
+            verifyBtn.disabled = !allFilled;
+        }
+
+        // Countdown timer
+        let timeLeft = 60;
+        const countdown = document.getElementById('countdown');
+        const timerText = document.getElementById('timerText');
+        const resendSection = document.getElementById('resendSection');
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdown.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                timerText.style.display = 'none';
+                resendSection.style.display = 'block';
+            }
+        }, 1000);
+
+        // Resend OTP function
+        async function resendOTP() {
+            try {
+                const response = await fetch('/resend-current-email-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OTP Resent',
+                        text: 'A new verification code has been sent to your email.',
+                        confirmButtonColor: '#d4af37',
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+
+                    // Reset timer
+                    timeLeft = 60;
+                    timerText.style.display = 'block';
+                    resendSection.style.display = 'none';
+                    
+                    const newTimer = setInterval(() => {
+                        timeLeft--;
+                        countdown.textContent = timeLeft;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(newTimer);
+                            timerText.style.display = 'none';
+                            resendSection.style.display = 'block';
+                        }
+                    }, 1000);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to resend OTP. Please try again.',
+                        confirmButtonColor: '#d4af37'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Network error. Please try again.',
+                    confirmButtonColor: '#d4af37'
+                });
+            }
+        }
+
+        // Form submission
+        document.getElementById('otpForm').addEventListener('submit', (e) => {
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            if (otp.length !== 6) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid OTP',
+                    text: 'Please enter all 6 digits.',
+                    confirmButtonColor: '#d4af37'
+                });
+            }
+        });
+
+        // Display SweetAlert based on server message
+        <% if (typeof message !== 'undefined' && message) { %>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: '<%= (message.includes("successfully") || message.includes("verified") || message.includes("sent")) ? "success" : "error" %>',
+                    title: '<%= (message.includes("successfully") || message.includes("verified") || message.includes("sent")) ? "Success" : "Error" %>',
+                    text: '<%= message.replace(/\+/g, " ") %>',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: true
+                });
+            });
+        <% } %>
+
+        // Auto-focus first input
+        otpInputs[0].focus();
+    </script>
+
+    <!-- Footer -->
+    <%- include("../../views/partials/user/footer") %>
+</body>
+</html>
+
+
+<!-- ippo swal fix akikn -->

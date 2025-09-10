@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>SAWAX | Change Email</title>
+    <title>SAWAX | New Email</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
@@ -147,8 +147,8 @@
             display: block;
         }
 
-        /* Change Email Section */
-        .change-email {
+        /* New Email Section */
+        .new-email {
             padding: 80px 0;
         }
 
@@ -184,7 +184,7 @@
             margin: 0 auto;
         }
 
-        .change-email-content {
+        .new-email-content {
             display: grid;
             grid-template-columns: 1fr 3fr;
             gap: 30px;
@@ -222,14 +222,14 @@
             color: var(--accent);
         }
 
-        .change-email-main {
+        .new-email-main {
             background-color: white;
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        .change-email-form h3 {
+        .new-email-form h3 {
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 20px;
@@ -391,7 +391,7 @@
 
         /* Responsive Design */
         @media (max-width: 992px) {
-            .change-email-content {
+            .new-email-content {
                 grid-template-columns: 1fr;
             }
 
@@ -409,11 +409,11 @@
                 display: block;
             }
 
-            .change-email {
+            .new-email {
                 padding: 60px 0;
             }
 
-            .change-email-main {
+            .new-email-main {
                 padding: 20px;
             }
 
@@ -447,7 +447,7 @@
                 padding: 10px 20px;
             }
 
-            .change-email-form h3 {
+            .new-email-form h3 {
                 font-size: 20px;
             }
         }
@@ -457,14 +457,14 @@
     <!-- Header -->
     <%- include("../../views/partials/user/header") %>
 
-    <!-- Change Email Section -->
-    <section class="change-email">
+    <!-- New Email Section -->
+    <section class="new-email">
         <div class="container">
             <div class="section-title">
-                <h2>Change Email</h2>
-                <p>Verify your current email address to proceed with changing your email.</p>
+                <h2>Enter New Email</h2>
+                <p>Provide your new email address to update your account.</p>
             </div>
-            <div class="change-email-content">
+            <div class="new-email-content">
                 <div class="profile-sidebar">
                     <h3>Account Menu</h3>
                     <ul>
@@ -475,19 +475,19 @@
                         <li><a href="/logout">Logout</a></li>
                     </ul>
                 </div>
-                <div class="change-email-main">
-                    <div class="change-email-form">
-                        <h3>Verify Current Email</h3>    
-                        <form action="/send-current-email-otp" method="POST">
+                <div class="new-email-main">
+                    <div class="new-email-form">
+                        <h3>Update Email Address</h3>
+                        <form action="/update-new-email" method="POST">
                             <div class="form-group">
-                                <label for="current-email">Current Email</label>
-                                <input type="email" id="current-email" name="currentEmail" value="<%= user.email %>" readonly>
+                                <label for="new-email">New Email Address</label>
+                                <input type="email" id="new-email" name="newEmail" placeholder="Enter new email address" required>
                             </div>
                             <div class="form-group">
-                                <label for="password">Password (for verification)</label>
-                                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                                <label for="confirm-email">Confirm New Email Address</label>
+                                <input type="email" id="confirm-email" name="confirmEmail" placeholder="Confirm new email address" required>
                             </div>
-                            <button type="submit" class="btn">Send OTP to Current Email</button>
+                            <button type="submit" class="btn">Update Email</button>
                         </form>
                     </div>
                 </div>
@@ -499,8 +499,8 @@
         // Display SweetAlert based on server message
         <% if (message) { %>
             Swal.fire({
-                icon: '<%= message.includes("successfully") || message.includes("sent") ? "success" : "error" %>',
-                title: '<%= message.includes("successfully") || message.includes("sent") ? "Success" : "Error" %>',
+                icon: '<%= message.includes("successfully") ? "success" : "error" %>',
+                title: '<%= message.includes("successfully") ? "Success" : "Error" %>',
                 text: '<%= message %>',
                 confirmButtonColor: '#d4af37',
                 background: '#f8f8f8',

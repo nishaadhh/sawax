@@ -551,7 +551,16 @@
   <div class="product-info">
     <h1 class="product-title"><%= product.productName %></h1>
     <div class="brand">Brand: <%= product.brand %></div>
-    <div class="product-price">₹<%= product.salePrice.toFixed(2) %></div>
+    <!-- <div class="product-price">₹<%= product.salePrice.toFixed(2) %></div> -->
+
+    <span style="display: flex; gap: 10px; align-items: center;">
+  <% if (product.regularPrice !== product.salePrice) { %>
+    <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
+  <% } %>
+  <p class="product-price">₹ <%= product.salePrice %></p>
+</span>
+
+
     <div class="product-stock <%= product.quantity <= 0 ? 'out-of-stock' : '' %>">
       <%= product.quantity > 0 ? `In Stock: ${product.quantity}` : 'Out of Stock' %>
     </div>
@@ -699,21 +708,15 @@
           title: 'Added to Wishlist!',
           text: 'Product has been added to your wishlist.',
           confirmButtonColor: '#d4af37',
-          background: 'rgba(255, 255, 255, 0.9)',
-          timer: 2000,
-          timerProgressBar: true,
-          showConfirmButton: false,
+
+         
         });
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Failed to Add!',
           text: data.message || 'Failed to add product to wishlist.',
-          confirmButtonColor: '#d4af37',
-          background: 'rgba(255, 255, 255, 0.9)',
-          timer: 2000,
-          timerProgressBar: true,
-          showConfirmButton: false,
+         confirmButtonColor: '#d4af37',
         });
       }
     } catch (error) {
@@ -723,10 +726,8 @@
         title: 'Error!',
         text: 'An error occurred while adding to wishlist.',
         confirmButtonColor: '#d4af37',
-        background: 'rgba(255, 255, 255, 0.9)',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
+
+
       });
     }
   }

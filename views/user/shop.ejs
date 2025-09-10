@@ -411,7 +411,12 @@
                                 <div class="product-details">
                                     <h3 class="product-name"><%= product.productName %></h3>
                                     <p class="product-brand">Brand: <%= product.brand %></p>
-                                    <p class="product-price">₹<%= product.salePrice %></p>
+                                   <span style="display: flex; gap: 10px; align-items: center;">
+  <% if (product.regularPrice !== product.salePrice) { %>
+    <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
+  <% } %>
+  <p class="product-price">₹ <%= product.salePrice %></p>
+</span>
                                     <p class="product-color">Color: <%= product.color %></p>
                                     <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
                                     <a href="/product/<%= product._id %>" class="view-button">View Product</a>
@@ -523,26 +528,39 @@ function updateProductGrid(data) {
     const productGrid = document.getElementById('product-grid');
     productGrid.innerHTML = '';
     
-    if (data.products && data.products.length > 0) {
-        data.products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            productCard.innerHTML = `
-                <div class="product-image">
-                    <img src="/${product.productImage[0]}" alt="${product.productName}">
-                </div>
-                <div class="product-details">
-                    <h3 class="product-name">${product.productName}</h3>
-                    <p class="product-brand">Brand: ${product.brand}</p>
-                    <p class="product-price">₹${product.salePrice}</p>
-                    <p class="product-color">Color: ${product.color}</p>
-                    <p class="product-description">${product.description.slice(0, 100)}...</p>
-                    <a href="/product/${product._id}" class="view-button">View Product</a>
-                </div>
-            `;
-            productGrid.appendChild(productCard);
-        });
-    } else {
+   if (data.products && data.products.length > 0) {
+    data.products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+
+        // conditional price display
+        const priceHTML = product.regularPrice !== product.salePrice
+            ? `<span style="display: flex; gap: 10px; align-items: center;">
+                 <del><p class="product-price">₹ ${product.regularPrice}</p></del>
+                 <p class="product-price">₹ ${product.salePrice}</p>
+               </span>`
+            : `<span style="display: flex; gap: 10px; align-items: center;">
+                 <p class="product-price">₹ ${product.salePrice}</p>
+               </span>`;
+
+        productCard.innerHTML = `
+            <div class="product-image">
+                <img src="/${product.productImage[0]}" alt="${product.productName}">
+            </div>
+            <div class="product-details">
+                <h3 class="product-name">${product.productName}</h3>
+                <p class="product-brand">Brand: ${product.brand}</p>
+                ${priceHTML}
+                <p class="product-color">Color: ${product.color}</p>
+                <p class="product-description">${product.description.slice(0, 100)}...</p>
+                <a href="/product/${product._id}" class="view-button">View Product</a>
+            </div>
+        `;
+
+        productGrid.appendChild(productCard);
+    });
+}
+ else {
         productGrid.innerHTML = `
             <p style="text-align: center; color: var(--light-text); font-size: 18px;">
                 No products found. Try adjusting your filters.
