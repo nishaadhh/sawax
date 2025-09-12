@@ -1,4 +1,3 @@
-
 <%- include('../partials/user/header') %>
 
 <!-- Start Banner Area -->
@@ -78,6 +77,8 @@
     --primary-color: #d4af37;
     --secondary-color: #685619;
     --danger-color: #dc3545;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
   }
   .dropdown-address {
     position: relative;
@@ -105,7 +106,7 @@
     display: none;
     position: absolute;
     background-color: #ffffff;
-    width: 600px;
+    width: 650px;
     left: 0;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
@@ -121,8 +122,11 @@
     background-color: #ffffff;
     border-radius: 10px;
   }
+  
+  /* Enhanced Form Validation Styles */
   .form-group {
     margin-bottom: 1.2rem;
+    position: relative;
   }
   .form-group label {
     font-weight: 500;
@@ -131,19 +135,93 @@
     display: block;
     font-size: 0.95rem;
   }
+  .form-group label.required::after {
+    content: ' *';
+    color: var(--danger-color);
+    font-weight: bold;
+  }
+  
   .form-control {
     border: 2px solid #d1d5db;
     border-radius: 8px;
-    padding: 10px;
+    padding: 7px;
     font-size: 1rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     width: 100%;
+    position: relative;
   }
+  
   .form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
     outline: none;
   }
+  
+  /* Validation States */
+  .form-control.is-valid {
+    border-color: var(--success-color);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2328a745'%3e%3cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 45px;
+  }
+  
+  .form-control.is-invalid {
+    border-color: var(--danger-color);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc3545'%3e%3cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 45px;
+  }
+  
+  .form-control.is-checking {
+    border-color: var(--warning-color);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffc107'%3e%3cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 45px;
+  }
+  
+  /* Validation Messages */
+  .validation-message {
+    font-size: 0.875rem;
+    margin-top: 5px;
+    padding: 5px 0;
+    transition: all 0.3s ease;
+    min-height: 20px;
+  }
+  
+  .validation-message.valid {
+    color: var(--success-color);
+  }
+  
+  .validation-message.invalid {
+    color: var(--danger-color);
+  }
+  
+  .validation-message.checking {
+    color: var(--warning-color);
+  }
+  
+  /* Character Counter */
+  .char-counter {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-align: right;
+    margin-top: 2px;
+  }
+  
+  .char-counter.warning {
+    color: var(--warning-color);
+  }
+  
+  .char-counter.danger {
+    color: var(--danger-color);
+  }
+
   #countryCheckout,
   #stateCheckout {
     height: calc(2.25rem + 2px);
@@ -162,11 +240,12 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
     display: block;
     margin: 20px auto 0;
+    position: relative;
   }
-  .btn-primary:hover {
+  .btn-primary:hover:not(:disabled) {
     background-color: var(--secondary-color);
     border-color: var(--primary-color);
     transform: translateY(-2px);
@@ -174,11 +253,14 @@
   .btn-primary:active {
     transform: translateY(0);
   }
-  .text-danger {
-    font-size: 0.85rem;
-    margin-top: 5px;
-    color: var(--danger-color);
+  
+  .btn-primary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
   }
+  
   @media (max-width: 768px) {
     .dropdown-address-content {
       width: 100%;
@@ -192,7 +274,6 @@
 
   /* Loading state for buttons */
   .btn.loading {
-    position: relative;
     pointer-events: none;
     opacity: 0.7;
   }
@@ -240,6 +321,53 @@
   .remove-coupon-btn:hover {
     background-color: #c82333;
   }
+  
+  /* Form Progress Indicator */
+  .form-progress {
+    height: 4px;
+    background-color: #e9ecef;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .form-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+  
+  /* Validation Summary */
+  .validation-summary {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  
+  .validation-summary.show {
+    display: block;
+  }
+  
+  .validation-summary h5 {
+    color: var(--danger-color);
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+  
+  .validation-summary ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  
+  .validation-summary li {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+  }
 </style>
 
 <div class="container py-5">
@@ -251,22 +379,22 @@
         
         <!-- Address Selection Area -->
         <div class="form-group">
-          <label for="existingAddress">Select Existing Address</label>
-          <select id="existingAddress" name="addressId" class="form-control">
-            <option value="" selected>Select an address</option>
-            <% if (addresses && addresses.address && addresses.address.length > 0) { %>
-              <% addresses.address.forEach((address) => { %>
-                <option value="<%= address._id %>">
-                  <%= address.addressType %> - <%= address.name %>,
-                  <%= address.streetAddress %>, <%= address.city %>, <%= address.state %>, <%= address.country %>,
-                  <%= address.phone %>
-                </option>
-              <% }); %>
-            <% } else { %>
-              <option disabled>No addresses available</option>
-            <% } %>
-          </select>
-        </div>
+  <label for="existingAddress">Select Existing Address</label>
+  <select id="existingAddress" name="addressId" class="form-control">
+    <% if (addresses && addresses.address && addresses.address.length > 0) { %>
+      <% addresses.address.forEach((address, index) => { %>
+        <option value="<%= address._id %>" <%= index === 0 ? 'selected' : '' %>>
+          <%= address.addressType %> - <%= address.name %>,
+          <%= address.streetAddress %>, <%= address.city %>, <%= address.state %>, <%= address.country %>,
+          <%= address.phone %>
+        </option>
+      <% }); %>
+    <% } else { %>
+      <option value="" selected disabled>No addresses available</option>
+    <% } %>
+  </select>
+</div>
+
         
         <!-- New Address Dropdown -->
         <% if (!addresses || !addresses.address || addresses.address.length === 0) { %>
@@ -275,68 +403,134 @@
         <div class="dropdown-address">
           <button type="button" onclick="toggleAddressDropdown(event)" id="newAddressBtn" aria-expanded="false" aria-controls="addressDropdown">New Address</button>
           <div class="dropdown-address-content" id="addressDropdown">
+            <!-- Form Progress Indicator -->
+            <div class="form-progress">
+              <div class="form-progress-bar" id="formProgressBar"></div>
+            </div>
+            
+            <!-- Validation Summary -->
+            <div class="validation-summary" id="validationSummary">
+              <h5>Please fix the following errors:</h5>
+              <ul id="validationSummaryList"></ul>
+            </div>
+            
             <form id="addressFormCheckout" method="POST" action="/addAddressCheckout">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="addressTypeCheckout">Address Type:</label>
-                  <input type="text" class="form-control" id="addressTypeCheckout" name="addressType" required>
+                  <label for="addressTypeCheckout" class="required">Address Type</label>
+                  <input type="text" class="form-control" id="addressTypeCheckout" name="addressType" required 
+                         placeholder="Home, Office, Other" maxlength="20">
+                  <div class="validation-message" id="addressTypeCheckout-message"></div>
+                  <div class="char-counter"><span id="addressTypeCheckout-count">0</span>/20</div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="nameCheckout">Name:</label>
-                  <input type="text" class="form-control" id="nameCheckout" name="name" required>
+                  <label for="nameCheckout" class="required">Full Name</label>
+                  <input type="text" class="form-control" id="nameCheckout" name="name" required 
+                         placeholder="Enter your full name" maxlength="50">
+                  <div class="validation-message" id="nameCheckout-message"></div>
+                  <div class="char-counter"><span id="nameCheckout-count">0</span>/50</div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="countryCheckout">Country:</label>
+                  <label for="countryCheckout" class="required">Country</label>
                   <select class="form-control" id="countryCheckout" name="country" required>
-                    <option value="India">India</option>
+                    <option value="">Select Country</option>
+                    <option value="India" selected>India</option>
                   </select>
+                  <div class="validation-message" id="countryCheckout-message"></div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="stateCheckout">State:</label>
+                  <label for="stateCheckout" class="required">State</label>
                   <select class="form-control" id="stateCheckout" name="state" required>
-                    <option value="Kerala">Kerala</option>
+                    <option value="">Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala" selected>Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Delhi">Delhi</option>
                   </select>
+                  <div class="validation-message" id="stateCheckout-message"></div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="cityCheckout">City:</label>
-                  <input type="text" class="form-control" id="cityCheckout" name="city" required>
+                  <label for="cityCheckout" class="required">City</label>
+                  <input type="text" class="form-control" id="cityCheckout" name="city" required 
+                         placeholder="Enter city name" maxlength="50">
+                  <div class="validation-message" id="cityCheckout-message"></div>
+                  <div class="char-counter"><span id="cityCheckout-count">0</span>/50</div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="landMarkCheckout">Landmark:</label>
-                  <input type="text" class="form-control" id="landMarkCheckout" name="landMark" required>
+                  <label for="landMarkCheckout">Landmark (Optional)</label>
+                  <input type="text" class="form-control" id="landMarkCheckout" name="landMark" 
+                         placeholder="Near landmark" maxlength="100">
+                  <div class="validation-message" id="landMarkCheckout-message"></div>
+                  <div class="char-counter"><span id="landMarkCheckout-count">0</span>/100</div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="streetAddressCheckout">Street Address:</label>
-                  <input type="text" class="form-control" id="streetAddressCheckout" name="streetAddress" required>
+                  <label for="streetAddressCheckout" class="required">Street Address</label>
+                  <input type="text" class="form-control" id="streetAddressCheckout" name="streetAddress" required 
+                         placeholder="House no, Building, Street" maxlength="200">
+                  <div class="validation-message" id="streetAddressCheckout-message"></div>
+                  <div class="char-counter"><span id="streetAddressCheckout-count">0</span>/200</div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="pincodeCheckout">Pincode:</label>
-                  <input type="number" class="form-control" id="pincodeCheckout" name="pincode" required>
+                  <label for="pincodeCheckout" class="required">Pincode</label>
+                  <input type="text" class="form-control" id="pincodeCheckout" name="pincode" required 
+                         placeholder="6-digit pincode" maxlength="6" pattern="[1-9][0-9]{5}">
+                  <div class="validation-message" id="pincodeCheckout-message"></div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="phoneCheckout">Phone:</label>
-                  <input type="text" class="form-control" id="phoneCheckout" name="phone" required>
+                  <label for="phoneCheckout" class="required">Phone Number</label>
+                  <input type="tel" class="form-control" id="phoneCheckout" name="phone" required 
+                         placeholder="10-digit mobile number" maxlength="10" pattern="[6-9][0-9]{9}">
+                  <div class="validation-message" id="phoneCheckout-message"></div>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="emailCheckout">Email:</label>
-                  <input type="email" class="form-control" id="emailCheckout" name="email" required>
+                  <label for="emailCheckout" class="required">Email Address</label>
+                  <input type="email" class="form-control" id="emailCheckout" name="email" required 
+                         placeholder="your.email@example.com" maxlength="100">
+                  <div class="validation-message" id="emailCheckout-message"></div>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="altPhoneCheckout">Alternate Phone:</label>
-                  <input type="text" class="form-control" id="altPhoneCheckout" name="altPhone" required>
+                  <label for="altPhoneCheckout">Alternate Phone (Optional)</label>
+                  <input type="tel" class="form-control" id="altPhoneCheckout" name="altPhone" 
+                         placeholder="Alternate mobile number" maxlength="10" pattern="[6-9][0-9]{9}">
+                  <div class="validation-message" id="altPhoneCheckout-message"></div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="submit" class="btn btn-primary" id="submitAddressBtn" disabled>Add Address</button>
             </form>
           </div>
         </div>
@@ -437,8 +631,320 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  // Global variables to store coupon info
+  // Global variables to store coupon info and validation state
   let appliedCouponData = null;
+  let validationState = {};
+  let validationTimeouts = {};
+
+  // Initialize validation system
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation();
+    calculateAndDisplaySubtotal();
+  });
+
+  function initializeValidation() {
+    const form = document.getElementById('addressFormCheckout');
+    const fields = form.querySelectorAll('input[required], input[name="altPhone"], input[name="landMark"]');
+    
+    fields.forEach(field => {
+      const fieldName = field.name;
+      validationState[fieldName] = false;
+      
+      // Add event listeners for real-time validation
+      field.addEventListener('input', function() {
+        updateCharacterCount(field);
+        debounceValidation(field);
+      });
+      
+      field.addEventListener('blur', function() {
+        validateField(field, true);
+      });
+      
+      // Initialize character counters
+      updateCharacterCount(field);
+    });
+    
+    // Special handling for select fields
+    const selectFields = form.querySelectorAll('select[required]');
+    selectFields.forEach(field => {
+      const fieldName = field.name;
+      validationState[fieldName] = false;
+      
+      field.addEventListener('change', function() {
+        validateField(field, true);
+      });
+    });
+    
+    updateFormProgress();
+    updateSubmitButton();
+  }
+
+  function debounceValidation(field, delay = 500) {
+    const fieldName = field.name;
+    
+    // Clear existing timeout
+    if (validationTimeouts[fieldName]) {
+      clearTimeout(validationTimeouts[fieldName]);
+    }
+    
+    // Show checking state immediately for important fields
+    if (['phone', 'email'].includes(fieldName)) {
+      setFieldState(field, 'checking', 'Checking...');
+    }
+    
+    // Set new timeout
+    validationTimeouts[fieldName] = setTimeout(() => {
+      validateField(field, false);
+    }, delay);
+  }
+
+  async function validateField(field, showImmediate = false) {
+    const fieldName = field.name;
+    const value = field.value.trim();
+    
+    // Clear any existing timeout
+    if (validationTimeouts[fieldName]) {
+      clearTimeout(validationTimeouts[fieldName]);
+      delete validationTimeouts[fieldName];
+    }
+    
+    let isValid = true;
+    let message = '';
+    
+    // Required field validation
+    if (field.hasAttribute('required') && !value) {
+      isValid = false;
+      message = `${getFieldLabel(fieldName)} is required`;
+    } else if (value) {
+      // Field-specific validation
+      const validationResult = await validateFieldValue(fieldName, value);
+      isValid = validationResult.valid;
+      message = validationResult.message;
+    }
+    
+    // Update validation state
+    validationState[fieldName] = isValid;
+    
+    // Update UI
+    if (showImmediate || isValid || message) {
+      setFieldState(field, isValid ? 'valid' : 'invalid', message);
+    }
+    
+    updateFormProgress();
+    updateSubmitButton();
+    updateValidationSummary();
+    
+    return isValid;
+  }
+
+  async function validateFieldValue(fieldName, value) {
+    const validators = {
+      addressType: (val) => {
+        if (val.length < 2 || val.length > 20) return { valid: false, message: 'Address type should be 2-20 characters' };
+        if (!/^[a-zA-Z\s]+$/.test(val)) return { valid: false, message: 'Address type should contain only letters and spaces' };
+        return { valid: true, message: 'Valid address type' };
+      },
+      
+      name: (val) => {
+        if (val.length < 2 || val.length > 50) return { valid: false, message: 'Name should be 2-50 characters' };
+        if (!/^[a-zA-Z\s]+$/.test(val)) return { valid: false, message: 'Name should contain only letters and spaces' };
+        return { valid: true, message: 'Valid name' };
+      },
+      
+      city: (val) => {
+        if (val.length < 2 || val.length > 50) return { valid: false, message: 'City should be 2-50 characters' };
+        if (!/^[a-zA-Z\s]+$/.test(val)) return { valid: false, message: 'City should contain only letters and spaces' };
+        return { valid: true, message: 'Valid city' };
+      },
+      
+      streetAddress: (val) => {
+        if (val.length < 5 || val.length > 200) return { valid: false, message: 'Street address should be 5-200 characters' };
+        if (!/^[a-zA-Z0-9\s,.-]+$/.test(val)) return { valid: false, message: 'Street address contains invalid characters' };
+        return { valid: true, message: 'Valid street address' };
+      },
+      
+      landMark: (val) => {
+        if (val && val.length > 100) return { valid: false, message: 'Landmark should be max 100 characters' };
+        if (val && !/^[a-zA-Z0-9\s,.-]*$/.test(val)) return { valid: false, message: 'Landmark contains invalid characters' };
+        return { valid: true, message: val ? 'Valid landmark' : '' };
+      },
+      
+      pincode: (val) => {
+        if (!/^[1-9][0-9]{5}$/.test(val)) return { valid: false, message: 'Invalid pincode format (6 digits, not starting with 0)' };
+        return { valid: true, message: 'Valid pincode' };
+      },
+      
+      phone: async (val) => {
+        if (!/^[6-9]\d{9}$/.test(val)) return { valid: false, message: 'Phone number should be 10 digits starting with 6-9' };
+        
+        // Check for duplicate phone numbers via API
+        try {
+          const response = await fetch('/validateAddressField', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: 'phone', value: val, userId: '<%= user && user._id ? user._id : "" %>' })
+          });
+          const result = await response.json();
+          return result;
+        } catch (error) {
+          return { valid: true, message: 'Valid phone number' }; // Fallback to client-side validation
+        }
+      },
+      
+      altPhone: (val) => {
+        if (val && !/^[6-9]\d{9}$/.test(val)) return { valid: false, message: 'Alternate phone should be 10 digits starting with 6-9' };
+        return { valid: true, message: val ? 'Valid alternate phone' : '' };
+      },
+      
+      email: (val) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(val)) return { valid: false, message: 'Please enter a valid email address' };
+        return { valid: true, message: 'Valid email address' };
+      },
+      
+      country: (val) => {
+        if (val !== 'India') return { valid: false, message: 'Currently, we only support Indian addresses' };
+        return { valid: true, message: 'Valid country' };
+      },
+      
+      state: (val) => {
+        if (!val) return { valid: false, message: 'Please select a state' };
+        return { valid: true, message: 'Valid state' };
+      }
+    };
+    
+    const validator = validators[fieldName];
+    if (validator) {
+      return await validator(value);
+    }
+    
+    return { valid: true, message: '' };
+  }
+
+  function setFieldState(field, state, message) {
+    const messageElement = document.getElementById(`${field.id}-message`);
+    
+    // Remove all validation classes
+    field.classList.remove('is-valid', 'is-invalid', 'is-checking');
+    if (messageElement) {
+      messageElement.classList.remove('valid', 'invalid', 'checking');
+    }
+    
+    // Add appropriate class and message
+    if (state === 'valid' && message) {
+      field.classList.add('is-valid');
+      if (messageElement) {
+        messageElement.classList.add('valid');
+        messageElement.textContent = message;
+      }
+    } else if (state === 'invalid') {
+      field.classList.add('is-invalid');
+      if (messageElement) {
+        messageElement.classList.add('invalid');
+        messageElement.textContent = message;
+      }
+    } else if (state === 'checking') {
+      field.classList.add('is-checking');
+      if (messageElement) {
+        messageElement.classList.add('checking');
+        messageElement.textContent = message;
+      }
+    }
+  }
+
+  function updateCharacterCount(field) {
+    const counterElement = document.getElementById(`${field.id}-count`);
+    if (counterElement) {
+      const currentLength = field.value.length;
+      const maxLength = field.getAttribute('maxlength');
+      
+      counterElement.textContent = currentLength;
+      
+      const counterContainer = counterElement.parentElement;
+      counterContainer.classList.remove('warning', 'danger');
+      
+      if (maxLength) {
+        const percentage = (currentLength / maxLength) * 100;
+        if (percentage >= 90) {
+          counterContainer.classList.add('danger');
+        } else if (percentage >= 75) {
+          counterContainer.classList.add('warning');
+        }
+      }
+    }
+  }
+
+  function updateFormProgress() {
+    const totalFields = Object.keys(validationState).length;
+    const validFields = Object.values(validationState).filter(valid => valid).length;
+    const progress = totalFields > 0 ? (validFields / totalFields) * 100 : 0;
+    
+    const progressBar = document.getElementById('formProgressBar');
+    if (progressBar) {
+      progressBar.style.width = `${progress}%`;
+    }
+  }
+
+  function updateSubmitButton() {
+    const submitBtn = document.getElementById('submitAddressBtn');
+    const requiredFields = ['addressType', 'name', 'country', 'state', 'city', 'streetAddress', 'pincode', 'phone', 'email'];
+    const isFormValid = requiredFields.every(field => validationState[field] === true);
+    
+    submitBtn.disabled = !isFormValid;
+    
+    if (isFormValid) {
+      submitBtn.textContent = 'Add Address';
+      submitBtn.classList.remove('btn-secondary');
+      submitBtn.classList.add('btn-primary');
+    } else {
+      submitBtn.textContent = 'Please complete the form';
+      submitBtn.classList.remove('btn-primary');
+      submitBtn.classList.add('btn-secondary');
+    }
+  }
+
+  function updateValidationSummary() {
+    const summaryElement = document.getElementById('validationSummary');
+    const listElement = document.getElementById('validationSummaryList');
+    
+    if (!summaryElement || !listElement) return;
+    
+    const errors = [];
+    
+    Object.keys(validationState).forEach(fieldName => {
+      if (validationState[fieldName] === false) {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        const messageElement = document.getElementById(`${field.id}-message`);
+        if (messageElement && messageElement.textContent.trim()) {
+          errors.push(messageElement.textContent);
+        }
+      }
+    });
+    
+    if (errors.length > 0) {
+      listElement.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+      summaryElement.classList.add('show');
+    } else {
+      summaryElement.classList.remove('show');
+    }
+  }
+
+  function getFieldLabel(fieldName) {
+    const labels = {
+      addressType: 'Address Type',
+      name: 'Full Name',
+      country: 'Country',
+      state: 'State',
+      city: 'City',
+      landMark: 'Landmark',
+      streetAddress: 'Street Address',
+      pincode: 'Pincode',
+      phone: 'Phone Number',
+      email: 'Email Address',
+      altPhone: 'Alternate Phone'
+    };
+    return labels[fieldName] || fieldName;
+  }
 
   // Calculate subtotal from cart items on page load
   function calculateSubtotal() {
@@ -455,8 +961,7 @@
     return subtotal;
   }
 
-  // Update the subtotal display on page load
-  document.addEventListener('DOMContentLoaded', function() {
+  function calculateAndDisplaySubtotal() {
     const calculatedSubtotal = calculateSubtotal();
     const subtotalElement = document.getElementById('subtotal');
     const grandTotalElement = document.getElementById('grandTotal');
@@ -464,7 +969,7 @@
     
     subtotalElement.textContent = `₹${calculatedSubtotal.toFixed(2)}`;
     grandTotalElement.textContent = `₹${(calculatedSubtotal + shippingCharge).toFixed(2)}`;
-  });
+  }
 
   function toggleAddressDropdown(event) {
     event.preventDefault();
@@ -818,12 +1323,41 @@
 
   document.getElementById('placeOrderBtn').onclick = placeOrder;
 
-  // Handle address form submission
+  // Handle address form submission with enhanced validation
   document.getElementById('addressFormCheckout').addEventListener('submit', async function(e) {
     e.preventDefault();
     
+    const submitBtn = document.getElementById('submitAddressBtn');
+    
+    // Validate all fields one more time before submission
+    const form = this;
+    const fields = form.querySelectorAll('input, select');
+    let isFormValid = true;
+    
+    for (const field of fields) {
+      const isValid = await validateField(field, true);
+      if (!isValid && (field.hasAttribute('required') || field.value.trim())) {
+        isFormValid = false;
+      }
+    }
+    
+    if (!isFormValid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Please fix the errors in the form before submitting.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+    
     const formData = new FormData(this);
     const addressData = Object.fromEntries(formData);
+
+    // Add loading state
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Adding Address...';
 
     try {
       const response = await fetch('/addAddressCheckout', {
@@ -837,26 +1371,39 @@
       const data = await response.json();
 
       if (data.success) {
-        Swal.fire({
+        await Swal.fire({
           icon: 'success',
           title: 'Address Added!',
           text: 'Address has been added successfully.',
           timer: 1500,
           timerProgressBar: true
-        }).then(() => {
-          location.reload();
         });
+        location.reload();
       } else {
         throw new Error(data.message || 'Failed to add address');
       }
     } catch (error) {
       console.error('Error adding address:', error);
+      
+      let errorMessage = error.message || 'Failed to add address';
+      
+      // Handle validation errors from server
+      if (error.response && error.response.errors) {
+        errorMessage = error.response.errors.join(', ');
+      }
+      
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: error.message || 'Failed to add address',
+        title: 'Error Adding Address',
+        text: errorMessage,
         confirmButtonText: 'OK'
       });
+    } finally {
+      // Remove loading state
+      submitBtn.classList.remove('loading');
+      updateSubmitButton(); // This will set the proper state
     }
   });
 </script>
+
+<%- include('../partials/user/footer') %>
