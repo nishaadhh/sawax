@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -37,8 +37,12 @@
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             outline: none;
         }
+        .otp-input.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg,#d4af37 0%, #655a36  100%);
             border: none;
             border-radius: 10px;
             padding: 12px 30px;
@@ -55,19 +59,25 @@
             font-weight: 600;
         }
         .text-primary {
-            color: #667eea !important;
+            color: #d4af37 !important;
         }
         .timer {
             font-weight: bold;
             color: #dc3545;
         }
         .resend-link {
-            color: #667eea;
+            color: #d4af37;
             text-decoration: none;
             cursor: pointer;
         }
         .resend-link:hover {
             text-decoration: underline;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -95,6 +105,7 @@
                                     <input type="text" class="otp-input" name="otp5" maxlength="1" pattern="[0-9]" required>
                                     <input type="text" class="otp-input" name="otp6" maxlength="1" pattern="[0-9]" required>
                                 </div>
+                                <div class="invalid-feedback" id="otpError"></div>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100 mb-3" id="verifyBtn">
@@ -128,10 +139,44 @@
     <script>
         // OTP Input handling
         const otpInputs = document.querySelectorAll('.otp-input');
-        
+        const otpForm = document.getElementById('otpForm');
+        const otpError = document.getElementById('otpError');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const btnText = verifyBtn.querySelector('.btn-text');
+        const spinner = verifyBtn.querySelector('.spinner-border');
+        const resendElement = document.getElementById('resendOtp');
+        const timerElement = document.getElementById('timer');
+
+        // Input validation function
+        function validateInput(input) {
+            const value = input.value.trim();
+            if (!/^[0-9]$/.test(value)) {
+                input.classList.add('is-invalid');
+                return false;
+            }
+            input.classList.remove('is-invalid');
+            return true;
+        }
+
+        // Clear all error states
+        function clearErrors() {
+            otpInputs.forEach(input => input.classList.remove('is-invalid'));
+            otpError.textContent = '';
+        }
+
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', function(e) {
-                if (this.value.length === 1 && index < otpInputs.length - 1) {
+                const value = this.value.trim();
+                // Sanitize input to allow only numbers
+                if (value && !/^[0-9]$/.test(value)) {
+                    this.value = '';
+                    this.classList.add('is-invalid');
+                    otpError.textContent = 'Please enter a valid digit (0-9)';
+                    return;
+                }
+                clearErrors();
+                
+                if (value.length === 1 && index < otpInputs.length - 1) {
                     otpInputs[index + 1].focus();
                 }
             });
@@ -144,20 +189,23 @@
             
             input.addEventListener('paste', function(e) {
                 e.preventDefault();
-                const paste = e.clipboardData.getData('text');
+                const paste = e.clipboardData.getData('text').trim();
                 if (paste.length === 6 && /^\d{6}$/.test(paste)) {
+                    clearErrors();
                     otpInputs.forEach((input, i) => {
                         input.value = paste[i] || '';
+                        input.classList.remove('is-invalid');
                     });
+                    otpInputs[otpInputs.length - 1].focus();
+                } else {
+                    otpError.textContent = 'Pasted OTP must be 6 digits';
+                    otpInputs.forEach(input => input.classList.add('is-invalid'));
                 }
             });
         });
 
         // Timer functionality
         let timeLeft = 300; // 5 minutes in seconds
-        const timerElement = document.getElementById('timer');
-        const resendElement = document.getElementById('resendOtp');
-        
         const timer = setInterval(() => {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
@@ -171,25 +219,28 @@
             timeLeft--;
         }, 1000);
 
-        // Form submission
-        document.getElementById('otpForm').addEventListener('submit', async function(e) {
+        // Form submission with validation
+        otpForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            clearErrors();
+
+            const otpValues = Array.from(otpInputs).map(input => input.value.trim());
             
-            const otp1 = document.querySelector('input[name="otp1"]').value;
-            const otp2 = document.querySelector('input[name="otp2"]').value;
-            const otp3 = document.querySelector('input[name="otp3"]').value;
-            const otp4 = document.querySelector('input[name="otp4"]').value;
-            const otp5 = document.querySelector('input[name="otp5"]').value;
-            const otp6 = document.querySelector('input[name="otp6"]').value;
-            
-            if (!otp1 || !otp2 || !otp3 || !otp4 || !otp5 || !otp6) {
-                showAlert('Please enter all 6 digits', 'danger');
+            // Validate all inputs
+            let isValid = true;
+            otpValues.forEach((value, index) => {
+                if (!value || !/^[0-9]$/.test(value)) {
+                    otpInputs[index].classList.add('is-invalid');
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                otpError.textContent = 'Please enter a valid 6-digit OTP';
                 return;
             }
-            
-            const verifyBtn = document.getElementById('verifyBtn');
-            const btnText = verifyBtn.querySelector('.btn-text');
-            const spinner = verifyBtn.querySelector('.spinner-border');
+
+            const [otp1, otp2, otp3, otp4, otp5, otp6] = otpValues;
             
             btnText.textContent = 'Verifying...';
             spinner.classList.remove('d-none');
@@ -210,9 +261,12 @@
                     window.location.href = '/reset-password';
                 } else {
                     showAlert(data.message || 'Invalid OTP. Please try again.', 'danger');
+                    otpInputs.forEach(input => input.classList.add('is-invalid'));
+                    otpError.textContent = data.message || 'Invalid OTP';
                 }
             } catch (error) {
                 showAlert('An error occurred. Please try again.', 'danger');
+                otpError.textContent = 'An error occurred';
             } finally {
                 btnText.textContent = 'Verify OTP';
                 spinner.classList.add('d-none');
@@ -220,8 +274,16 @@
             }
         });
 
-        // Resend OTP
-        document.getElementById('resendOtp').addEventListener('click', async function() {
+        // Resend OTP with rate limiting
+        let resendAttempts = 0;
+        const maxResendAttempts = 3;
+        
+        resendElement.addEventListener('click', async function() {
+            if (resendAttempts >= maxResendAttempts) {
+                showAlert('Maximum resend attempts reached. Please try again later.', 'danger');
+                return;
+            }
+
             try {
                 const response = await fetch('/resend-forgot-password-otp', {
                     method: 'POST',
@@ -237,6 +299,20 @@
                     // Reset timer
                     timeLeft = 300;
                     resendElement.style.display = 'none';
+                    resendAttempts++;
+                    clearInterval(timer);
+                    const newTimer = setInterval(() => {
+                        const minutes = Math.floor(timeLeft / 60);
+                        const seconds = timeLeft % 60;
+                        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(newTimer);
+                            timerElement.textContent = '00:00';
+                            resendElement.style.display = 'inline';
+                        }
+                        timeLeft--;
+                    }, 1000);
                 } else {
                     showAlert(data.message || 'Failed to resend OTP', 'danger');
                 }

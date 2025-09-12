@@ -8,6 +8,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
+// Default profile image path - updated to use your provided image
+const DEFAULT_PROFILE_IMAGE = '/images/default-avatar.png';
+
 // Configure multer for profile image uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,7 +22,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalName));
+    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 
@@ -28,7 +31,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: function (req, file, cb) {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalName).toLowerCase());
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
     
     if (mimetype && extname) {
@@ -39,6 +42,49 @@ const upload = multer({
   }
 });
 
+// Utility function to get profile image with fallback
+const getProfileImagePath = (user) => {
+  if (!user.profileImage || user.profileImage === DEFAULT_PROFILE_IMAGE) {
+    return DEFAULT_PROFILE_IMAGE;
+  }
+  
+  // Check if custom profile image exists
+  const imagePath = path.join('public', user.profileImage);
+  if (fs.existsSync(imagePath)) {
+    return user.profileImage;
+  }
+  
+  // If file doesn't exist, reset to default and update database
+  User.findByIdAndUpdate(user._id, { profileImage: DEFAULT_PROFILE_IMAGE }).catch(console.error);
+  return DEFAULT_PROFILE_IMAGE;
+};
+
+// Utility function to check if user has custom profile image
+const hasCustomProfileImage = (user) => {
+  return user.profileImage && 
+         user.profileImage !== DEFAULT_PROFILE_IMAGE && 
+         user.profileImage !== '' && 
+         user.profileImage !== null;
+};
+
+// Utility function to safely delete profile image file
+const deleteProfileImageFile = (imagePath) => {
+  if (!imagePath || imagePath === DEFAULT_PROFILE_IMAGE) {
+    return false;
+  }
+  
+  try {
+    const fullPath = path.join('public', imagePath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+      return true;
+    }
+  } catch (error) {
+    console.error("Error deleting profile image file:", error);
+  }
+  return false;
+};
+
 // Utility function for OTP generation
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -47,7 +93,7 @@ function generateOtp() {
 // Shared utility for sending verification email
 const sendVerificationEmail = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransporter({
       service: "gmail",
       port: 587,
       secure: false,
@@ -80,8 +126,17 @@ const userProfile = async (req, res) => {
     if (!userData) {
       return res.redirect("/errorpage?message=user-not-found");
     }
+    
+    // Ensure user has a profile image path
+    const profileImagePath = getProfileImagePath(userData);
+    const hasCustomImage = hasCustomProfileImage(userData);
+    
     res.render("profile", { 
-      user: userData,
+      user: {
+        ...userData.toObject(),
+        profileImage: profileImagePath,
+        hasCustomProfileImage: hasCustomImage
+      },
       message: req.query.message || null,
       error: req.query.error || null
     });
@@ -155,33 +210,28 @@ const uploadProfileImage = async (req, res) => {
       });
     }
 
-    const imagePath = '/images/profiles/' + req.file.filename;
+    const newImagePath = '/images/profiles/' + req.file.filename;
     
     const user = await User.findById(userId);
     
-    if (user.profileImage && 
-        user.profileImage !== '/images/default-avatar.png' && 
-        !user.profileImage.includes('placeholder')) {
-      try {
-        const oldImagePath = path.join('public', user.profileImage);
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      } catch (deleteError) {
-        console.error("Error deleting old profile image:", deleteError);
-      }
+    // Delete old custom profile image if it exists
+    if (hasCustomProfileImage(user)) {
+      deleteProfileImageFile(user.profileImage);
     }
     
-    await User.findByIdAndUpdate(userId, { profileImage: imagePath });
+    // Update user with new profile image
+    await User.findByIdAndUpdate(userId, { profileImage: newImagePath });
     
     res.json({ 
       success: true, 
       message: 'Profile picture updated successfully!',
-      imagePath: imagePath
+      imagePath: newImagePath,
+      hasCustomImage: true
     });
   } catch (error) {
     console.error("Error uploading profile image:", error);
     
+    // Clean up uploaded file if there was an error
     if (req.file) {
       try {
         fs.unlinkSync(req.file.path);
@@ -193,6 +243,56 @@ const uploadProfileImage = async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: 'Error uploading profile picture' 
+    });
+  }
+};
+
+const removeProfileImage = async (req, res) => {
+  try {
+    const userId = req.session.user;
+    
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'User not authenticated' 
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found' 
+      });
+    }
+
+    // Check if user has a custom profile image
+    if (!hasCustomProfileImage(user)) {
+      return res.json({ 
+        success: true, 
+        message: 'No custom profile image to remove',
+        imagePath: DEFAULT_PROFILE_IMAGE,
+        hasCustomImage: false
+      });
+    }
+
+    // Delete the custom profile image file
+    deleteProfileImageFile(user.profileImage);
+    
+    // Update user to use default profile image
+    await User.findByIdAndUpdate(userId, { profileImage: DEFAULT_PROFILE_IMAGE });
+    
+    res.json({ 
+      success: true, 
+      message: 'Profile picture removed successfully!',
+      imagePath: DEFAULT_PROFILE_IMAGE,
+      hasCustomImage: false
+    });
+  } catch (error) {
+    console.error("Error removing profile image:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error removing profile picture' 
     });
   }
 };
@@ -268,10 +368,23 @@ const sendCurrentEmailOtp = async (req, res) => {
     const { currentEmail, password } = req.body;
     const userId = req.session.user;
 
+    // Input sanitization
+    const sanitizedEmail = validator.escape(currentEmail.trim());
+    const sanitizedPassword = password ? password.trim() : '';
+
+    // Server-side validation
     if (!userId) {
       return res.render("change-email", { 
         message: "Please log in to change your email", 
-        user: { email: currentEmail } 
+        user: { email: sanitizedEmail } 
+      });
+    }
+
+    // Validate email format
+    if (!validator.isEmail(sanitizedEmail)) {
+      return res.render("change-email", { 
+        message: "Invalid email format", 
+        user: { email: sanitizedEmail } 
       });
     }
 
@@ -279,50 +392,82 @@ const sendCurrentEmailOtp = async (req, res) => {
     if (!user) {
       return res.render("change-email", { 
         message: "User not found", 
-        user: { email: currentEmail } 
+        user: { email: sanitizedEmail } 
       });
     }
 
-    if (user.email !== currentEmail) {
+    if (user.email !== sanitizedEmail) {
       return res.render("change-email", { 
         message: "Current email does not match", 
-        user: { email: currentEmail } 
+        user: { email: sanitizedEmail } 
       });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Check if password is set (for OAuth users)
+    if (!user.password) {
+      return res.render("change-email", { 
+        message: "Password verification not available for accounts registered via Google or other OAuth providers", 
+        user: { email: sanitizedEmail } 
+      });
+    }
+
+    // Validate password
+    if (!sanitizedPassword) {
+      return res.render("change-email", { 
+        message: "Password is required", 
+        user: { email: sanitizedEmail } 
+      });
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(sanitizedPassword)) {
+      return res.render("change-email", { 
+        message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character", 
+        user: { email: sanitizedEmail } 
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(sanitizedPassword, user.password);
     if (!isPasswordValid) {
       return res.render("change-email", { 
         message: "Incorrect password", 
-        user: { email: currentEmail } 
+        user: { email: sanitizedEmail } 
+      });
+    }
+
+    // Rate limiting for OTP requests
+    const lastOtpRequest = req.session.pendingEmailVerification?.createdAt;
+    if (lastOtpRequest && (new Date() - new Date(lastOtpRequest)) < 60000) { // 1 minute cooldown
+      return res.render("change-email", { 
+        message: "Please wait before requesting another OTP", 
+        user: { email: sanitizedEmail } 
       });
     }
 
     // Generate OTP and send to current email
     const otp = generateOtp();
-    console.log(otp)
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
     // Store pending email verification data in session
     req.session.pendingEmailVerification = {
       userId: userId,
-      currentEmail: currentEmail,
+      currentEmail: sanitizedEmail,
       otp: otp,
       otpExpiry: otpExpiry,
       createdAt: new Date()
     };
 
     // Send OTP to current email
-    const emailSent = await sendVerificationEmail(currentEmail, otp);
+    const emailSent = await sendVerificationEmail(sanitizedEmail, otp);
     
     if (!emailSent) {
       return res.render("change-email", { 
         message: "Failed to send verification email. Please try again.", 
-        user: { email: currentEmail } 
+        user: { email: sanitizedEmail } 
       });
     }
 
-    res.redirect(`/verify-current-email-otp-page?message=OTP+sent+to+${encodeURIComponent(currentEmail)}`);
+    res.redirect(`/verify-current-email-otp-page?message=OTP+sent+to+${encodeURIComponent(sanitizedEmail)}`);
   } catch (error) {
     console.error("Error in sendCurrentEmailOtp:", error);
     res.redirect("/errorpage?message=email-otp-send-error");
@@ -768,6 +913,7 @@ module.exports = {
   userProfile,
   updateProfile,
   uploadProfileImage,
+  removeProfileImage,
   checkUsernameAvailability,
   changeEmail,
   sendCurrentEmailOtp,
@@ -786,5 +932,9 @@ module.exports = {
   postEditAddress,
   deleteAddress,
   upload,
-  logout
+  logout,
+  // Export utility functions for use in other controllers
+  getProfileImagePath,
+  hasCustomProfileImage,
+  DEFAULT_PROFILE_IMAGE
 };

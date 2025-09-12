@@ -61,14 +61,18 @@
         margin-top: 10px;
         display: inline-block;
         padding: 8px 12px;
-        background: var(--accent);
+        background: linear-gradient(135deg,#d4af37, #e7bc3a);
         color: var(--primary);
-        border-radius: 5px;
+        border-radius: 10px;
         text-decoration: none;
     }
 
     .view-button:hover {
-        background: #b8982f;
+        background: linear-gradient(135deg,#e6ba2b, #e5d29b);
+    }
+
+    .wishlist-btn:hover{
+        color:red
     }
 
     .shop-sidebar {
@@ -206,11 +210,11 @@
     }
 
     .apply-filter {
-        background: var(--accent);
-        color: var(--primary);
+         background: linear-gradient(135deg,#d4af37, #000000);
+        color: white;
         border: none;
         padding: 10px 20px;
-        border-radius: 4px;
+        border-radius: 10px;
         cursor: pointer;
         font-weight: 600;
         text-transform: uppercase;
@@ -218,7 +222,8 @@
     }
 
     .apply-filter:hover {
-        background: #b8982f;
+        background: linear-gradient(135deg,#ffcd2a, #b29434);
+        
     }
 
     .shop-controls {
@@ -263,16 +268,17 @@
         border: 1px solid var(--accent);
         color: var(--accent);
         padding: 8px 16px;
-        border-radius: 4px;
+        border-radius: 15px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 10px;
         margin-top: 10px;
         transition: background 0.3s, color 0.3s;
     }
 
     .reset-filters:hover {
-        background: var(--accent);
-        color: var(--primary);
+        background: #d4af37;
+        color: white;
+       
     }
 
     .loading {
@@ -420,6 +426,9 @@
                                     <p class="product-color">Color: <%= product.color %></p>
                                     <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
                                     <a href="/product/<%= product._id %>" class="view-button">View Product</a>
+                                    <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
+        <i class="fa-solid fa-heart"></i>
+                                    </a>
                                 </div>
                             </div>
                         <% }) %>
@@ -631,6 +640,46 @@ function updatePagination(data) {
         }
     }
 }
+
+//wishllist
+async function addToWishlist(productId) {
+    try {
+      const response = await fetch(`/addToWishlist/${productId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Added to Wishlist!',
+          text: 'Product has been added to your wishlist.',
+          confirmButtonColor: '#d4af37',
+
+         
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Add!',
+          text: data.message || 'Failed to add product to wishlist.',
+         confirmButtonColor: '#d4af37',
+        });
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'An error occurred while adding to wishlist.',
+        confirmButtonColor: '#d4af37',
+
+
+      });
+    }
+  }
+
+
 
 function updateProductsFound(data) {
     const productsFound = document.getElementById('products-found');

@@ -147,6 +147,7 @@ const renderResetPassword = async (req, res) => {
 };
 
 // Handle resetting the password (POST /reset-password)
+// Handle resetting the password (POST /reset-password)
 const resetPassword = async (req, res) => {
   try {
     const { password } = req.body;
@@ -154,6 +155,19 @@ const resetPassword = async (req, res) => {
 
     if (!email || !req.session.otpVerified) {
       return res.status(400).json({ status: false, message: 'Session expired. Please start over.' });
+    }
+
+    // Backend password validation
+    const minLength = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+
+    if (!minLength || !hasUpperCase || !hasNumber) {
+      const errors = [];
+      if (!minLength) errors.push('Password must be at least 8 characters');
+      if (!hasUpperCase) errors.push('Password must include at least one capital letter');
+      if (!hasNumber) errors.push('Password must include at least one number');
+      return res.status(400).json({ status: false, message: errors.join(', ') });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -487,9 +501,11 @@ const logout = async (req, res) => {
 
 const about=async(req,res)=>{
     try {
-        res.render("about")
+        const userId = req.session.user
+        const user = await User.findById(userId)
+        res.render("about",{user})
     } catch (error) {
-        
+        console.log('error',error)
     }
 }
 
@@ -1181,6 +1197,9 @@ const placeOrder = async (req, res) => {
 
 const checkout = async (req, res) => {
   try {
+
+    
+
     const userId = req.session.user;
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     const user = await User.findById(userId);

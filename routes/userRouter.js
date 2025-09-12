@@ -79,7 +79,15 @@ router.get("/about", userController.about);
 // Profile Routes changed new emaiil 
 router.get("/profile", userAuth, profileController.userProfile);
 router.post("/userProfile", userAuth, profileController.updateProfile);
-router.post("/upload-profile-image", userAuth, profileController.upload.single('profileImage'), profileController.uploadProfileImage);
+
+
+// Add these routes to your router
+router.post('/upload-profile-image',userAuth, profileController.upload.single('profileImage'), profileController.uploadProfileImage);
+router.delete('/remove-profile-image',userAuth, profileController.removeProfileImage);
+
+
+
+// router.post("/upload-profile-image", userAuth, profileController.upload.single('profileImage'), profileController.uploadProfileImage);
 router.get("/check-username", userAuth, profileController.checkUsernameAvailability);
 router.get("/orderdetails", userAuth, userController.orderdetails);
 router.get("/change-email", userAuth, profileController.changeEmail);

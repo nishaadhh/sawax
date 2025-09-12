@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSS7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>SAWAX | Change Email</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -14,6 +14,8 @@
             --text: #333;
             --light-text: #777;
             --border: #e0e0e0;
+            --error: #e74c3c;
+            --success: #2ecc71;
         }
 
         * {
@@ -191,8 +193,8 @@
         }
 
         .profile-sidebar {
-            background-color: white;
-            border-radius: 8px;
+            background-color: #f8f8f8;
+            /* border-radius: 8px; */
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
@@ -201,7 +203,7 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 20px;
-            color: var(--primary);
+            color: #f8f8f8;
         }
 
         .profile-sidebar ul {
@@ -214,30 +216,13 @@
 
         .profile-sidebar ul li a {
             font-size: 16px;
-            color: var(--text);
+            color: #f8f8f8;
             transition: color 0.3s;
-        }
-
-        .profile-sidebar ul li a:hover {
-            color: var(--accent);
-        }
-
-        .change-email-main {
-            background-color: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .change-email-form h3 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--primary);
         }
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .form-group label {
@@ -254,12 +239,28 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+
+        .form-group input.error {
+            border-color: var(--error);
+        }
+
+        .form-group .error-message {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group input.error + .error-message {
+            display: block;
         }
 
         .btn {
@@ -280,6 +281,12 @@
         .btn:hover {
             background-color: #c1a033;
             transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* Footer */
@@ -478,16 +485,18 @@
                 <div class="change-email-main">
                     <div class="change-email-form">
                         <h3>Verify Current Email</h3>    
-                        <form action="/send-current-email-otp" method="POST">
+                        <form id="change-email-form" action="/send-current-email-otp" method="POST">
                             <div class="form-group">
                                 <label for="current-email">Current Email</label>
                                 <input type="email" id="current-email" name="currentEmail" value="<%= user.email %>" readonly>
+                                <span class="error-message" id="email-error"></span>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password (for verification)</label>
-                                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                                <input type="password" id="password" name="password" placeholder="Enter your password">
+                                <span class="error-message" id="password-error"></span>
                             </div>
-                            <button type="submit" class="btn">Send OTP to Current Email</button>
+                            <button type="submit" class="btn" style="background: linear-gradient(135deg, #d4a017, #e7c156); color: white;" id="submit-btn">Send OTP to Current Email</button>
                         </form>
                     </div>
                 </div>
@@ -496,22 +505,124 @@
     </section>
 
     <script>
-        // Display SweetAlert based on server message
-        <% if (message) { %>
-            Swal.fire({
-                icon: '<%= message.includes("successfully") || message.includes("sent") ? "success" : "error" %>',
-                title: '<%= message.includes("successfully") || message.includes("sent") ? "Success" : "Error" %>',
-                text: '<%= message %>',
-                confirmButtonColor: '#d4af37',
-                background: '#f8f8f8',
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: true
+        // Client-side validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('change-email-form');
+            const emailInput = document.getElementById('current-email');
+            const passwordInput = document.getElementById('password');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // Email regex (basic validation, though readonly)
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            // Password regex: at least 8 characters, one uppercase, one lowercase, one number, one special character
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            function validateEmail() {
+                const email = emailInput.value.trim();
+                if (!email) {
+                    emailError.textContent = 'Email is required';
+                    emailInput.classList.add('error');
+                    return false;
+                }
+                if (!emailRegex.test(email)) {
+                    emailError.textContent = 'Please enter a valid email address';
+                    emailInput.classList.add('error');
+                    return false;
+                }
+                emailError.textContent = '';
+                emailInput.classList.remove('error');
+                return true;
+            }
+
+            function validatePassword() {
+                const password = passwordInput.value.trim();
+                if (password === '') {
+                    passwordError.textContent = '';
+                    passwordInput.classList.remove('error');
+                    return true; // Allow empty password to enable submit, validate on server
+                }
+                if (!passwordRegex.test(password)) {
+                    passwordError.textContent = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character';
+                    passwordInput.classList.add('error');
+                    return false;
+                }
+                passwordError.textContent = '';
+                passwordInput.classList.remove('error');
+                return true;
+            }
+
+            function validateForm() {
+                const isEmailValid = validateEmail();
+                const isPasswordValid = validatePassword();
+                // Submit button remains enabled unless validation fails on submission
+            }
+
+            // Real-time validation (only for format, not required check)
+            emailInput.addEventListener('input', validateForm);
+            passwordInput.addEventListener('input', validateForm);
+
+            // Form submission validation
+            form.addEventListener('submit', function(e) {
+                const isEmailValid = validateEmail();
+                const password = passwordInput.value.trim();
+                if (!password) {
+                    e.preventDefault();
+                    passwordError.textContent = 'Password is required';
+                    passwordInput.classList.add('error');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input',
+                        text: 'Please enter your password',
+                        confirmButtonColor: '#d4af37',
+                        background: '#f8f8f8'
+                    });
+                    return;
+                }
+                if (!validatePassword()) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input',
+                        text: 'Please correct the password format',
+                        confirmButtonColor: '#d4af37',
+                        background: '#f8f8f8'
+                    });
+                    return;
+                }
+                if (!isEmailValid) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Input',
+                        text: 'Please correct the errors in the form',
+                        confirmButtonColor: '#d4af37',
+                        background: '#f8f8f8'
+                    });
+                }
             });
-        <% } %>
+
+            // Initial validation
+            validateForm();
+
+            // Display SweetAlert based on server message
+            <% if (message) { %>
+                Swal.fire({
+                    icon: '<%= message.includes("successfully") || message.includes("sent") ? "success" : "error" %>',
+                    title: '<%= message.includes("successfully") || message.includes("sent") ? "Success" : "Error" %>',
+                    text: '<%= message %>',
+                    confirmButtonColor: '#d4af37',
+                    background: '#f8f8f8',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: true
+                });
+            <% } %>
+        });
     </script>
 
     <!-- Footer -->
-    <%- include("../../views/partials/user/footer") %>
+    <!-- <%- include("../../views/partials/user/footer") %> -->
 </body>
 </html>

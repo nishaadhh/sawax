@@ -25,6 +25,7 @@ const loadCheckoutPage = async (req, res) => {
         if (!cart || !cart.items || cart.items.length === 0) {
             return res.render('checkout', {
                 userData: user || { name: '', email: '', phone: '' },
+                user,
                 cart: { items: [] },
                 addresses: { address: [] },
                 subtotal: 0,
@@ -47,6 +48,7 @@ const loadCheckoutPage = async (req, res) => {
         if (validCartItems.length === 0) {
             return res.render('checkout', {
                 userData: user || { name: '', email: '', phone: '' },
+                user,
                 cart: { items: [] },
                 addresses: { address: [] },
                 subtotal: 0,
@@ -90,6 +92,7 @@ const loadCheckoutPage = async (req, res) => {
 
         res.render('checkout', {
             userData: user,
+            user,
             cart: { items: validCartItems },
             addresses,
             subtotal,
@@ -102,6 +105,7 @@ const loadCheckoutPage = async (req, res) => {
         console.error('Error loading checkout page:', error);
         res.render('checkout', {
             userData: null,
+            user,
             cart: { items: [] },
             addresses: { address: [] },
             subtotal: 0,

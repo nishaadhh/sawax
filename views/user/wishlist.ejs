@@ -280,7 +280,7 @@
                             <img src="/<%= item.image %>" alt="<%= item.name %>">
                             <div class="wishlist-item-content">
                                 <h3><%= item.name %></h3>
-                                <p>$<%= item.price.toFixed(2) %></p>
+                                <p>₹<%= item.price.toFixed(2) %></p>
                                 <div class="wishlist-item-actions">
                                     <button class="btn btn-cart" onclick="addToCart('<%= item.productId %>')">Add to Cart</button>
                                     <button class="btn btn-remove" onclick="removeFromWishlist('<%= item.productId %>')">Remove</button>
