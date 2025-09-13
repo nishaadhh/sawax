@@ -321,10 +321,10 @@ body {
 }
 
 /* Button */
-.btn.btn-orange {
+.btn.btn-add {
     display: inline-block;
     padding: 14px 35px;
-    background-color: var(--accent);
+    background: linear-gradient(135deg, #d4af37 0%, rgb(18, 14, 14) 100%);
     color: #ffffff;
     font-weight: 600;
     border-radius: 8px;
@@ -336,10 +336,11 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.btn.btn-orange:hover {
-    background-color: #b89c2f;
+.btn.btn-add:hover {
+    background-color: linear-gradient(135deg, #d4af37 0%, rgb(255, 255, 255) 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    /* box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); */
 }
 
 .go-button {
@@ -498,7 +499,7 @@ body {
         font-size: 20px;
     }
 
-    .btn.btn-orange {
+    .btn.btn-add {
         font-size: 13px;
         padding: 12px 25px;
     }
@@ -598,7 +599,7 @@ body {
             <% } %>
             
             <a href="/addAddress">
-                <button class="btn btn-orange">
+                <button class="btn btn-add">
                     <i class="fas fa-plus"></i> Add New Address
                 </button>
             </a>
@@ -884,4 +885,3 @@ body {
 }
 </style>
 
-<%- include("../../views/partials/user/footer") %>

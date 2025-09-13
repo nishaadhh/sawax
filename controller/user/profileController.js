@@ -353,6 +353,12 @@ const changeEmail = async (req, res) => {
     if (!userData) {
       return res.redirect("/errorpage?message=user-not-found");
     }
+    
+    // Check if user is a Google Sign-In user
+    if (!userData.password) {
+      return res.redirect("/profile?error=Email changes for Google accounts must be managed through Google account settings");
+    }
+    
     res.render("change-email", { 
       message: req.query.message || null,
       user: userData
@@ -650,6 +656,18 @@ const updateNewEmail = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
+    const userId = req.session.user;
+    const userData = await User.findById(userId);
+    
+    if (!userData) {
+      return res.redirect("/errorpage?message=user-not-found");
+    }
+    
+    // Check if user is a Google Sign-In user
+    if (!userData.password) {
+      return res.redirect("/profile?error=Password changes for Google accounts must be managed through Google account settings");
+    }
+    
     res.render("change-password", { message: null });
   } catch (error) {
     console.error("Error rendering change password page:", error);
