@@ -462,7 +462,7 @@
 </head>
 <body>
     <!-- Header -->
-    <%- include("../../views/partials/user/header") %>
+    <!-- <%- include("../../views/partials/user/header") %>  -->
 
     <!-- Change Email Section -->
     <section class="change-email">
@@ -505,122 +505,89 @@
     </section>
 
     <script>
-        // Client-side validation
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('change-email-form');
-            const emailInput = document.getElementById('current-email');
-            const passwordInput = document.getElementById('password');
-            const emailError = document.getElementById('email-error');
-            const passwordError = document.getElementById('password-error');
-            const submitBtn = document.getElementById('submit-btn');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('change-email-form');
+    const emailInput = document.getElementById('current-email');
+    const passwordInput = document.getElementById('password');
+    const emailError = document.getElementById('email-error');
+    const passwordError = document.getElementById('password-error');
+    const submitBtn = document.getElementById('submit-btn');
 
-            // Email regex (basic validation, though readonly)
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            // Password regex: at least 8 characters, one uppercase, one lowercase, one number, one special character
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // Email regex (basic validation, though readonly)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // Password regex: at least 8 characters, one uppercase, one lowercase, one number, one special character
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-            function validateEmail() {
-                const email = emailInput.value.trim();
-                if (!email) {
-                    emailError.textContent = 'Email is required';
-                    emailInput.classList.add('error');
-                    return false;
-                }
-                if (!emailRegex.test(email)) {
-                    emailError.textContent = 'Please enter a valid email address';
-                    emailInput.classList.add('error');
-                    return false;
-                }
-                emailError.textContent = '';
-                emailInput.classList.remove('error');
-                return true;
-            }
+    function validateEmail() {
+        const email = emailInput.value.trim();
+        if (!email) {
+            emailError.textContent = 'Email is required';
+            emailInput.classList.add('error');
+            return false;
+        }
+        if (!emailRegex.test(email)) {
+            emailError.textContent = 'Please enter a valid email address';
+            emailInput.classList.add('error');
+            return false;
+        }
+        emailError.textContent = '';
+        emailInput.classList.remove('error');
+        return true;
+    }
 
-            function validatePassword() {
-                const password = passwordInput.value.trim();
-                if (password === '') {
-                    passwordError.textContent = '';
-                    passwordInput.classList.remove('error');
-                    return true; // Allow empty password to enable submit, validate on server
-                }
-                if (!passwordRegex.test(password)) {
-                    passwordError.textContent = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character';
-                    passwordInput.classList.add('error');
-                    return false;
-                }
-                passwordError.textContent = '';
-                passwordInput.classList.remove('error');
-                return true;
-            }
+    function validatePassword() {
+        const password = passwordInput.value.trim();
+        if (!password) {
+            passwordError.textContent = 'Password is required';
+            passwordInput.classList.add('error');
+            return false;
+        }
+        if (!passwordRegex.test(password)) {
+            passwordError.textContent =
+                'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character';
+            passwordInput.classList.add('error');
+            return false;
+        }
+        passwordError.textContent = '';
+        passwordInput.classList.remove('error');
+        return true;
+    }
 
-            function validateForm() {
-                const isEmailValid = validateEmail();
-                const isPasswordValid = validatePassword();
-                // Submit button remains enabled unless validation fails on submission
-            }
+    function validateForm() {
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
 
-            // Real-time validation (only for format, not required check)
-            emailInput.addEventListener('input', validateForm);
-            passwordInput.addEventListener('input', validateForm);
+        if (isEmailValid && isPasswordValid) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
 
-            // Form submission validation
-            form.addEventListener('submit', function(e) {
-                const isEmailValid = validateEmail();
-                const password = passwordInput.value.trim();
-                if (!password) {
-                    e.preventDefault();
-                    passwordError.textContent = 'Password is required';
-                    passwordInput.classList.add('error');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid Input',
-                        text: 'Please enter your password',
-                        confirmButtonColor: '#d4af37',
-                        background: '#f8f8f8'
-                    });
-                    return;
-                }
-                if (!validatePassword()) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid Input',
-                        text: 'Please correct the password format',
-                        confirmButtonColor: '#d4af37',
-                        background: '#f8f8f8'
-                    });
-                    return;
-                }
-                if (!isEmailValid) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid Input',
-                        text: 'Please correct the errors in the form',
-                        confirmButtonColor: '#d4af37',
-                        background: '#f8f8f8'
-                    });
-                }
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+
+        if (!isEmailValid || !isPasswordValid) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Input',
+                text: 'Please correct all errors in the form before submitting',
+                confirmButtonColor: '#d4af37',
+                background: '#f8f8f8'
             });
+            return;
+        }
+    });
 
-            // Initial validation
-            validateForm();
+    // Optional: real-time validation
+    emailInput.addEventListener('input', validateForm);
+    passwordInput.addEventListener('input', validateForm);
+});
+</script>
 
-            // Display SweetAlert based on server message
-            <% if (message) { %>
-                Swal.fire({
-                    icon: '<%= message.includes("successfully") || message.includes("sent") ? "success" : "error" %>',
-                    title: '<%= message.includes("successfully") || message.includes("sent") ? "Success" : "Error" %>',
-                    text: '<%= message %>',
-                    confirmButtonColor: '#d4af37',
-                    background: '#f8f8f8',
-                    timer: 3000,
-                    timerProgressBar: true,
-                    showConfirmButton: true
-                });
-            <% } %>
-        });
-    </script>
 
     <!-- Footer -->
     <!-- <%- include("../../views/partials/user/footer") %> -->

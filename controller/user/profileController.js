@@ -93,7 +93,7 @@ function generateOtp() {
 // Shared utility for sending verification email
 const sendVerificationEmail = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       port: 587,
       secure: false,
@@ -111,7 +111,8 @@ const sendVerificationEmail = async (email, otp) => {
       html: `<b><h4>Your OTP is <span style="color:blue;">${otp}</span></h4></b>`,
     };
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.messageId);
+    // console.log("Email sent: " + info.messageId);
+    console.log(`Your OTP is ${otp}`)
     return true;
   } catch (error) {
     console.error("Error in sending email:", error);
