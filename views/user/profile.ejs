@@ -1285,7 +1285,7 @@
                                         <input type="email" id="email" name="email" value="<%= user.email %>" required readonly title="Use 'Change Email' button to update email">
                                     </div>
                                     <div class="form-group">
-                                        <label for="joined">Member Since</label>
+                                        <label for="joined">CURRENT DATE</label>
                                         <input type="text" id="joined" value="<%= new Date(user.createdOn || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>" readonly>
                                     </div>
                                 </div>

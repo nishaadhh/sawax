@@ -1,893 +1,584 @@
 <%- include("../../views/partials/user/header") %>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    :root {
-        --primary: #0A0E27;
-        --primary-light: #1A1F3A;
-        --secondary: #F8FAFC;
-        --accent: #D4AF37;
-        --accent-light: #E8C547;
-        --accent-dark: #B8941F;
-        --teal: #046963;
-        --teal-light: #0891B2;
-        --text: #1E293B;
-        --text-light: #64748B;
-        --text-muted: #94A3B8;
-        --border: #E2E8F0;
-        --border-focus: #CBD5E1;
-        --success: #10B981;
-        --warning: #F59E0B;
-        --error: #EF4444;
-        --glass: rgba(255, 255, 255, 0.1);
-        --glass-border: rgba(255, 255, 255, 0.2);
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+:root {
+    --primary: #0A0E27;
+    --primary-light: #1A1F3A;
+    --secondary: #F8FAFC;
+    --accent: #D4AF37;
+    --accent-light: #E8C547;
+    --accent-dark: #B8941F;
+    --teal: #046963;
+    --teal-light: #0891B2;
+    --text: #1E293B;
+    --text-light: #64748B;
+    --text-muted: #94A3B8;
+    --border: #E2E8F0;
+    --border-focus: #CBD5E1;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --error: #EF4444;
+    --glass: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: white;
+    min-height: 100vh;
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><circle cx="30" cy="30" r="1"/></g></svg>');
+    animation: backgroundFloat 20s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes backgroundFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.banner-area {
+    background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
+    padding: 4rem 0 3rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><polygon points="20,0 40,20 20,40 0,20"/></g></svg>');
+    animation: patternMove 30s linear infinite;
+}
+
+@keyframes patternMove {
+    0% { transform: translateX(-40px) translateY(-40px); }
+    100% { transform: translateX(0px) translateY(0px); }
+}
+
+.breadcrumb-banner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.breadcrumb-banner h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.breadcrumb-banner nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.breadcrumb-banner nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-banner nav a:hover {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.lnr-arrow-right {
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0.25rem;
+}
+
+.form-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.form-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
+    border-radius: 2px;
+}
+
+#addressForm {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+    animation: formSlideIn 0.8s ease-out;
+}
+
+#addressForm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
+}
+
+@keyframes formSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
     }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: white
-        min-height: 100vh;
-        color: var(--text);
-        line-height: 1.6;
-        overflow-x: hidden;
-        position: relative;
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form-row.mb-50 {
+    margin-bottom: 3rem;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 0;
+    opacity: 0;
+    animation: formGroupFadeIn 0.6s ease forwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes formGroupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-
-    /* Animated Background */
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><circle cx="30" cy="30" r="1"/></g></svg>');
-        animation: backgroundFloat 20s ease-in-out infinite;
-        z-index: -1;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    @keyframes backgroundFloat {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
+.form-label {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    font-size: 1rem;
+    color: var(--text-light);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    padding: 0 0.5rem;
+    font-weight: 500;
+    z-index: 2;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.025em;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem 1rem 0.5rem;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 0.75rem;
+    background: #ffffff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+    appearance: none;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.form-control::placeholder {
+    color: transparent;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label,
+.form-control.has-value + .form-label {
+    top: 0;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+    transform: translateY(-50%);
+}
+
+.form-control:hover {
+    border-color: var(--border-focus);
+    transform: translateY(-1px);
+}
+
+select.form-control {
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgOUwxMiAxNUwxOCA5IiBzdHJva2U9IiM2NDc0OEIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+    padding-right: 3rem;
+    height: calc(2.25rem + 2px) !important;
+    padding-top: 0.70rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.form-control.error {
+    border-color: var(--error);
+    animation: shake 0.5s ease-in-out;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.text-danger {
+    color: var(--error);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 0.5rem;
+    border-left: 3px solid var(--error);
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: slideIn 0.3s ease forwards;
+    display: block !important;
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    /* Banner Section */
+.form-section-divider {
+    margin: 2.5rem 0;
+    position: relative;
+    text-align: center;
+    grid-column: 1 / -1;
+}
+
+.form-section-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.form-section-divider span {
+    background: white;
+    color: var(--text-light);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-primary {
+    position: relative;
+    background: linear-gradient(135deg, var(--accent) 0%, rgb(18, 14, 14) 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1rem 2.5rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin: 2rem auto 0;
+    display: block;
+    min-width: 200px;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl);
+    background: linear-gradient(135deg, var(--accent-light) 0%, black 100%);
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.5rem;
+    z-index: 10;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.form-success {
+    text-align: center;
+    padding: 3rem;
+    display: none;
+}
+
+.form-success.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: var(--success);
+    stroke-miterlimit: 10;
+    margin: 2rem auto;
+    box-shadow: inset 0px 0px 0px var(--success);
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.success-checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: var(--success);
+    fill: none;
+    animation: stroke .6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards;
+}
+
+@keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+}
+
+@keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+}
+
+@keyframes fill {
+    100% { box-shadow: inset 0px 0px 0px 30px var(--success); }
+}
+
+.form-success h3 {
+    color: var(--success);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1rem 0;
+}
+
+.form-success p {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+    #addressForm {
+        margin: 0 1rem;
+        padding: 2.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
     .banner-area {
-        background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
-        padding: 4rem 0 3rem;
-        color: white;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .banner-area::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><polygon points="20,0 40,20 20,40 0,20"/></g></svg>');
-        animation: patternMove 30s linear infinite;
-    }
-
-    @keyframes patternMove {
-        0% { transform: translateX(-40px) translateY(-40px); }
-        100% { transform: translateX(0px) translateY(0px); }
-    }
-
-    .breadcrumb-banner {
-        position: relative;
-        z-index: 2;
-        text-align: center;
+        padding: 3rem 0 2rem;
     }
 
     .breadcrumb-banner h1 {
-        font-size: 2.5rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        font-size: 2rem;
+    }
+
+    #addressForm {
+        padding: 2rem;
+        margin: 0 1rem;
+        border-radius: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .form-container {
+        padding: 2rem 1rem;
+    }
+
+    .form-title {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .breadcrumb-banner h1 {
+        font-size: 1.75rem;
+    }
+
+    #addressForm {
+        padding: 1.5rem;
+        margin: 0 0.5rem;
+    }
+
+    .form-control {
+        padding: 0.875rem 0.75rem 0.375rem;
+    }
+
+    .form-label {
+        left: 0.75rem;
+    }
+
+    .btn-primary {
+        padding: 0.875rem 2rem;
+        font-size: 0.9rem;
+        min-width: 180px;
     }
 
     .breadcrumb-banner nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-
-    .breadcrumb-banner nav a {
-        color: rgba(255, 255, 255, 0.8);
-        text-decoration: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        transition: all 0.3s ease;
-    }
-
-    .breadcrumb-banner nav a:hover {
-        color: var(--accent);
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
-    }
-
-    .lnr-arrow-right {
-        color: rgba(255, 255, 255, 0.6);
-        margin: 0 0.25rem;
-    }
-
-    /* Container Styling */
-    .container.mt-4 {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-        background: transparent;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    h3.mt-3 {
-        font-size: 2rem;
-        font-weight: 600;
-        color: white;
-        text-align: center;
-        margin-bottom: 3rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        position: relative;
-    }
-
-    h3.mt-3::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
-        border-radius: 2px;
-    }
-
-    /* Premium Form Container */
-    #addressForm {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 1.5rem;
-        padding: 3rem;
-        box-shadow: var(--shadow-xl);
-        position: relative;
-        overflow: hidden;
-        animation: formSlideIn 0.8s ease-out;
-    }
-
-    #addressForm::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
-    }
-
-    @keyframes formSlideIn {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Form Grid Layout */
-    .row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .row.mb-50 {
-        margin-bottom: 3rem;
-    }
-
-    .row.mb-3 {
-        margin-bottom: 2rem;
-    }
-
-    .form-group {
-        position: relative;
-        margin-bottom: 0;
-    }
-
-    /* Floating Label Design */
-    .form-group {
-        position: relative;
-    }
-
-    .form-group label {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1rem;
-        color: var(--text-light);
-        pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: white;
-        padding: 0 0.5rem;
-        font-weight: 500;
-        z-index: 2;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 1rem 1rem 0.5rem;
-        font-size: 1rem;
-        border: 2px solid var(--border);
-        border-radius: 0.75rem;
-        background: #ffffff;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        font-family: inherit;
-        appearance: none;
-        position: relative;
-        z-index: 1;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-        transform: translateY(-2px);
-    }
-
-    .form-control:focus + label,
-    .form-control:not(:placeholder-shown) + label,
-    .form-control.has-value + label {
-        top: 0;
-        font-size: 0.75rem;
-        color: var(--accent);
-        font-weight: 600;
-    }
-
-    /* Select Dropdown Styling */
-    #country,
-    #state {
-        cursor: pointer;
-        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgOUwxMiAxNUwxOCA5IiBzdHJva2U9IiM2NDc0OEIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=');
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1.25rem;
-        padding-right: 3rem;
-        height: calc(2.25rem + 2px) !important;
-        padding-top: 0.70rem !important;
-        padding-bottom: 0.5rem !important;
-    }
-
-    /* Error States */
-    .form-control.error {
-        border-color: var(--error);
-        animation: shake 0.5s ease-in-out;
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-    }
-
-    .text-danger {
-        color: var(--error);
-        font-size: 0.75rem;
-        margin-top: 0.5rem;
-        padding: 0.5rem 0.75rem;
-        background: rgba(239, 68, 68, 0.1);
-        border-radius: 0.5rem;
-        border-left: 3px solid var(--error);
-        opacity: 0;
-        transform: translateY(-10px);
-        animation: slideIn 0.3s ease forwards;
-        display: block !important;
-    }
-
-    @keyframes slideIn {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Premium Button */
-    .btn-primary {
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-        color: var(--primary);
-        border: none;
-        padding: 1rem 2.5rem;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 0.75rem;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin: 2rem auto 0;
-        display: block;
-        min-width: 200px;
-        box-shadow: var(--shadow-md);
-    }
-
-    .btn-primary::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-xl);
-        background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
-    }
-
-    .btn-primary:hover::before {
-        left: 100%;
-    }
-
-    .btn-primary:active {
-        transform: translateY(0);
-    }
-
-    .btn-primary:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Form Section Dividers */
-    .form-section-divider {
-        margin: 2.5rem 0;
-        position: relative;
-        text-align: center;
-        grid-column: 1 / -1;
-    }
-
-    .form-section-divider::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--border), transparent);
-    }
-
-    .form-section-divider span {
-        background: white;
-        color: var(--text-light);
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding: 0 1.5rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    /* Input Focus Effects */
-    .form-control:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), var(--shadow-md);
-        transform: translateY(-2px);
-    }
-
-    /* Success State for Valid Fields */
-    .form-control.valid {
-        border-color: var(--success);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-    }
-
-    .form-control.valid + label {
-        color: var(--success);
-    }
-
-    /* Loading Overlay */
-    .loading-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.9);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        border-radius: 1.5rem;
-        z-index: 10;
-    }
-
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid var(--border);
-        border-top: 3px solid var(--accent);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Premium Card Effects */
-    #addressForm {
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    #addressForm:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-
-    /* Input Icons */
-    .form-group::after {
-        content: '';
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1.25rem;
-        height: 1.25rem;
-        background-size: contain;
-        background-repeat: no-repeat;
-        opacity: 0.5;
-        transition: all 0.3s ease;
-        z-index: 3;
-    }
-
-    .form-group:has(input[type="text"]):not(:has(#addressType)):not(:has(#name)):not(:has(#city)):not(:has(#landMark)):not(:has(#streetAddress))::after {
-        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>');
-    }
-
-    .form-group:has(input[type="email"])::after {
-        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>');
-    }
-
-    .form-group:has(input[type="tel"]),
-    .form-group:has(input[name="phone"]),
-    .form-group:has(input[name="altPhone"])::after {
-        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>');
-    }
-
-    .form-group:has(input[type="number"])::after {
-        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>');
-    }
-
-    .form-control:focus ~ .form-group::after {
-        opacity: 1;
-        color: var(--accent);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-        #addressForm {
-            margin: 0 1rem;
-            padding: 2.5rem;
-        }
-        
-        .row {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .banner-area {
-            padding: 3rem 0 2rem;
-        }
-
-        .breadcrumb-banner h1 {
-            font-size: 2rem;
-        }
-
-        #addressForm {
-            padding: 2rem;
-            margin: 0 1rem;
-            border-radius: 1rem;
-        }
-
-        .row {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .container.mt-4 {
-            padding: 2rem 1rem;
-        }
-
-        h3.mt-3 {
-            font-size: 1.75rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .container.mt-4 {
-            padding: 1rem 0.5rem;
-        }
-
-        .breadcrumb-banner h1 {
-            font-size: 1.75rem;
-        }
-
-        #addressForm {
-            padding: 1.5rem;
-            margin: 0 0.5rem;
-        }
-
-        .form-control {
-            padding: 0.875rem 0.75rem 0.375rem;
-        }
-
-        .form-group label {
-            left: 0.75rem;
-        }
-
-        .btn-primary {
-            padding: 0.875rem 2rem;
-            font-size: 0.9rem;
-            min-width: 180px;
-        }
-
-        .breadcrumb-banner nav {
-            flex-wrap: wrap;
-            gap: 0.25rem;
-            font-size: 0.8rem;
-        }
-    }
-
-    /* Enhanced Visual Effects */
-    .form-control:hover {
-        border-color: var(--border-focus);
-        transform: translateY(-1px);
-    }
-
-    .form-control:valid {
-        border-color: var(--success);
-    }
-
-    .form-control:invalid:not(:placeholder-shown) {
-        border-color: var(--error);
-    }
-
-    /* Micro-interactions */
-    .form-group {
-        transform: translateY(0);
-        transition: transform 0.2s ease;
-    }
-
-    .form-group:hover {
-        transform: translateY(-1px);
-    }
-
-    /* Success Animation */
-    .success-checkmark {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        display: block;
-        stroke-width: 2;
-        stroke: var(--success);
-        stroke-miterlimit: 10;
-        margin: 2rem auto;
-        box-shadow: inset 0px 0px 0px var(--success);
-        animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
-    }
-
-    .success-checkmark__circle {
-        stroke-dasharray: 166;
-        stroke-dashoffset: 166;
-        stroke-width: 2;
-        stroke-miterlimit: 10;
-        stroke: var(--success);
-        fill: none;
-        animation: stroke .6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-    }
-
-    .success-checkmark__check {
-        transform-origin: 50% 50%;
-        stroke-dasharray: 48;
-        stroke-dashoffset: 48;
-        animation: stroke .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards;
-    }
-
-    @keyframes stroke {
-        100% { stroke-dashoffset: 0; }
-    }
-
-    @keyframes scale {
-        0%, 100% { transform: none; }
-        50% { transform: scale3d(1.1, 1.1, 1); }
-    }
-
-    @keyframes fill {
-        100% { box-shadow: inset 0px 0px 0px 30px var(--success); }
-    }
-
-    /* Form Success State */
-    .form-success {
-        text-align: center;
-        padding: 3rem;
-        display: none;
-    }
-
-    .form-success.active {
-        display: block;
-        animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .form-success h3 {
-        color: var(--success);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 1rem 0;
-    }
-
-    .form-success p {
-        color: var(--text-light);
-        margin-bottom: 2rem;
-    }
-
-    /* Premium Tooltips */
-    .tooltip {
-        position: relative;
-        display: inline-block;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 200px;
-        background-color: var(--primary);
-        color: white;
-        text-align: center;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -100px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 0.75rem;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    /* Enhanced SweetAlert2 Styling */
-    .swal2-popup {
-        border-radius: 1rem !important;
-        box-shadow: var(--shadow-xl) !important;
-        font-family: 'Inter', sans-serif !important;
-    }
-
-    .swal2-title {
-        color: var(--text) !important;
-        font-weight: 600 !important;
-    }
-
-    .swal2-content {
-        color: var(--text-light) !important;
-    }
-
-    .swal2-confirm {
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%) !important;
-        color: var(--primary) !important;
-        border: none !important;
-        border-radius: 0.5rem !important;
-        font-weight: 600 !important;
-        padding: 0.75rem 1.5rem !important;
-        transition: all 0.3s ease !important;
-    }
-
-    .swal2-confirm:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: var(--shadow-lg) !important;
-    }
-
-    /* Advanced Form Animations */
-    .form-group {
-        opacity: 0;
-        animation: formGroupFadeIn 0.6s ease forwards;
-    }
-
-    .form-group:nth-child(1) { animation-delay: 0.1s; }
-    .form-group:nth-child(2) { animation-delay: 0.2s; }
-    .form-group:nth-child(3) { animation-delay: 0.3s; }
-    .form-group:nth-child(4) { animation-delay: 0.4s; }
-    .form-group:nth-child(5) { animation-delay: 0.5s; }
-    .form-group:nth-child(6) { animation-delay: 0.6s; }
-    .form-group:nth-child(7) { animation-delay: 0.7s; }
-    .form-group:nth-child(8) { animation-delay: 0.8s; }
-    .form-group:nth-child(9) { animation-delay: 0.9s; }
-    .form-group:nth-child(10) { animation-delay: 1.0s; }
-    .form-group:nth-child(11) { animation-delay: 1.1s; }
-
-    @keyframes formGroupFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Premium Input States */
-    .form-control {
-        position: relative;
-    }
-
-    .form-control::placeholder {
-        color: transparent;
-    }
-
-    /* Enhanced Focus Ring */
-    .form-control:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 
-            0 0 0 3px rgba(212, 175, 55, 0.1),
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-    /* Gradient Border Animation */
-    .form-control {
-        background: linear-gradient(white, white) padding-box,
-                   linear-gradient(135deg, var(--border), var(--border-focus)) border-box;
-        border: 2px solid transparent;
-    }
-
-    .form-control:focus {
-        background: linear-gradient(white, white) padding-box,
-                   linear-gradient(135deg, var(--accent), var(--teal)) border-box;
-    }
-
-    /* Premium Typography */
-    .form-group label {
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-        letter-spacing: 0.025em;
-    }
-
-    /* Enhanced Button States */
-    .btn-primary {
-        position: relative;
-        background: linear-gradient(135deg, var(--accent) 0%, rgb(18, 14, 14) 100%);
-        border: none;
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        padding: 1rem 2.5rem;
-        border-radius: 0.75rem;
-        cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow: hidden;
-        box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-    .btn-primary::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 
-            0 10px 15px -3px rgba(0, 0, 0, 0.1),
-            0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        background: linear-gradient(135deg, var(--accent-light) 0%, black 100%);
-    }
-
-    .btn-primary:hover::before {
-        left: 100%;
-    }
-
-    .btn-primary:active {
-        transform: translateY(-1px);
-    }
-
-    /* Form Container Enhancement */
-    #addressForm {
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 
-            0 20px 25px -5px rgba(0, 0, 0, 0.1),
-            0 10px 10px -5px rgba(0, 0, 0, 0.04),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    /* Floating Label Enhancement */
-    .form-group {
-        position: relative;
-    }
-
-    .form-group label {
-        position: absolute;
-        left: 1rem;
-        top: 1rem;
-        font-size: 1rem;
-        color: var(--text-light);
-        pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: white;
-        padding: 0 0.5rem;
-        font-weight: 500;
-        z-index: 2;
-    }
-
-    .form-control:focus + label,
-    .form-control:not(:placeholder-shown) + label,
-    .form-control.has-value + label {
-        top: 0;
-        font-size: 0.75rem;
-        color: var(--accent);
-        font-weight: 600;
-        transform: translateY(-50%);
-    }
-
-    /* Initialize labels for pre-filled values */
-    .form-control[value]:not([value=""]) + label {
-        top: 0;
-        font-size: 0.75rem;
-        color: var(--accent);
-        font-weight: 600;
-        transform: translateY(-50%);
-    }
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        font-size: 0.8rem;
+    }
+}
 </style>
 
 <section class="banner-area organic-breadcrumb">
@@ -906,226 +597,177 @@
     </div>
 </section>
 
-<div class="container mt-4">
-  <h3
-  class="mt-3"
-  style="
-    background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 70px;
-  "
->
-  Create User Address
-</h3>
+<div class="form-container">
+    <h3 class="form-title">Create User Address</h3>
+    <form id="addressForm" method="POST" action="/addAddress">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
 
-   <form id="addressForm" method="POST" action="/addAddress" class="border-0 p-3">
-       <div class="loading-overlay" id="loadingOverlay">
-           <div class="spinner"></div>
-       </div>
+        <div class="form-row mb-50">
+            <div class="form-group">
+                <input type="text" class="form-control" id="addressType" name="addressType" placeholder=" " required>
+                <label for="addressType" class="form-label">Address Type</label>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="name" name="name" placeholder=" " required>
+                <label for="name" class="form-label">Full Name</label>
+            </div>
+            <div class="form-group">
+                <select class="form-control" id="country" name="country" required>
+                    <option value="India">India</option>
+                </select>
+                <label for="country" class="form-label">Country</label>
+            </div>
+        </div>
 
-       <div class="row mb-50">
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="addressType" name="addressType" placeholder=" " required>
-               <label for="addressType">Address Type</label>
-           </div>
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="name" name="name" placeholder=" " required>
-               <label for="name">Full Name</label>
-           </div>
-           <div class="form-group col-md-4">
-               <select class="form-control border-3" id="country" name="country" required>
-                   <option value="India">India</option>
-               </select>
-               <label for="country">Country</label>
-           </div>
-       </div>
+        <div class="form-section-divider">
+            <span>Location Details</span>
+        </div>
 
-       <div class="form-section-divider">
-           <span>Location Details</span>
-       </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" class="form-control" id="city" name="city" placeholder=" " required>
+                <label for="city" class="form-label">City</label>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="landMark" name="landMark" placeholder=" " required>
+                <label for="landMark" class="form-label">Landmark</label>
+            </div>
+            <div class="form-group">
+                <select class="form-control" id="state" name="state" required>
+                    <option value="Kerala">Kerala</option>
+                </select>
+                <label for="state" class="form-label">State</label>
+            </div>
+        </div>
 
-       <div class="row mb-3">
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="city" name="city" placeholder=" " required>
-               <label for="city">City</label>
-           </div>
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="landMark" name="landMark" placeholder=" " required>
-               <label for="landMark">Landmark</label>
-           </div>
-           <div class="form-group col-md-4">
-               <select class="form-control border-3" id="state" name="state" required>
-                   <option value="Kerala">Kerala</option>
-               </select>
-               <label for="state">State</label>
-           </div>
-       </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" class="form-control" id="streetAddress" name="streetAddress" placeholder=" " required>
+                <label for="streetAddress" class="form-label">Street Address</label>
+            </div>
+            <div class="form-group">
+                <input type="number" class="form-control" id="pincode" name="pincode" placeholder=" " required>
+                <label for="pincode" class="form-label">Pincode</label>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="phone" name="phone" placeholder=" " required>
+                <label for="phone" class="form-label">Primary Phone</label>
+            </div>
+        </div>
 
-       <div class="row mb-3">
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="streetAddress" name="streetAddress" placeholder=" " required>
-               <label for="streetAddress">Street Address</label>
-           </div>
-           <div class="form-group col-md-4">
-               <input type="number" class="form-control border-3" id="pincode" name="pincode" placeholder=" " required>
-               <label for="pincode">Pincode</label>
-           </div>
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="phone" name="phone" placeholder=" " required>
-               <label for="phone">Primary Phone</label>
-           </div>
-       </div>
+        <div class="form-section-divider">
+            <span>Contact Information</span>
+        </div>
 
-       <div class="form-section-divider">
-           <span>Contact Information</span>
-       </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="email" class="form-control" id="email" name="email" placeholder=" " required>
+                <label for="email" class="form-label">Email Address</label>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="altPhone" name="altPhone" placeholder=" " required>
+                <label for="altPhone" class="form-label">Alternate Phone</label>
+            </div>
+        </div>
 
-       <div class="row mb-3">
-           <div class="form-group col-md-4">
-               <input type="email" class="form-control border-3" id="email" name="email" placeholder=" " required>
-               <label for="email">Email Address</label>
-           </div>
-           <div class="form-group col-md-4">
-               <input type="text" class="form-control border-3" id="altPhone" name="altPhone" placeholder=" " required>
-               <label for="altPhone">Alternate Phone</label>
-           </div>
-       </div>
+        <button type="submit" id="submitButton" class="btn-primary">Create Address</button>
 
-       <button type="submit" id="submitButton" class="btn btn-primary">Create Address</button>
-
-       <div class="form-success" id="formSuccess">
-           <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-               <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-               <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-           </svg>
-           <h3>Address Created Successfully!</h3>
-           <p>Your address information has been saved and is ready to use.</p>
-       </div>
-   </form>
+        <div class="form-success" id="formSuccess">
+            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <h3>Address Created Successfully!</h3>
+            <p>Your address information has been saved and is ready to use.</p>
+        </div>
+    </form>
 </div>
-   
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   document.getElementById('addressForm').addEventListener('submit', function(event) {
-       if (!validateForm()) {
-           event.preventDefault();
-       }
-   });
+document.getElementById('addressForm').addEventListener('submit', function(event) {
+    if (!validateForm()) {
+        event.preventDefault();
+    }
+});
 
-   function validateForm() {
-       let isValid = true;
-       const requiredFields = ["addressType", "name", "country", "city", "landMark", "state", "streetAddress", "pincode", "phone", "email", "altPhone"];
-       requiredFields.forEach(function(field) {
-           const input = document.getElementById(field);
-           const inputValue = input.value.trim();
-           const errorElement = document.getElementById(field + '-error');
+function validateForm() {
+    let isValid = true;
+    
+    // Clear previous errors
+    document.querySelectorAll('.text-danger').forEach(error => error.remove());
 
-           if (inputValue === "") {
-               if (!errorElement) {
-                   const errorMessage = "This field is required.";
-                   const errorDiv = document.createElement('div');
-                   errorDiv.className = "text-danger";
-                   errorDiv.textContent = errorMessage;
-                   errorDiv.id = field + '-error';
-                   input.parentNode.appendChild(errorDiv);
-               }
-               isValid = false;
-           } else {
-               if (errorElement) {
-                   errorElement.remove();
-               }
-           }
-       });
+    const requiredFields = ["addressType", "name", "country", "city", "landMark", "state", "streetAddress", "pincode", "phone", "email", "altPhone"];
+    
+    // Check required fields
+    requiredFields.forEach(function(field) {
+        const input = document.getElementById(field);
+        const inputValue = input.value.trim();
 
-       const namePattern = /^[A-Za-z\s]+$/;
-       const pincodePattern = /^\d{6}$/;
-       const phonePattern = /^\d{10}$/;
-       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (inputValue === "") {
+            showFieldError(input, "This field is required.");
+            isValid = false;
+        }
+    });
 
-       const name = document.getElementById('name').value;
-       const city = document.getElementById('city').value;
-       const landMark = document.getElementById('landMark').value;
-       const state = document.getElementById('state').value;
-       const pincode = document.getElementById('pincode').value;
-       const phone = document.getElementById('phone').value;
-       const altPhone = document.getElementById('altPhone').value;
-       const email = document.getElementById('email').value;
+    if (!isValid) {
+        return false;
+    }
 
-       if (!namePattern.test(name)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Name should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!namePattern.test(city)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'City should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!namePattern.test(landMark)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Landmark should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!namePattern.test(state)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'State should contain alphabets only.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!pincodePattern.test(pincode)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Pincode should be a 6-digit number.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!phonePattern.test(phone)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Phone number should be a 10-digit number.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!phonePattern.test(altPhone)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Alternate phone number should be a 10-digit number.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (phone === altPhone) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Phone number and alternate phone number should be different.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       if (!emailPattern.test(email)) {
-           Swal.fire({
-               title: 'Error',
-               text: 'Please enter a valid email address.',
-               icon: 'error'
-           });
-           isValid = false;
-       }
-       return isValid;
-   }
+    // Pattern validations
+    const namePattern = /^[A-Za-z\s]+$/;
+    const pincodePattern = /^\d{6}$/;
+    const phonePattern = /^\d{10}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const validations = [
+        { field: 'name', pattern: namePattern, message: 'Name should contain alphabets only.' },
+        { field: 'city', pattern: namePattern, message: 'City should contain alphabets only.' },
+        { field: 'landMark', pattern: namePattern, message: 'Landmark should contain alphabets only.' },
+        { field: 'pincode', pattern: pincodePattern, message: 'Pincode should be a 6-digit number.' },
+        { field: 'phone', pattern: phonePattern, message: 'Phone number should be a 10-digit number.' },
+        { field: 'altPhone', pattern: phonePattern, message: 'Alternate phone number should be a 10-digit number.' },
+        { field: 'email', pattern: emailPattern, message: 'Please enter a valid email address.' }
+    ];
+
+    for (let validation of validations) {
+        const input = document.getElementById(validation.field);
+        if (input.value && !validation.pattern.test(input.value)) {
+            showFieldError(input, validation.message);
+            isValid = false;
+            break; // Show one error at a time
+        }
+    }
+
+    // Check if phone numbers are different
+    const phone = document.getElementById('phone').value;
+    const altPhone = document.getElementById('altPhone').value;
+    if (phone && altPhone && phone === altPhone) {
+        showFieldError(document.getElementById('altPhone'), 'Phone number and alternate phone number should be different.');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function showFieldError(input, message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = "text-danger";
+    errorDiv.textContent = message;
+    input.parentNode.appendChild(errorDiv);
+}
+
+// Real-time validation - clear errors when user starts typing
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('input', function() {
+        const existingError = this.parentNode.querySelector('.text-danger');
+        if (existingError) {
+            existingError.remove();
+        }
+    });
+});
 </script>
- <!-- <%- include("../../views/partials/user/footer") %> -->
+
+<%- include("../../views/partials/user/footer") %>
