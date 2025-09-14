@@ -368,6 +368,396 @@
     color: var(--danger-color);
     font-size: 0.9rem;
   }
+
+  /* ===== AVAILABLE COUPONS STYLES ===== */
+  .available-coupons-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #dee2e6;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .available-coupons-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+    animation: couponGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes couponGlow {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+    50% { transform: scale(1.1) rotate(180deg); opacity: 0.1; }
+  }
+
+  .available-coupons-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .coupons-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .coupons-title i {
+    color: #d4af37;
+    font-size: 20px;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+
+  .coupons-count {
+    background: linear-gradient(135deg, #d4af37, #b8941f);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+  }
+
+  .coupons-toggle {
+    background: none;
+    border: 2px solid #d4af37;
+    color: #d4af37;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .coupons-toggle:hover {
+    background: #d4af37;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+  }
+
+  .available-coupons-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+    position: relative;
+    z-index: 2;
+  }
+
+  .available-coupons-list.expanded {
+    max-height: 1000px;
+    transition: max-height 0.7s ease-in;
+  }
+
+  .coupon-item {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .coupon-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+  }
+
+  .coupon-item.premium {
+    background: linear-gradient(135deg, #fff5e6 0%, #fffaf0 100%);
+    border-color: #d4af37;
+  }
+
+  .coupon-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #d4af37, #b8941f);
+  }
+
+  .coupon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .coupon-info {
+    flex: 1;
+  }
+
+  .coupon-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 5px 0;
+    line-height: 1.3;
+  }
+
+  .coupon-description {
+    font-size: 12px;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .coupon-value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .discount-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 5px;
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+  }
+
+  .coupon-type-badge {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .coupon-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: #6c757d;
+  }
+
+  .coupon-detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .coupon-detail-label {
+    font-weight: 500;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .coupon-detail-value {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .coupon-code-section {
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    position: relative;
+  }
+
+  .coupon-code-label {
+    font-size: 10px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .coupon-code-value {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: 2px;
+    user-select: all;
+  }
+
+  .coupon-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .coupon-apply-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #d4af37, #b8941f);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .coupon-apply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, #b8941f, #d4af37);
+  }
+
+  .coupon-copy-btn {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #dee2e6;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .coupon-copy-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+  }
+
+  .coupon-badges {
+    position: absolute;
+   top: 3px;
+    right: 98px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .badge {
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge.new {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+  }
+
+  .badge.expiring {
+    background: linear-gradient(135deg, #ffc107, #ff8f00);
+    color: white;
+  }
+
+  .badge.premium {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+    color: white;
+  }
+
+  .no-coupons-message {
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    padding: 20px;
+    font-style: italic;
+  }
+
+  .no-coupons-message i {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #adb5bd;
+  }
+
+  /* Responsive Design for Coupons */
+  @media (max-width: 768px) {
+    .available-coupons-section {
+      padding: 15px;
+    }
+
+    .available-coupons-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .coupon-header {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .coupon-value {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .coupon-details {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .coupon-detail-item {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+    }
+
+    .coupon-actions {
+      flex-direction: column;
+    }
+  }
+
+  /* Animation for coupon reveal */
+  .coupon-item {
+    animation: slideInUp 0.3s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  @keyframes slideInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>
 
 <div class="container py-5">
@@ -605,6 +995,94 @@
             </label>
           </div>
         </div>
+
+        <!-- ===== AVAILABLE COUPONS SECTION ===== -->
+        <% if (availableCoupons && availableCoupons.length > 0) { %>
+          <div class="available-coupons-section">
+            <div class="available-coupons-header">
+              <div class="d-flex align-items-center">
+                <h4 class="coupons-title">
+                  <i class="fas fa-gift"></i>
+                  Available Offers
+                </h4>
+                <span class="coupons-count ml-2"><%= availableCoupons.length %> Available</span>
+              </div>
+              <button type="button" class="coupons-toggle" onclick="toggleCouponsSection()">
+                <span id="coupons-toggle-text">View All</span>
+              </button>
+            </div>
+            
+            <div class="available-coupons-list" id="available-coupons-list">
+              <% availableCoupons.forEach((coupon, index) => { %>
+                <div class="coupon-item <%= coupon.isPremium ? 'premium' : '' %>" style="animation-delay: <%= index * 0.1 %>s">
+                  <div class="coupon-badges">
+                    <% if (coupon.isNew) { %>
+                      <span class="badge new">New</span>
+                    <% } %>
+                    <% if (coupon.isExpiringSoon) { %>
+                      <span class="badge expiring"><%= coupon.daysLeft %> Days</span>
+                    <% } %>
+                    <% if (coupon.isPremium) { %>
+                      <span class="badge premium">Premium</span>
+                    <% } %>
+                  </div>
+                  
+                  <div class="coupon-header">
+                    <div class="coupon-info">
+                      <h5 class="coupon-title"><%= coupon.title %></h5>
+                      <p class="coupon-description"><%= coupon.description %></p>
+                    </div>
+                    
+                    <div class="coupon-value">
+                      <div class="discount-badge">
+                        <%= coupon.discountValue %><%= coupon.type === 'percentage' ? '%' : '' %> OFF
+                      </div>
+                      <div class="coupon-type-badge">
+                        <%= coupon.type === 'percentage' ? 'Percentage' : 
+                            coupon.type === 'fixed' ? 'Fixed Amount' : 
+                            coupon.type === 'shipping' ? 'Free Shipping' : 'Special Offer' %>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="coupon-details">
+                    <div class="coupon-detail-item">
+                      <div class="coupon-detail-label">Min Order</div>
+                      <div class="coupon-detail-value">₹<%= coupon.minOrder %></div>
+                    </div>
+                    <div class="coupon-detail-item">
+                      <div class="coupon-detail-label">Max Discount</div>
+                      <div class="coupon-detail-value">₹<%= coupon.maxDiscount %></div>
+                    </div>
+                    <div class="coupon-detail-item">
+                      <div class="coupon-detail-label">Valid Until</div>
+                      <div class="coupon-detail-value"><%= new Date(coupon.expireOn).toLocaleDateString('en-GB') %></div>
+                    </div>
+                    <div class="coupon-detail-item">
+                      <div class="coupon-detail-label">Used</div>
+                      <div class="coupon-detail-value"><%= coupon.usedCount %>/<%= coupon.usageLimit %></div>
+                    </div>
+                  </div>
+                  
+                  <div class="coupon-code-section" onclick="copyCouponCodeFromList('<%= coupon.code %>')" title="Click to copy">
+                    <div class="coupon-code-label">Coupon Code</div>
+                    <div class="coupon-code-value"><%= coupon.code %></div>
+                  </div>
+                  
+                  <div class="coupon-actions">
+                    <button type="button" class="coupon-apply-btn" onclick="applyCouponFromList('<%= coupon.code %>')">
+                      Apply Now
+                    </button>
+                    <button type="button" class="coupon-copy-btn" onclick="copyCouponCodeFromList('<%= coupon.code %>')">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+
         <div class="mb-4">
           <h3 class="h5 mb-3">Apply Coupon</h3>
           <div class="input-group mb-3">
@@ -613,6 +1091,8 @@
               <button class="btn apply-btn" type="button" onclick="applyCoupon()">Apply</button>
             </div>
           </div>
+          <a href="/coupon">view all coupons</a> 
+
           <div id="appliedCouponInfo" class="coupon-applied" style="display: none;">
             <span id="appliedCouponText"></span>
             <button type="button" class="remove-coupon-btn" onclick="removeCoupon()">Remove</button>
@@ -995,6 +1475,67 @@
       text: 'Delivery charge is ₹50 per order.',
       icon: 'info',
       confirmButtonText: 'OK'
+    });
+  }
+
+  // ===== AVAILABLE COUPONS FUNCTIONALITY =====
+
+  function toggleCouponsSection() {
+    const couponsListElement = document.getElementById('available-coupons-list');
+    const toggleText = document.getElementById('coupons-toggle-text');
+    
+    if (couponsListElement.classList.contains('expanded')) {
+      couponsListElement.classList.remove('expanded');
+      toggleText.textContent = 'View All';
+    } else {
+      couponsListElement.classList.add('expanded');
+      toggleText.textContent = 'Hide';
+      
+      // Add staggered animation to coupon items
+      const couponItems = couponsListElement.querySelectorAll('.coupon-item');
+      couponItems.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.1}s`;
+      });
+    }
+  }
+
+  function copyCouponCodeFromList(code) {
+    navigator.clipboard.writeText(code).then(() => {
+      showNotification(`Coupon code "${code}" copied to clipboard!`, 'success');
+    }).catch(() => {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = code;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      showNotification(`Coupon code "${code}" copied!`, 'success');
+    });
+  }
+
+  function applyCouponFromList(code) {
+    // Set the code in the input field
+    document.getElementById('couponCode').value = code;
+    
+    // Apply the coupon
+    applyCoupon();
+  }
+
+  function showNotification(message, type = 'success') {
+    // Use SweetAlert for consistent notifications
+    const icon = type === 'success' ? 'success' : 
+                type === 'error' ? 'error' : 
+                type === 'warning' ? 'warning' : 'info';
+    
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: icon,
+      title: message,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
     });
   }
 

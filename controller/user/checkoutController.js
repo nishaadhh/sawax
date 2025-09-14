@@ -1,7 +1,7 @@
 const User = require("../../models/userSchema");
 const Address = require("../../models/addressSchema");
 const Cart = require("../../models/cartSchema");
-// const Coupon = require("../../models/Coupon"); // Assuming Coupon model exists
+const Coupon = require("../../models/couponSchema"); // Added Coupon import
 
 // Enhanced validation utilities
 const validateEmail = (email) => {
@@ -84,7 +84,8 @@ const loadCheckoutPage = async (req, res) => {
                 couponDiscount: 0,
                 shippingCharge: 50, // As per orderSchema default
                 grandTotal: 50, // Only shipping charge when cart is empty
-                message: 'Your cart is empty'
+                message: 'Your cart is empty',
+                availableCoupons: [] // Empty coupons when cart is empty
             });
         }
 
@@ -107,7 +108,8 @@ const loadCheckoutPage = async (req, res) => {
                 couponDiscount: 0,
                 shippingCharge: 50,
                 grandTotal: 50,
-                message: 'No valid items found in cart'
+                message: 'No valid items found in cart',
+                availableCoupons: [] // Empty coupons when no valid items
             });
         }
 
@@ -128,18 +130,62 @@ const loadCheckoutPage = async (req, res) => {
 
         console.log('loadCheckoutPage - calculated subtotal:', subtotal);
 
+        // Fetch available coupons for the user
+        const currentDate = new Date();
+        const availableCoupons = await Coupon.find({
+            expireOn: { $gt: currentDate },
+            isList: true,
+            $or: [
+                { isPremium: false },
+                { isPremium: true, userId: userId }
+            ]
+        }).sort({ createdOn: -1 });
+
+        // Filter and enhance coupons with validation status
+        const validCoupons = availableCoupons.filter(coupon => {
+            // Check if user has already used this coupon
+            const isUsedByUser = coupon.userId.includes(userId);
+            
+            // Check if coupon has reached usage limit
+            const hasReachedLimit = coupon.usedCount >= coupon.usageLimit;
+            
+            // Check if minimum order requirement is met
+            const meetsMinOrder = subtotal >= coupon.minOrder;
+            
+            return !isUsedByUser && !hasReachedLimit && meetsMinOrder;
+        }).map(coupon => {
+            const daysLeft = Math.ceil((new Date(coupon.expireOn) - currentDate) / (1000 * 60 * 60 * 24));
+            
+            return {
+                ...coupon.toObject(),
+                isUsedByUser: false,
+                daysLeft,
+                isExpiringSoon: daysLeft <= 7,
+                isNew: coupon.createdOn && new Date(coupon.createdOn) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                canUse: true,
+                validationMessage: 'Available to use'
+            };
+        });
+
+        console.log('Available coupons for checkout:', validCoupons.length);
+
         // Check for applied coupon in session (if any)
         let couponDiscount = 0;
-        if (req.session.coupon) {
-            const coupon = await Coupon.findOne({ name: req.session.coupon, isList: true });
-            if (coupon && !coupon.userId.includes(userId)) {
-                couponDiscount = coupon.offerPrice;
-            } else {
-                req.session.coupon = null; // Clear invalid coupon
+        if (req.session.appliedCoupon) {
+            const appliedCoupon = req.session.appliedCoupon;
+            console.log('Applied coupon from session:', appliedCoupon);
+            
+            // Calculate discount based on coupon type
+            if (appliedCoupon.type === 'percentage') {
+                couponDiscount = Math.min((subtotal * appliedCoupon.discountValue) / 100, appliedCoupon.maxDiscount || Number.MAX_SAFE_INTEGER);
+            } else if (appliedCoupon.type === 'fixed') {
+                couponDiscount = Math.min(appliedCoupon.discountValue, appliedCoupon.maxDiscount || Number.MAX_SAFE_INTEGER);
+            } else if (appliedCoupon.type === 'shipping') {
+                couponDiscount = 50; // Shipping charge
             }
         }
 
-        const shippingCharge = 50; // As per orderSchema default
+        const shippingCharge = req.session.appliedCoupon && req.session.appliedCoupon.type === 'shipping' ? 0 : 50;
         const grandTotal = subtotal - couponDiscount + shippingCharge;
 
         res.render('checkout', {
@@ -151,20 +197,22 @@ const loadCheckoutPage = async (req, res) => {
             couponDiscount,
             shippingCharge,
             grandTotal,
-            message: null
+            message: null,
+            availableCoupons: validCoupons // Pass available coupons to the view
         });
     } catch (error) {
         console.error('Error loading checkout page:', error);
         res.render('checkout', {
             userData: null,
-            user,
+            user: null,
             cart: { items: [] },
             addresses: { address: [] },
             subtotal: 0,
             couponDiscount: 0,
             shippingCharge: 50,
             grandTotal: 50,
-            message: 'Failed to load checkout page'
+            message: 'Failed to load checkout page',
+            availableCoupons: [] // Empty coupons on error
         });
     }
 };
