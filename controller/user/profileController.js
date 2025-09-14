@@ -362,7 +362,8 @@ const changeEmail = async (req, res) => {
     
     res.render("change-email", { 
       message: req.query.message || null,
-      user: userData
+      user: userData,
+      
     });
   } catch (error) {
     console.error("Error rendering change email page:", error);
@@ -669,6 +670,11 @@ const changePassword = async (req, res) => {
       return res.redirect("/profile?error=Password changes for Google accounts must be managed through Google account settings");
     }
     
+      
+           
+           
+
+
     res.render("change-password", { message: null });
   } catch (error) {
     console.error("Error rendering change password page:", error);
