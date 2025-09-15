@@ -153,7 +153,13 @@
                         <div class="product-info">
                             <h3 class="product-name"><%= product.productName %></h3>
                             <div class="product-category"><%= product.category.name %></div>
-                            <div class="product-price">₹<%= product.salePrice.toFixed(2) %></div>
+                               <span style="display: flex; gap: 10px; align-items: center;">
+                                    <% if (product.regularPrice !== product.salePrice) { %>
+                                          <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
+                                                     <% } %>
+                                             <p class="product-price">₹ <%= product.salePrice %></p>
+                                                    </span>
+
                             <div class="product-actions" onclick="event.stopPropagation();">
                                 <a href="#" class="add-to-cart" onclick="addToCart('<%= product._id %>')">Add to Cart</a>
                                 <div class="wishlist" onclick="addToWishlist('<%= product._id %>')"><i class="fa-solid fa-heart"></i></div>
