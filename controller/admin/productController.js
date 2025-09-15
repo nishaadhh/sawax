@@ -271,7 +271,12 @@ const editProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
 
-    // Handle image updates
+    // Ensure product has an image array with 4 slots
+    while (product.productImage.length < 4) {
+      product.productImage.push(null);
+    }
+
+    // Handle image updates - maintain exact positioning
     for (let i = 1; i <= 4; i++) {
       if (req.files[`image${i}`]) {
         const file = req.files[`image${i}`][0];
@@ -285,13 +290,21 @@ const editProduct = async (req, res) => {
 
         const imagePath = `uploads/product-images/${filename}`;
         
+        // Delete old image if it exists
         if (product.productImage[i-1]) {
-          product.productImage[i-1] = imagePath;
-        } else {
-          product.productImage.push(imagePath);
+          const oldImagePath = path.join(__dirname, "../../public", product.productImage[i-1]);
+          if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+          }
         }
+        
+        // Set new image at the specific index
+        product.productImage[i-1] = imagePath;
       }
     }
+
+    // Remove any null values and ensure we have exactly the right images
+    product.productImage = product.productImage.filter(img => img !== null);
 
     // Update product fields
     product.productName = productName;
@@ -302,14 +315,18 @@ const editProduct = async (req, res) => {
     product.brand = brand;
 
     // Find new category if changed
-    const newCategory = await Category.findOne({ name: category });
+    const newCategory = await Category.findById(category);
     if (newCategory) {
       product.category = newCategory._id;
       // Recalculate sale price with new category offer
-      product.calculateSalePrice(newCategory.categoryOffer);
+      if (typeof product.calculateSalePrice === 'function') {
+        product.calculateSalePrice(newCategory.categoryOffer);
+      }
     } else {
       // Keep existing category and recalculate
-      product.calculateSalePrice(product.category.categoryOffer);
+      if (typeof product.calculateSalePrice === 'function') {
+        product.calculateSalePrice(product.category.categoryOffer);
+      }
     }
 
     await product.save();
@@ -330,17 +347,21 @@ const deleteSingleImage = async (req, res) => {
       return res.status(404).json({ status: false, message: "Product not found" });
     }
 
-    // Remove the image from the array
-    product.productImage.splice(imageIndex, 1);
-    await product.save();
+    // Find the image in the array and remove it
+    const imagePathToDelete = product.productImage.find(img => img === imageNameToServer);
+    if (imagePathToDelete) {
+      // Remove from array
+      product.productImage = product.productImage.filter(img => img !== imageNameToServer);
+      await product.save();
 
-    const imagePath = path.join(__dirname, "../../public", imageNameToServer);
-
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
-      console.log(`Image ${imageNameToServer} deleted successfully`);
-    } else {
-      console.log(`Image ${imageNameToServer} not found`);
+      // Delete physical file
+      const imagePath = path.join(__dirname, "../../public", imageNameToServer);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+        console.log(`Image ${imageNameToServer} deleted successfully`);
+      } else {
+        console.log(`Image ${imageNameToServer} not found`);
+      }
     }
 
     res.json({ status: true, message: "Image deleted successfully" });
@@ -371,6 +392,7 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ status: false, message: 'Server Error' });
   }
 };
+
 
 module.exports = {
   getProductAddPage,

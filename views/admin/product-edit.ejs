@@ -100,6 +100,12 @@
             transform: translateY(-1px);
         }
 
+        .btn-primary:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-danger.btn-sm {
             background-color: var(--danger-color);
             color: #ffffff;
@@ -179,6 +185,23 @@
             flex: 1;
         }
 
+        .image-counter {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        .image-counter.error {
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+
+        .image-counter.success {
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
         @media (min-width: 992px) {
             .col-lg-3 {
                 flex: 0 0 25%;
@@ -220,12 +243,6 @@
                             <input name="regularPrice" type="number" value="<%= product.regularPrice %>" class="form-control" required min="0" step="0.01">
                         </div>
                     </div>
-                    <!-- <div class="col-lg-3">
-                        <div class="mb-4">
-                            <label class="form-label">Sale Price</label>
-                            <input name="salePrice" type="number" value="<%= product.salePrice %>" class="form-control" required min="0" step="0.01">
-                        </div>
-                    </div> -->
                     <div class="col-lg-3">
                         <div class="mb-4">
                             <label class="form-label">Quantity</label>
@@ -261,18 +278,25 @@
                 </div>
                 <div class="mb-4">
                     <label class="form-label">Product Images</label>
-                    <div class="row">
+                    <div class="row" id="imageContainer">
+                        <% 
+                        // Create array of 4 slots, filling with existing images or null
+                        let imageSlots = [null, null, null, null];
+                        for(let i = 0; i < product.productImage.length && i < 4; i++) {
+                            imageSlots[i] = product.productImage[i];
+                        }
+                        %>
                         <% for(let i = 0; i < 4; i++) { %>
                             <div class="col-md-3 mb-3">
                                 <div class="card">
-                                    <% if(product.productImage[i]) { %>
-                                        <img src="/<%= product.productImage[i] %>" class="card-img-top" alt="Product Image">
+                                    <% if(imageSlots[i]) { %>
+                                        <img src="/<%= imageSlots[i] %>" class="card-img-top existing-image" alt="Product Image" data-index="<%= i %>">
                                         <div class="card-body">
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteSingleImage('<%= product.productImage[i] %>', '<%= product._id %>', <%= i %>)">Delete</button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteSingleImage('<%= imageSlots[i] %>', '<%= product._id %>', <%= i %>)">Delete</button>
                                         </div>
                                     <% } else { %>
                                         <div class="card-body">
-                                            <input type="file" name="image<%= i+1 %>" accept="image/*" class="form-control" onchange="previewImage(event, <%= i %>)">
+                                            <input type="file" name="image<%= i+1 %>" accept="image/*" class="form-control image-input" data-index="<%= i %>" onchange="previewImage(event, <%= i %>)">
                                             <img id="preview<%= i %>" src="#" alt="Image preview" style="display: none; max-width: 100%; height: auto; margin-top: 10px;">
                                         </div>
                                     <% } %>
@@ -280,9 +304,12 @@
                             </div>
                         <% } %>
                     </div>
+                    <div class="image-counter" id="imageCounter">
+                        Images: <span id="imageCount">0</span>/4 (4 images required)
+                    </div>
                 </div>
                 <div class="mb-4">
-                    <button class="btn btn-primary" type="submit">Update Product</button>
+                    <button class="btn btn-primary" type="submit" id="submitBtn" disabled>Update Product</button>
                 </div>
             </form>
         </div>
@@ -292,6 +319,37 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let croppers = {};
+    
+    function updateImageCounter() {
+        const existingImages = document.querySelectorAll('.existing-image').length;
+        const newImages = Array.from(document.querySelectorAll('.image-input'))
+            .filter(input => input.files && input.files.length > 0).length;
+        
+        const totalImages = existingImages + newImages;
+        const imageCountSpan = document.getElementById('imageCount');
+        const imageCounter = document.getElementById('imageCounter');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        imageCountSpan.textContent = totalImages;
+        
+        if (totalImages === 4) {
+            imageCounter.classList.remove('error');
+            imageCounter.classList.add('success');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Update Product';
+        } else {
+            imageCounter.classList.remove('success');
+            imageCounter.classList.add('error');
+            submitBtn.disabled = true;
+            submitBtn.textContent = `Need ${4 - totalImages} more image${4 - totalImages === 1 ? '' : 's'}`;
+        }
+    }
+    
+    // Initialize counter on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateImageCounter();
+    });
+    
     function previewImage(event, index) {
         const input = event.target;
         if (input.files && input.files[0]) {
@@ -300,9 +358,11 @@
                 const preview = document.getElementById(`preview${index}`);
                 preview.src = e.target.result;
                 preview.style.display = 'block';
+                
                 if (croppers[index]) {
                     croppers[index].destroy();
                 }
+                
                 croppers[index] = new Cropper(preview, {
                     aspectRatio: 1,
                     viewMode: 1,
@@ -310,10 +370,15 @@
                         this.cropper.crop();
                     }
                 });
+                
+                updateImageCounter();
             };
             reader.readAsDataURL(input.files[0]);
+        } else {
+            updateImageCounter();
         }
     }
+    
     function deleteSingleImage(imageName, productId, index) {
         Swal.fire({
             title: 'Are you sure?',
@@ -361,24 +426,29 @@
             }
         });
     }
+    
     document.getElementById('editProductForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const existingImages = document.querySelectorAll('.card-img-top').length;
-        const newImages = Array.from(this.querySelectorAll('input[type="file"]'))
+        
+        const existingImages = document.querySelectorAll('.existing-image').length;
+        const newImages = Array.from(this.querySelectorAll('.image-input'))
             .filter(input => input.files && input.files.length > 0).length;
         const totalImages = existingImages + newImages;
+        
         if (totalImages !== 4) {
             Swal.fire({
                 title: 'Error!',
-                text: '4 images are required',
+                text: 'Exactly 4 images are required',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
             return;
         }
+        
         const formData = new FormData(this);
         let croppedImagesProcessed = 0;
         const totalCroppedImages = Object.keys(croppers).length;
+        
         const submitForm = () => {
             fetch(this.action, {
                 method: 'POST',
@@ -410,6 +480,7 @@
                 });
             });
         };
+        
         if (totalCroppedImages === 0) {
             submitForm();
         } else {
@@ -426,3 +497,6 @@
     });
 </script>
 <%- include("../../views/partials/admin/footer") %>
+
+
+<!-- ne -->
