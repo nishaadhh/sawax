@@ -776,20 +776,135 @@
         window.location.href = downloadUrl;
     }
 
-    // Handle custom date range
-    document.getElementById('startDate').addEventListener('change', function() {
-        document.getElementById('periodInput').value = 'custom';
-        document.querySelectorAll('.period-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
+   // Handle custom date range
+     document.getElementById('startDate').addEventListener('change', function() {
+         document.getElementById('periodInput').value = 'custom';
+         document.querySelectorAll('.period-btn').forEach(btn => {
+             btn.classList.remove('active');
+         });
+        validateDateRange();
+     });
+ 
+     document.getElementById('endDate').addEventListener('change', function() {
+         document.getElementById('periodInput').value = 'custom';
+         document.querySelectorAll('.period-btn').forEach(btn => {
+             btn.classList.remove('active');
+         });
+        validateDateRange();
     });
 
-    document.getElementById('endDate').addEventListener('change', function() {
-        document.getElementById('periodInput').value = 'custom';
-        document.querySelectorAll('.period-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
+    // Date validation function
+    function validateDateRange() {
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const filterBtn = document.querySelector('.btn-filter');
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Remove existing error styles
+        startDate.style.borderColor = '';
+        endDate.style.borderColor = '';
+        
+        // Remove existing error messages
+        const existingErrors = document.querySelectorAll('.date-error');
+        existingErrors.forEach(error => error.remove());
+        
+        let isValid = true;
+        
+        // Check if start date is in the future
+        if (startDate.value && startDate.value > today) {
+            showDateError(startDate, 'Start date cannot be in the future');
+            isValid = false;
+        }
+        
+        // Check if end date is in the future
+        if (endDate.value && endDate.value > today) {
+            showDateError(endDate, 'End date cannot be in the future');
+            isValid = false;
+        }
+        
+        // Check if start date is after end date
+        if (startDate.value && endDate.value && startDate.value > endDate.value) {
+            showDateError(endDate, 'End date must be after start date');
+            isValid = false;
+        }
+        
+        // Check if date range is too large (more than 1 year)
+        if (startDate.value && endDate.value) {
+            const start = new Date(startDate.value);
+            const end = new Date(endDate.value);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays > 365) {
+                showDateError(endDate, 'Date range cannot exceed 1 year');
+                isValid = false;
+            }
+        }
+        
+        // Enable/disable filter button based on validation
+        filterBtn.disabled = !isValid;
+        if (!isValid) {
+            filterBtn.style.opacity = '0.5';
+            filterBtn.style.cursor = 'not-allowed';
+        } else {
+            filterBtn.style.opacity = '1';
+            filterBtn.style.cursor = 'pointer';
+        }
+        
+        return isValid;
+    }
+    
+    function showDateError(inputElement, message) {
+        inputElement.style.borderColor = '#dc3545';
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'date-error';
+        errorDiv.style.color = '#dc3545';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.style.marginTop = '5px';
+        errorDiv.textContent = message;
+        
+        inputElement.parentNode.appendChild(errorDiv);
+    }
+    
+    // Validate form submission
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        const period = document.getElementById('periodInput').value;
+        
+        if (period === 'custom') {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Check if both dates are provided for custom range
+            if (!startDate || !endDate) {
+                e.preventDefault();
+                alert('Please select both start and end dates for custom range');
+                return false;
+            }
+            
+            // Run validation
+            if (!validateDateRange()) {
+                e.preventDefault();
+                alert('Please fix the date range errors before applying the filter');
+                return false;
+            }
+        }
     });
+    
+    // Set max date to today for both inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('startDate').setAttribute('max', today);
+        document.getElementById('endDate').setAttribute('max', today);
+        
+        // Initial validation if dates are already set
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        if (startDate || endDate) {
+            validateDateRange();
+        }
+    });
+ </script>
 </script>
 
 <%- include('../partials/admin/footer') %>

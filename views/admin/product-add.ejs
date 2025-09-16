@@ -116,6 +116,23 @@
             border-radius: 50%;
             margin-right: 10px;
         }
+
+        /* Spinner Styling */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -197,6 +214,7 @@
 <script>
   let croppers = {};
   let croppedImages = {}; // Store cropped images
+  let isSubmitting = false; // Flag to prevent multiple submissions
 
   function previewImage(event, index) {
     const input = event.target;
@@ -247,6 +265,11 @@
   document.getElementById('productForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      return;
+    }
+
     // Form validation
     let isValid = true;
     const requiredFields = ['productName', 'description', 'brand', 'regularPrice', 'quantity', 'color', 'category'];
@@ -271,6 +294,15 @@
     }
 
     if (isValid) {
+      // Set submitting flag and update button state
+      isSubmitting = true;
+      const submitButton = document.querySelector('.form-actions button');
+      const originalButtonText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.innerHTML = `
+        <span class="spinner"></span> Adding Product...
+      `;
+
       const formData = new FormData();
       // Append text fields
       requiredFields.forEach((field) => {
@@ -302,6 +334,10 @@
           return response.json();
         })
         .then((data) => {
+          isSubmitting = false;
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+
           if (data.success) {
             Swal.fire({
               title: 'Success!',
@@ -323,6 +359,10 @@
           }
         })
         .catch((error) => {
+          isSubmitting = false;
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+
           console.error('Fetch Error:', error);
           Swal.fire({
             title: 'Error!',

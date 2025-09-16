@@ -43,7 +43,7 @@ const saveImage = async (req, res) => {
 // Add Product with Multiple Image Upload (using Sharp)
 const addProducts = async (req, res) => {
   try {
-    console.log("req.body", req.files);  
+    // console.log("req.body", req.files);  
     const { productName, description, brand, regularPrice, quantity, color, category } = req.body;
     const files = req.files;
 
@@ -77,7 +77,7 @@ const addProducts = async (req, res) => {
       return res.status(400).json({ success: false, message: "Category not found" });
     }
 
-    console.log("successful newProduct 2"); 
+    // console.log("successful newProduct 2"); 
 
     // Create and save new product
     const newProduct = new Product({
