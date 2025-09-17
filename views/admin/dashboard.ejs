@@ -1,28 +1,637 @@
 <%- include("../../views/partials/admin/header") %>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Premium Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --animate-duration: 0.6s;
+        }
 
-<style>
-    :root {
-      --primary-color: #3498db;
-      --secondary-color: #2c3e50;
-      --success-color: #2ecc71;
-      --danger-color: #e74c3c;
-      --info-color: #3498db;
-      --light-gray: #ecf0f1;
-    }
-    .main-wrap .content-main {
-    min-height: calc(100vh - 72px);
-}
-</style>
+        [data-theme="dark"] {
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<section class="content-main " style="background-image: #000000
-">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-title" style="color: black;">Dashboard </h2>
-            <!-- <h2>hello welcome  to our sawax</h2> -->
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all var(--animate-duration) ease;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .stat-users .stat-icon { background: var(--success-gradient); }
+        .stat-orders .stat-icon { background: var(--warning-gradient); }
+        .stat-revenue .stat-icon { background: var(--primary-gradient); }
+        .stat-products .stat-icon { background: var(--secondary-gradient); }
+        .stat-refunds .stat-icon { background: var(--danger-gradient); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .change-positive { color: #10b981; }
+        .change-negative { color: #ef4444; }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .chart-card {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sales-chart-container {
+            height: 400px;
+            position: relative;
+        }
+
+        .top-products-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .top-product-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: rgba(0,0,0,0.02);
+            transition: background 0.2s ease;
+        }
+
+        .top-product-item:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .top-product-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .top-product-info h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .top-product-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .top-product-sales {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .sales-count {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .sales-change {
+            font-size: 0.75rem;
+            color: #10b981;
+        }
+
+        /* Recent Orders */
+        .recent-orders-section {
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .recent-orders-card {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .recent-orders-header {
+            padding: 1.5rem;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .orders-table th {
+            background: rgba(0,0,0,0.02);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .orders-table tbody tr:hover {
+            background: rgba(0,0,0,0.02);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-delivered { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-returned { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+
+        .order-amount {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-section { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 1rem; }
+            .header-title { font-size: 2rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .orders-table { font-size: 0.875rem; }
+            .orders-table th, .orders-table td { padding: 0.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .recent-orders-header { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Error Message -->
+        <% if (typeof error !== 'undefined' && error !== null) { %>
+            <div style="text-align: center; padding: 2rem; background: #fef2f2; color: #dc2626; border-radius: 0.5rem; margin-bottom: 2rem;">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <%= error %>
+            </div>
+        <% } %>
+
+        <!-- Header -->
+        <div class="header-section">
+            <h1 class="header-title">
+                <i class="fas fa-chart-line me-2"></i>
+                Welcome to Admin Dashboard
+            </h1>
+            <p class="header-subtitle">
+                <!-- Monitor your e-commerce empire with real-time insights and analytics -->
+                <span class="pulse">● Live</span>
+            </p>
         </div>
-       
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card stat-users">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value"><%= totalUsers || 0 %></div>
+                <div class="stat-label">Total Users</div>
+                <div class="stat-change change-positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12.5%</span> from last month
+                </div>
+            </div>
+
+            <div class="stat-card stat-orders">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-value"><%= totalOrders || 0 %></div>
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-change change-positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+8.2%</span> from last month
+                </div>
+            </div>
+
+            <div class="stat-card stat-revenue">
+                <div class="stat-icon">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <div class="stat-value">₹<%= totalRevenue?.toFixed(2) || 0 %></div>
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-change change-positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+25.3%</span> from last month
+                </div>
+            </div>
+
+            <div class="stat-card stat-products">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-value"><%= totalProducts || 0 %></div>
+                <div class="stat-label">Total Products</div>
+                <div class="stat-change change-negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>-2.1%</span> from last month
+                </div>
+            </div>
+
+            <div class="stat-card stat-refunds">
+                <div class="stat-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="stat-value">₹<%= totalRefunds?.toFixed(2) || 0 %></div>
+                <div class="stat-label">Total Refunds</div>
+                <div class="stat-change change-negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>-15.7%</span> from last month
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-area me-2"></i>
+                    Sales Trend (Last 30 Days)
+                </h3>
+                <div class="sales-chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <i class="fas fa-trophy me-2"></i>
+                    Bestsellers
+                </h3>
+                <% if (topProducts && topProducts.length > 0) { %>
+                    <ul class="top-products-list">
+                        <% topProducts.forEach((product, index) => { %>
+                            <li class="top-product-item">
+                                <img src="/<%= product.productImage ? product.productImage[0] : 'images/default-product.jpg' %>" 
+                                     alt="<%= product.productName %>" 
+                                     class="top-product-image"
+                                     onerror="this.src='/images/default-product.jpg'">
+                                <div class="top-product-info">
+                                    <h4><%= product.productName %></h4>
+                                    <p><%= product.brand || 'N/A' %> | <%= product.category?.name || 'N/A' %></p>
+                                </div>
+                                <div class="top-product-sales">
+                                    <div class="sales-count"><%= product.totalQuantity %></div>
+                                    <div class="sales-change">units sold</div>
+                                </div>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p style="text-align: center; color: var(--text-secondary); font-style: italic;">No bestseller data available yet.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="recent-orders-section">
+            <div class="recent-orders-card">
+                <div class="recent-orders-header">
+                    <div>
+                        <i class="fas fa-clock me-2"></i>
+                        Recent Orders (Last 7 Days)
+                    </div>
+                    <span class="status-badge status-pending">Live Updates</span>
+                </div>
+                <div class="p-4">
+                    <% if (recentOrders && recentOrders.length > 0) { %>
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% recentOrders.forEach(order => { %>
+                                    <tr>
+                                        <td>#<%= order.orderId %></td>
+                                        <td><%= order.userId?.name || 'N/A' %></td>
+                                        <td class="order-amount">₹<%= order.finalAmount.toFixed(2) %></td>
+                                        <td><span class="status-badge status-<%= order.status.toLowerCase() %>"><%= order.status.toUpperCase() %></span></td>
+                                        <td><%= moment(order.createdOn).format('DD/MM/YY') %></td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <i class="fas fa-inbox fa-3x mb-3" style="opacity: 0.5;"></i>
+                            <p>No recent orders found.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+
+    <script>
+        // Sales Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('salesChart');
+            if (ctx) {
+                <% if (chartData && chartData.length > 0) { %>
+                    const labels = <%= JSON.stringify(chartData.map(item => moment(item._id.day).format('MMM DD'))) %>;
+                    const revenueData = <%= JSON.stringify(chartData.map(item => item.dailyRevenue)) %>;
+                    const ordersData = <%= JSON.stringify(chartData.map(item => item.dailyOrders)) %>;
+
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Revenue (₹)',
+                                data: revenueData,
+                                borderColor: '#667eea',
+                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                yAxisID: 'y'
+                            }, {
+                                label: 'Orders',
+                                data: ordersData,
+                                borderColor: '#f093fb',
+                                backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                yAxisID: 'y1'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            interaction: { mode: 'index', intersect: false },
+                            scales: {
+                                x: { grid: { color: 'rgba(0,0,0,0.05)' } },
+                                y: {
+                                    type: 'linear',
+                                    position: 'left',
+                                    grid: { color: 'rgba(0,0,0,0.05)' },
+                                    ticks: { callback: value => '₹' + value }
+                                },
+                                y1: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    grid: { drawOnChartArea: false },
+                                    ticks: { callback: value => value + ' orders' }
+                                }
+                            },
+                            plugins: {
+                                legend: { position: 'top' },
+                                tooltip: {
+                                    backgroundColor: 'rgba(0,0,0,0.8)',
+                                    titleColor: 'white',
+                                    bodyColor: 'white',
+                                    callbacks: {
+                                        label: function(context) {
+                                            if (context.datasetIndex === 0) return '₹' + context.parsed.y;
+                                            return context.parsed.y + ' orders';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                <% } else { %>
+                    // Placeholder if no data
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: { labels: [], datasets: [] },
+                        options: { plugins: { title: { display: true, text: 'No data available yet' } } }
+                    });
+                <% } %>
+            }
+
+            // Add hover effects
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
 <%- include("../../views/partials/admin/footer") %>
