@@ -37,20 +37,20 @@
         justify-content: center;
     }
     .icon-blue {
-        background-color: #e0f7fa;
-        color: #007bff;
+        background: linear-gradient(#3b0764,#a855f7);;
+        color:#f6f6f6
     }
     .icon-green {
-        background-color: #e8f5e9;
-        color: #28a745;
+        background: linear-gradient(#3b0764,#a855f7);;
+        color:#f6f6f6
     }
     .icon-orange {
-        background-color: #ffe5d9;
-        color: #fd7e14;
+        background: linear-gradient(#3b0764,#a855f7);;
+        color:#f6f6f6
     }
     .icon-purple {
-        background-color: #f3e5f5;
-        color: #6f42c1;
+        background: linear-gradient(#3b0764,#a855f7);;
+        color:#f6f6f6
     }
     .table-custom th, .table-custom td {
         vertical-align: middle;
@@ -81,14 +81,17 @@
         background-color: #f8d7da;
         color: #721c24;
     }
+   
 
     button {
   background: linear-gradient(#3b0764,#a855f7);
   font-family: inherit;
   padding: 0.6em 1.3em;
   font-weight: 700;
-  font-size: 13px;
-  border: 3px solid black;
+  color: #f6f6f6;
+  font-size: 14px;
+  border: 3px solid #f6f6f6;
+  text-decoration: none;
   border-radius: 3.4em;
   box-shadow: 0.1em 0.1em;
   cursor: pointer;
@@ -109,7 +112,7 @@ button:active {
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between">
         <h1 class="font-weight-bold mb-4">Dashboard</h1>
-    <button onclick="window.location.href='/admin/sales-report'" >Get Or Download Sales Report</button>
+    <button onclick="window.location.href='/admin/sales-report'" >Get Sales Report</button>
     </div>
     
     <!-- Top Stats -->
@@ -285,7 +288,7 @@ button:active {
                     </table>
                 </div>
                 <div class="text-right mt-3">
-                    <a href="/admin/orders" class="btn btn-sm btn-outline-primary">View All Orders</a>
+                    <button><a href="/admin/orders" style="color: #f6f6f6; text-decoration : none; border-color: #f6f6f6;">View All Orders</a></button>
                 </div>
             </div>
         </div>
@@ -409,8 +412,12 @@ button:active {
         })
         .catch(error => {
             console.error('Error fetching sales data:', error);
-            alert('Failed to update chart. Please try again.');
-        });
+            Swal.fire({
+            icon: 'error',
+            title: 'Update Failed',
+            text: 'Failed to update chart. Please try again.',
+            confirmButtonColor: '#d33'
+});        });
 }
 
 // Initialize with active button styling
@@ -494,7 +501,12 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error fetching top selling items:', error);
-                alert('Failed to update data. Please try again.');
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to update data. Please try again.',
+                confirmButtonColor: '#d33'
+});
             });
     }
 

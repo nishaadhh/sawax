@@ -104,12 +104,14 @@ const getTopSellingProducts = async (limit = 5) => {
     const enrichedProducts = await Promise.all(
       topProducts.map(async (product) => {
         const productDetails = await Product.findById(product._id).populate("category")
+        // Ensure image path is properly handled (assuming relative paths like '/uploads/image.jpg'; adjust base URL if needed, e.g., process.env.BASE_URL || '')
+        const imagePath = productDetails?.productImage?.[0] ? `/uploads/${productDetails.productImage[0]}` : null; // Example fix: prepend '/uploads/' if images are in public/uploads
         return {
           _id: product._id,
           name: product.name,
           category: productDetails?.category?.name || "Uncategorized",
           price: productDetails?.salePrice || 0,
-          image: productDetails?.productImage?.[0] || null,
+          image: imagePath,
           soldCount: product.soldCount,
         }
       }),
@@ -157,9 +159,12 @@ const getSalesDataHelper = async (period = "yearly") => {
       for (let i = 6; i >= 0; i--) {
         const date = new Date(now)
         date.setDate(date.getDate() - i)
+        date.setHours(0, 0, 0, 0) // Normalize to start of day for label
 
-        const dayStart = new Date(date.setHours(0, 0, 0, 0))
-        const dayEnd = new Date(date.setHours(23, 59, 59, 999))
+        const dayStart = new Date(date)
+        dayStart.setHours(0, 0, 0, 0)
+        const dayEnd = new Date(date)
+        dayEnd.setHours(23, 59, 59, 999)
 
         const dayOrders = await Order.find({
           createdOn: { $gte: dayStart, $lte: dayEnd },
@@ -277,6 +282,7 @@ const getTopSelling = async (req, res) => {
           },
         },
         { $unwind: "$productDetails" },
+        { $match: { "productDetails.category": { $ne: null } } }, // Fix: Skip products without category to avoid lookup errors
         {
           $lookup: {
             from: "categories",
@@ -330,12 +336,14 @@ const getTopSelling = async (req, res) => {
       const enrichedProducts = await Promise.all(
         topProducts.map(async (product) => {
           const productDetails = await Product.findById(product._id).populate("category")
+          // Same fix for image path as in getTopSellingProducts
+          const imagePath = productDetails?.productImage?.[0] ? `/uploads/${productDetails.productImage[0]}` : null;
           return {
             _id: product._id,
             name: product.name,
             category: productDetails?.category?.name || "Uncategorized",
             price: productDetails?.salePrice || 0,
-            image: productDetails?.productImage?.[0] || null,
+            image: imagePath,
             soldCount: product.soldCount,
           }
         }),
@@ -361,9 +369,24 @@ const getSalesData = async (req, res) => {
   }
 }
 
+const salesReport = async (req, res) => {
+  try {
+    const orders = await Order.find({ status: "delivered" }).sort({ createdOn: -1 }).populate('userId', 'name email');
+    
+    let csv = 'Order ID,Customer Name,Date,Amount,Items Count\n';
+    orders.forEach(order => {
+      const customerName = order.userId ? `${order.userId.name || 'N/A'} (${order.userId.email || ''})` : 'Unknown';
+      csv += `"${order.orderId}","${customerName}","${order.createdOn.toLocaleDateString()}","${order.finalAmount}","${order.orderedItems.length}"\n`;
+    });
 
-
-
+    res.header('Content-Type', 'text/csv');
+    res.header('Content-Disposition', 'attachment; filename=sales-report.csv');
+    res.send(csv);
+  } catch (error) {
+    console.error("Error generating sales report:", error);
+    res.redirect('/pageerror');
+  }
+}
 
 module.exports = {
     loadLogin,
@@ -373,10 +396,5 @@ module.exports = {
     logout,
     getTopSelling,
     getSalesData,
-    
-    
-
+    salesReport
 }
-
-
-
