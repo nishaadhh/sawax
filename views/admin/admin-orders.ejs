@@ -122,8 +122,38 @@
 </style>
 
 <div class="container-fluid px-4">
+
     <h1 class="mt-4">Order Management </h1>
-    
+    <div class="card mb-4">
+        <div class="card-body">
+            <form action="/admin/orders" method="GET" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="product" class="form-label">Product Name</label>
+                    <input type="text" class="form-control" id="product" name="product" 
+                           value="<%= searchParams.product || '' %>" 
+                           placeholder="Search by product name">
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Order Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All Statuses</option>
+                        <option value="pending" <%= searchParams.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                        <option value="confirmed" <%= searchParams.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                        <option value="shipped" <%= searchParams.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                        <option value="delivered" <%= searchParams.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" 
+                           value="<%= searchParams.date || '' %>">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
