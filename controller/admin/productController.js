@@ -86,7 +86,7 @@ const addProducts = async (req, res) => {
       brand,
       category: foundCategory._id,
       regularPrice: parseFloat(regularPrice),
-      salePrice: parseFloat(regularPrice), // Initially same as regular price
+      salePrice: parseFloat(regularPrice), 
       quantity: parseInt(quantity),
       color,
       productImage: imageFilenames,

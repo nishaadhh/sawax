@@ -1,7 +1,7 @@
 const User = require('../../models/userSchema');
 const Product = require('../../models/productSchema');
 const Order = require('../../models/orderSchema');
-
+const path = require("path");
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -67,6 +67,7 @@ const loadDashboard = async (req, res) => {
         totalRevenue,
         topProducts,
         recentOrders,
+        
         salesData: salesData.data,
         salesLabels: salesData.labels,
         orderStatusData: Object.values(orderStatusCounts),
@@ -83,7 +84,7 @@ const loadDashboard = async (req, res) => {
   }
 }
 
-const getTopSellingProducts = async (limit = 5) => {
+const getTopSellingProducts = async (limit = 10) => {
   try {
     const topProducts = await Order.aggregate([
       { $match: { status: "delivered" } },

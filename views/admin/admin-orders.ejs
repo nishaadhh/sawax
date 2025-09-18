@@ -108,6 +108,21 @@
         box-shadow: 0 0 0 0.2rem rgba(30, 144, 255, 0.25);
     }
     
+    .search {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 40px;
+    color: #ffffff;
+    border: none;
+    background: linear-gradient(#a855f7, #3b0764);
+    border-radius: 4px;
+}
+.search:hover{
+    background: #a855f7;
+    color: #ffffff;
+}
+
+
     @media (max-width: 768px) {
         .pagination-container {
             flex-direction: column;
@@ -149,7 +164,7 @@
                            value="<%= searchParams.date || '' %>">
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                    <button type="submit" class="btn search w-100">Search</button>
                 </div>
             </form>
         </div>

@@ -16,8 +16,14 @@ const salesController = require('../controller/admin/salesController');
 router.get('/pageerror', adminController.pageError);
 router.get('/login', adminController.loadLogin);
 router.post('/login', adminController.login);
-router.get('/', adminAuth, adminController.loadDashboard);
 router.get('/logout', adminController.logout);
+
+// DASHBOARD
+
+router.get('/', adminAuth, adminController.loadDashboard);
+router.get('/api/sales-data',adminAuth, adminController.getSalesData);
+router.get('/api/top-selling',adminAuth, adminController.getTopSelling);
+
 
 // Customer Routes
 router.get('/users', adminAuth, customerController.customerInfo);
