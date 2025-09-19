@@ -283,8 +283,9 @@
                     { link: '/admin/banner', icon: 'fa-solid fa-money-check', text: 'Banner' },
                     { link: '/admin/orders', icon: 'fa-brands fa-shopify', text: 'Orders' },
                     { link: '/admin/couponManagement', icon: 'fa-solid fa-tags', text: 'Coupons' }
+                    <!-- { link: '/admin/transactions', icon: 'a-solid fa-wallet', text: 'Transactions' } -->
                 ]; %>
-                
+                 
                 <% menuItems.forEach(item => { %>
                     <li class="menu-item">
                         <a class="menu-link" href="<%= item.link %>">
@@ -293,6 +294,7 @@
                         </a>
                     </li>
                 <% }); %>
+               <a class="  menu-aside" href="/admin/transactions"   ><i class="fa-solid fa-wallet"></i> Transactions</a>
             </ul>
         </nav>
     </aside>
@@ -319,6 +321,7 @@
                             <a class="dropdown-item text-danger" href="#" onclick="confirmAdminLogout(event)">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
+                           
                         </div>
                     </li>
                 </ul>

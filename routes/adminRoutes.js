@@ -89,4 +89,9 @@ router.get('/sales-report', adminAuth, salesController.getSalesReport);
 router.get('/sales-report/download/excel', adminAuth, salesController.downloadSalesReportExcel);
 router.get('/sales-report/download/pdf', adminAuth, salesController.downloadSalesReportPDF);
 
+// Enhanced Transaction Management
+router.get('/transactions', adminAuth, adminController.loadTransactions);
+router.get('/transactions/download/csv', adminAuth, adminController.downloadTransactionsCSV);
+
+
 module.exports = router;

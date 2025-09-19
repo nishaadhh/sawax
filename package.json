@@ -13,6 +13,7 @@
     "connect-flash": "^0.1.1",
     "connect-mongo": "^5.1.0",
     "crypto": "^1.0.1",
+    "csv-stringify": "^6.6.0",
     "dotenv": "^16.6.1",
     "ejs": "^3.1.10",
     "exceljs": "^4.4.0",
