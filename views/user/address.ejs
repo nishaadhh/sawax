@@ -14,7 +14,7 @@
     --light-text: #6b7280;
     --border: #e5e7eb;
     --shadow: rgba(0, 0, 0, 0.05);
-    --gradient: linear-gradient(135deg, #d4af37 0%, #1a1a1a 100%);
+    --gradient: linear-gradient(135deg, #d4a017 0%, #000000 100%);
     --danger: #e74c3c;
     --success: #2ecc71;
 }
@@ -532,9 +532,7 @@ body {
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-between">
             <div class="col-left d-flex align-items-center">
-                <div class="profile-image-container">
-                    <img src="/images/default-avatar.png" alt="Profile" class="rounded-circle" id="profileImage">
-                </div>
+                
                 <div class="ms-3">
                     <h5 id="fullName"><%= user.name || 'John Doe' %></h5>
                     <p style="color: #cbcbcb;" id="email"><%= user.email || 'johndoe@example.com' %></p>
