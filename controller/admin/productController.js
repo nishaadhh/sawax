@@ -118,6 +118,7 @@ const getAllProducts = async (req, res) => {
         { brand: { $regex: new RegExp(".*" + search + ".*", "i") } }
       ]
     })
+      .sort({ _id: -1 }) // Sort by newest first (using _id which contains timestamp)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate("category")
@@ -408,13 +409,3 @@ module.exports = {
   deleteSingleImage,
   deleteProduct
 };
-
-
-
-
-
-
-
-
-
-// ========== = == = = = = = == = = = = = = =
