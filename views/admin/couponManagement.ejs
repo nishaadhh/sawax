@@ -46,7 +46,6 @@
             padding: 0 20px;
         }
 
-        /* Header Section */
         .header-section {
             padding: 40px 0;
             text-align: center;
@@ -64,6 +63,7 @@
             background: rgb(52, 51, 51);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            padding-left: 30px;
         }
 
         .header-subtitle {
@@ -73,10 +73,10 @@
             margin: 0 auto;
         }
 
-        /* Add Coupon Form */
         .add-coupon-section {
             background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+            padding: 48px;
+            margin-left: 20px;
             border-radius: 20px;
             margin: 40px auto;
             box-shadow: var(--shadow-medium);
@@ -136,11 +136,8 @@
         .form-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
-           
-            
         }
 
-        /* Coupons Table */
         .coupons-table-section {
             padding: 40px 0;
         }
@@ -233,7 +230,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -266,7 +262,6 @@
             color: var(--light-text);
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -284,7 +279,6 @@
             }
         }
 
-        /* Animation Classes */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -311,7 +305,6 @@
             }
         }
 
-        /* Notification Styles */
         .notification {
             position: fixed;
             top: 20px;
@@ -341,15 +334,12 @@
 <body>
     <%- include("../../views/partials/admin/header") %>
 
-    <!-- Header Section -->
     <section>
         <h2 class="header-title">
-               <i class="fas fa-tags"></i>   Coupon Management
+            <i class="fas fa-tags"></i> Coupon Management
         </h2>
-     </section> 
-   
+    </section>
 
-    <!-- Add Coupon Section -->
     <section class="add-coupon-section container slide-in-left">
         <h2 style="font-size: 24px; margin-bottom: 20px;">Add New Coupon</h2>
         <form id="addCouponForm" class="form-grid">
@@ -359,7 +349,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="text" id="description" class="form-input" required>
+                <input type="text" id="description" class="form-input">
             </div>
             <div class="form-group">
                 <label for="type">Type</label>
@@ -376,7 +366,12 @@
             </div>
             <div class="form-group">
                 <label for="discountType">Discount Type</label>
-                <input type="text" id="discountType" class="form-input" required>
+                <!-- <input type="text" id="discountType" class="form-input" required> -->
+                <select  class="form-input" id="discountType">
+                    <option value="coupon">Coupons</option>
+                </select>
+
+
             </div>
             <div class="form-group">
                 <label for="code">Coupon Code</label>
@@ -411,7 +406,6 @@
         </form>
     </section>
 
-    <!-- Coupons Table Section -->
     <section class="coupons-table-section container fade-in">
         <div class="table-container">
             <table class="coupons-table">
@@ -455,7 +449,6 @@
         </div>
     </section>
 
-    <!-- Edit Coupon Modal -->
     <div id="editCouponModal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeEditModal()">×</span>
@@ -468,7 +461,7 @@
                 </div>
                 <div class="form-group">
                     <label for="editDescription">Description</label>
-                    <input type="text" id="editDescription" class="form-input" required>
+                    <input type="text" id="editDescription" class="form-input">
                 </div>
                 <div class="form-group">
                     <label for="editType">Type</label>
@@ -521,22 +514,19 @@
         </div>
     </div>
 
-    <!-- Notification Container -->
     <div id="notificationContainer"></div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Form submission for adding a new coupon
         document.getElementById('addCouponForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const couponData = {
-                title: document.getElementById('title').value,
-                description: document.getElementById('description').value,
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
                 type: document.getElementById('type').value,
                 discountValue: document.getElementById('discountValue').value,
-                discountType: document.getElementById('discountType').value,
-                code: document.getElementById('code').value,
+                discountType: document.getElementById('discountType').value.trim(),
+                code: document.getElementById('code').value.trim(),
                 minOrder: document.getElementById('minOrder').value,
                 maxDiscount: document.getElementById('maxDiscount').value,
                 expireOn: document.getElementById('expireOn').value,
@@ -553,6 +543,24 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification('Coupon added successfully!', 'success');
+                    if (result.coupon) {
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td>${result.coupon.title}</td>
+                            <td>${result.coupon.code}</td>
+                            <td>${result.coupon.discountValue}${result.coupon.type === 'percentage' ? '%' : ''} ${result.coupon.discountType}</td>
+                            <td>₹${result.coupon.minOrder}</td>
+                            <td>₹${result.coupon.maxDiscount}</td>
+                            <td>${new Date(result.coupon.expireOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td>
+                                <button class="action-btn edit" onclick="openEditModal('${result.coupon._id}', '${result.coupon.title}', '${result.coupon.description}', '${result.coupon.type}', '${result.coupon.discountValue}', '${result.coupon.discountType}', '${result.coupon.code}', '${result.coupon.minOrder}', '${result.coupon.maxDiscount}', '${result.coupon.expireOn.toISOString().split('T')[0]}', '${result.coupon.usageLimit}', '${result.coupon.isPremium}')">Edit</button>
+                                <button class="action-btn delete" onclick="deleteCoupon('${result.coupon._id}')">Delete</button>
+                                <button class="action-btn toggle" onclick="toggleCouponStatus('${result.coupon._id}', true)">Unlist</button>
+                            </td>
+                        `;
+                        document.getElementById('couponTableBody').prepend(newRow);
+                    }
                     setTimeout(() => location.reload(), 1000);
                 } else {
                     showNotification(result.message || 'Failed to add coupon', 'error');
@@ -562,92 +570,97 @@
             }
         });
 
-        // Open edit modal
-       function openEditModal(id, title, description, type, discountValue, discountType, code, minOrder, maxDiscount, expireOn, usageLimit, isPremium) {
-    document.getElementById('editCouponId').value = id;
-    document.getElementById('editTitle').value = title;
-    document.getElementById('editDescription').value = description || ''; // Handle null/undefined description
-    document.getElementById('editType').value = type;
-    document.getElementById('editDiscountValue').value = Number(discountValue); // Ensure number
-    document.getElementById('editDiscountType').value = discountType;
-    document.getElementById('editCode').value = code;
-    document.getElementById('editMinOrder').value = Number(minOrder); // Ensure number
-    document.getElementById('editMaxDiscount').value = Number(maxDiscount); // Ensure number
-    document.getElementById('editExpireOn').value = expireOn;
-    document.getElementById('editUsageLimit').value = Number(usageLimit); // Ensure number
-    document.getElementById('editIsPremium').value = isPremium.toString(); // Ensure correct value for select
-    document.getElementById('editCouponModal').style.display = 'flex';
-}
+        function openEditModal(id, title, description, type, discountValue, discountType, code, minOrder, maxDiscount, expireOn, usageLimit, isPremium) {
+            document.getElementById('editCouponId').value = id;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDescription').value = description || '';
+            document.getElementById('editType').value = type;
+            document.getElementById('editDiscountValue').value = Number(discountValue);
+            document.getElementById('editDiscountType').value = discountType;
+            document.getElementById('editCode').value = code;
+            document.getElementById('editMinOrder').value = Number(minOrder);
+            document.getElementById('editMaxDiscount').value = Number(maxDiscount);
+            document.getElementById('editExpireOn').value = expireOn;
+            document.getElementById('editUsageLimit').value = Number(usageLimit);
+            document.getElementById('editIsPremium').value = isPremium.toString();
+            document.getElementById('editCouponModal').style.display = 'flex';
+        }
 
-        // Close edit modal
         function closeEditModal() {
             document.getElementById('editCouponModal').style.display = 'none';
         }
 
         document.getElementById('editCouponForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const couponId = document.getElementById('editCouponId').value;
-    const couponData = {
-        title: document.getElementById('editTitle').value.trim(),
-        description: document.getElementById('editDescription').value.trim(),
-        type: document.getElementById('editType').value,
-        discountValue: parseFloat(document.getElementById('editDiscountValue').value),
-        discountType: document.getElementById('editDiscountType').value.trim(),
-        code: document.getElementById('editCode').value.trim().toUpperCase(),
-        minOrder: parseFloat(document.getElementById('editMinOrder').value),
-        maxDiscount: parseFloat(document.getElementById('editMaxDiscount').value),
-        expireOn: document.getElementById('editExpireOn').value,
-        usageLimit: parseInt(document.getElementById('editUsageLimit').value),
-        isPremium: document.getElementById('editIsPremium').value === 'true'
-    };
+            e.preventDefault();
+            const couponId = document.getElementById('editCouponId').value;
+            const couponData = {
+                title: document.getElementById('editTitle').value.trim(),
+                description: document.getElementById('editDescription').value.trim(),
+                type: document.getElementById('editType').value,
+                discountValue: parseFloat(document.getElementById('editDiscountValue').value),
+                discountType: document.getElementById('editDiscountType').value.trim(),
+                code: document.getElementById('editCode').value.trim().toUpperCase(),
+                minOrder: parseFloat(document.getElementById('editMinOrder').value),
+                maxDiscount: parseFloat(document.getElementById('editMaxDiscount').value),
+                expireOn: document.getElementById('editExpireOn').value,
+                usageLimit: parseInt(document.getElementById('editUsageLimit').value),
+                isPremium: document.getElementById('editIsPremium').value === 'true'
+            };
 
-    // Client-side validation
-    if (!couponData.title || !couponData.code || !couponData.discountType || !couponData.expireOn || !couponData.usageLimit) {
-        showNotification('Please fill all required fields', 'error');
-        return;
-    }
-    if (isNaN(couponData.discountValue) || couponData.discountValue <= 0) {
-        showNotification('Discount value must be a positive number', 'error');
-        return;
-    }
-    if (isNaN(couponData.minOrder) || couponData.minOrder < 0) {
-        showNotification('Minimum order must be a non-negative number', 'error');
-        return;
-    }
-    if (isNaN(couponData.maxDiscount) || couponData.maxDiscount < 0) {
-        showNotification('Maximum discount must be a non-negative number', 'error');
-        return;
-    }
-    if (isNaN(couponData.usageLimit) || couponData.usageLimit <= 0) {
-        showNotification('Usage limit must be a positive number', 'error');
-        return;
-    }
-    if (new Date(couponData.expireOn) < new Date()) {
-        showNotification('Expiration date cannot be in the past', 'error');
-        return;
-    }
+            if (!couponData.title || !couponData.code || !couponData.discountType || !couponData.expireOn || !couponData.usageLimit) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+            if (isNaN(couponData.discountValue) || couponData.discountValue <= 0 || (couponData.type === 'percentage' && couponData.discountValue > 100)) {
+                showNotification('Discount value must be a positive number and not exceed 100% for percentage discounts', 'error');
+                return;
+            }
+            if (isNaN(couponData.minOrder) || couponData.minOrder < 0) {
+                showNotification('Minimum order must be a non-negative number', 'error');
+                return;
+            }
+            if (isNaN(couponData.maxDiscount) || couponData.maxDiscount < 0) {
+                showNotification('Maximum discount must be a non-negative number', 'error');
+                return;
+            }
+            if (isNaN(couponData.usageLimit) || couponData.usageLimit <= 0) {
+                showNotification('Usage limit must be a positive number', 'error');
+                return;
+            }
+            if (new Date(couponData.expireOn) < new Date()) {
+                showNotification('Expiration date cannot be in the past', 'error');
+                return;
+            }
+            if (couponData.type === 'percentage' && couponData.discountValue === 100) {
+                if (couponData.maxDiscount !== couponData.minOrder) {
+                    showNotification('For 100% discount, Max Discount should equal Min Order to cap the discount properly', 'error');
+                    return;
+                }
+            } else if (couponData.maxDiscount < couponData.discountValue) {
+                showNotification('Max Discount cannot be less than Discount Value', 'error');
+                return;
+            }
 
-    try {
-        const response = await fetch(`/admin/coupon/edit/${couponId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(couponData)
+            try {
+                const response = await fetch(`/admin/coupon/edit/${couponId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(couponData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Coupon updated successfully!', 'success');
+                    closeEditModal();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification(result.message || 'Failed to update coupon', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating coupon:', error);
+                showNotification('Error updating coupon: ' + error.message, 'error');
+            }
         });
-        const result = await response.json();
-        if (result.success) {
-            showNotification('Coupon updated successfully!', 'success');
-            closeEditModal();
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showNotification(result.message || 'Failed to update coupon', 'error');
-        }
-    } catch (error) {
-        console.error('Error updating coupon:', error);
-        showNotification('Error updating coupon: ' + error.message, 'error');
-    }
-});
 
-        // Delete coupon
         async function deleteCoupon(couponId) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -677,7 +690,6 @@
             });
         }
 
-        // Toggle coupon status
         async function toggleCouponStatus(couponId, isList) {
             try {
                 const response = await fetch(`/admin/coupon/toggle/${couponId}`, {
@@ -697,7 +709,6 @@
             }
         }
 
-        // Show notification
         function showNotification(message, type = 'success') {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
@@ -714,7 +725,6 @@
             }, 3000);
         }
 
-        // Animate elements on scroll
         document.addEventListener('DOMContentLoaded', function() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
