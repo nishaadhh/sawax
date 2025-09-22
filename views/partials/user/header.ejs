@@ -438,8 +438,8 @@
                               <li class="dropdown">
                                 <a href="#" class="sign-in-link"><%= user.name %></a>
                                 <div class="dropdown-content">
-                                  <a href="/profile">Profile</a>
-                                  <a href="#" onclick="confirmLogout()">Logout</a>
+                                  <!-- <a href="/profile">Profile</a> -->
+                                  <a href="#" style="color: red; padding-left: 30px; background-color: transparent;"   onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                                 </div>
                               </li>
                             <% } else { %>
