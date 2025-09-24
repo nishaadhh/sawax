@@ -444,9 +444,108 @@ const validateAddressField = async (req, res) => {
     }
 };
 
+
+// const placeOrder = async (req, res) => {
+//     try {
+//         const { address } = req.body;
+//         const userId = req.session.user;
+//         const cart = await Cart.findOne({ userId }).populate("items.productId");
+//         if (!cart || !cart.items.length) {
+//             return res.status(400).json({ message: "Cart is empty" });
+//         }
+
+//         const user = await User.findById(userId);
+//         let selectedAddress;
+
+//         if (address.addressId !== undefined && user.addresses[address.addressId]) {
+//             selectedAddress = user.addresses[address.addressId];
+//         } else {
+//             selectedAddress = {
+//                 fullName: address.fullName,
+//                 streetAddress: address.streetAddress,
+//                 city: address.city,
+//                 state: address.state,
+//                 zipCode: address.zipCode,
+//                 phone: address.phone,
+//             };
+//             user.addresses.push(selectedAddress);
+//             await user.save();
+//         }
+
+//         const orderItems = cart.items.map(item => ({
+//             productId: item.productId._id,
+//             quantity: item.quantity,
+//             price: item.price,
+//             totalPrice: item.totalPrice,
+//         }));
+
+//         const total = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
+//         const order = new Order({
+//             userId,
+//             items: orderItems,
+//             total,
+//             address: selectedAddress,
+//         });
+
+//         await order.save();
+//         await Cart.deleteOne({ userId });
+
+//         res.status(200).json({ message: "Order placed successfully" });
+//     } catch (error) {
+//         console.error("Error placing order:", error);
+//         res.status(500).json({ message: "Server error" });
+//     }
+// };
+
+// const checkout = async (req, res) => {
+//   try {
+
+    
+
+//     const userId = req.session.user;
+//     const cart = await Cart.findOne({ userId }).populate("items.productId");
+//     const user = await User.findById(userId);
+//     const addressData = await Address.findOne({ userId });
+//     if (!cart || !cart.items.length) {
+//       return res.redirect("/cart?message=Your%20cart%20is%20empty");
+//     }
+
+//     const cartItems = cart.items.map(item => ({
+//       product: {
+//         _id: item.productId._id,
+//         productName: item.productId.productName,
+//         productImage: item.productId.productImage[0],
+//       },
+//       quantity: item.quantity,
+//       totalPrice: item.totalPrice,
+//     }));
+
+//     const subtotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+//     const shippingCharge = 0; // As per your shipping logic
+//     const grandTotal = subtotal + shippingCharge;
+
+//     res.render("checkout", {
+//       cartItems,
+//       user,
+//       addresses: addressData || { address: [] },
+//       walletBalance: user.walletBalance || 0,
+//       subtotal,
+//       shippingCharge,
+//       grandTotal
+//     });
+//   } catch (error) {
+//     console.error("Error fetching checkout:", error);
+//     res.redirect("/errorpage? ..message=checkout-error");
+//   }
+// };
 module.exports = {
     loadCheckoutPage,
     addAddressCheckout,
     postAddAddressCheckout,
-    validateAddressField
+    validateAddressField,
+    // placeOrder,
+    // checkout
+    
+
 };

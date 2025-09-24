@@ -19,7 +19,7 @@ const getSalesReport = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    // Handle different period filters
+    // Handle  filters
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');
@@ -50,14 +50,14 @@ const getSalesReport = async (req, res) => {
       };
     }
 
-    // Base query for completed orders only
+    //  completed orders only
     const baseQuery = {
       status: { $in: ['delivered', 'returned'] },
       paymentStatus: 'completed',
       ...dateFilter
     };
 
-    // Get total count for pagination
+    // Get total pagination
     const totalOrders = await Order.countDocuments(baseQuery);
     const totalPages = Math.ceil(totalOrders / limit);
     const skip = (page - 1) * limit;
@@ -126,7 +126,7 @@ const getSalesReport = async (req, res) => {
       totalRefunds: 0
     };
 
-    // Get top selling products
+    // top selling products
     const topProductsPipeline = [
       { $match: baseQuery },
       { $unwind: '$orderedItems' },
@@ -378,7 +378,7 @@ const downloadSalesReportPDF = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    // Handle different period filters (same logic as getSalesReport)
+    // Handle different period filters (same logic in getSalesReport)
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');
@@ -448,7 +448,7 @@ const downloadSalesReportPDF = async (req, res) => {
     const summaryResult = await Order.aggregate(summaryPipeline);
     const summary = summaryResult[0] || {};
 
-    // Generate HTML for PDF
+    // PENDING : puppter is for Generating HTML for PDF
     const html = `
       <!DOCTYPE html>
       <html>
