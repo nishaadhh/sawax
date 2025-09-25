@@ -12,7 +12,7 @@ const getCart = async (req, res) => {
       productId: item.productId._id,
       name: item.productId.name,
       image: item.productId.image,
-      price: item.productId.salePrice, // Use salePrice directly
+      price: item.productId.salePrice, 
       quantity: item.quantity,
     }));
     res.render("addToCart", { cart, message: req.query.message ? decodeURIComponent(req.query.message) : null });
@@ -231,7 +231,7 @@ const refreshCart = async (req, res) => {
 
     // Fetch and populate product details in cart items
     const cart = await Cart.findOne({ userId }).populate("items.productId");
-
+    console.log(cart)
     if (!cart) {
       return res.json({ success: true, cart: [], priceChanged: false });
     }

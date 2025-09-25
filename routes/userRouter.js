@@ -166,48 +166,12 @@ router.post('/wallet/withdraw-money', userAuth, walletController.withdrawMoney);
 router.get("/errorpage", userController.errorpage);
 
 
+const invoiceController = require('../controller/user/invoiceController');
+
+// Invoice Routes
+router.get('/order/:id/invoice', userAuth, invoiceController.generateInvoice);
 
 
-
-
-
-
-
-
-
-// Invoice and Order Actions
-router.get('/order/:id/invoice', userAuth, async (req, res) => {
-  try {
-    const orderId = req.params.id;
-    const userId = req.session.user;
-    
-    const order = await Order.findOne({ 
-      $or: [
-        { _id: orderId, userId },
-        { orderId: orderId, userId }
-      ]
-    }).populate('orderedItems.product');
-
-    if (!order) {
-      return res.status(404).send('Order not found');
-    }
-
-    if (order.status !== 'delivered') {
-      return res.status(400).send('Invoice can only be generated for delivered orders');
-    }
-
-    // Generate and send invoice (simplified version)
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderId}.pdf`);
-    
-    // For now, send a simple response. In production, you'd generate an actual PDF
-    res.send(`Invoice for Order ${order.orderId} - Amount: ₹${order.finalAmount}`);
-    
-  } catch (error) {
-    console.error('Error generating invoice:', error);
-    res.status(500).send('Error generating invoice');
-  }
-});
 
 // Order Status Updates (for auto-refresh)
 router.get('/orders/status-update', userAuth, async (req, res) => {
