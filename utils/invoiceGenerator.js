@@ -16,7 +16,7 @@ function generateInvoicePDF(order, res) {
      .text('INVOICE', { align: 'center' })
      .moveDown();
   
-  // Add company info (you can customize this)
+  //company info 
   doc.fontSize(12)
      .text('SAWAX', { align: 'left' })
      .text('Time City')
@@ -31,7 +31,7 @@ function generateInvoicePDF(order, res) {
      .text(`Order Date: ${new Date(order.createdAt).toLocaleDateString('en-IN')}`)
      .moveDown();
   
-  // Add customer info with better line handling to avoid mangling
+  // customer info
   if (order.address) {
     doc.fontSize(12)
        .text('Bill To:', { underline: true })
@@ -57,22 +57,22 @@ function generateInvoicePDF(order, res) {
   
   // Add table header
   const startX = 50;
-  let currentY = doc.y + 10; // Slight offset
+  let currentY = doc.y + 10; 
   
-  doc.fontSize(10).font('Helvetica-Bold') // Smaller font for table to fit better
+  doc.fontSize(10).font('Helvetica-Bold')
      .text('Item', startX, currentY, { width: 200, continued: false })
      .text('Qty', startX + 200, currentY, { width: 50, continued: false })
      .text('Price', startX + 250, currentY, { width: 80, continued: false })
      .text('Total', startX + 330, currentY, { width: 80 });
   
-  // Draw line under header
+  //line under header
   currentY += 15;
   doc.moveTo(startX, currentY).lineTo(startX + 410, currentY).stroke();
   currentY += 5;
   
-  // Add ordered items with formatted prices (Indian locale for commas, fixes potential rendering issues)
+  // Adding ordered items with prices
   let subtotal = 0;
-  doc.fontSize(9).font('Helvetica'); // Standard font for items
+  doc.fontSize(9).font('Helvetica'); 
   order.orderedItems.forEach(item => {
     const itemTotal = item.price * item.quantity;
     subtotal += itemTotal;
@@ -82,7 +82,7 @@ function generateInvoicePDF(order, res) {
        .text(`₹${item.price.toLocaleString('en-IN')}`, startX + 250, currentY, { width: 80 })
        .text(`₹${itemTotal.toLocaleString('en-IN')}`, startX + 330, currentY, { width: 80 });
     
-    currentY += 15; // Tighter row spacing
+    currentY += 15; 
   });
   
   // Line before totals
@@ -111,31 +111,31 @@ function generateInvoicePDF(order, res) {
     currentY += 15;
   }
   
-  // Add shipping (assume order.shipping exists; default to 50 if not)
+  // shipping=default to 50
   const shipping = order.shipping || 50;
   doc.text('Shipping:', startX + 250, currentY);
   doc.text(`₹${shipping.toLocaleString('en-IN')}`, startX + 330, currentY);
   currentY += 20;
   
-  // Final total line, bold and aligned properly (no extra spaces)
+  
   doc.fontSize(12).font('Helvetica-Bold')
      .text('Total Amount:', startX + 250, currentY);
   doc.text(`₹${order.finalAmount.toLocaleString('en-IN')}`, startX + 330, currentY);
   
-  // Add payment method and status below, with more space
+  //payment method and status 
   currentY += 40;
   doc.fontSize(10).font('Helvetica')
      .text(`Payment Method: ${order.paymentMethod || 'Not specified'}`, startX, currentY);
   currentY += 20;
   doc.text(`Order Status: ${order.status}`, startX, currentY);
   
-  // Footer with ample space
+  // Footer 
   currentY += 60;
   doc.fontSize(9)
      .text('Thank you for choosing SAWAX!', startX, currentY, { align: 'center', width: 500 })
      .text('This is a computer generated invoice.', startX, currentY + 15, { align: 'center', width: 500 });
   
-  // Finalize the PDF
+  // Final
   doc.end();
 }
 
