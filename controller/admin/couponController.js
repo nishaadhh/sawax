@@ -58,9 +58,13 @@ const mongoose = require('mongoose');
             }
 
             // Vending date validate cheyal
-            const parsedExpireOn = new Date(expireOn);
-            if (isNaN(parsedExpireOn.getTime()) || parsedExpireOn <= new Date()) {
-                return res.status(400).json({ success: false, message: "Expiration date must be a valid future date" });
+            let parsedExpireOn = new Date(expireOn);
+            if (isNaN(parsedExpireOn.getTime())) {
+                return res.status(400).json({ success: false, message: "Expiration date must be a valid date" });
+            }
+            parsedExpireOn.setHours(23, 59, 59, 999);
+            if (parsedExpireOn < new Date()) {
+                return res.status(400).json({ success: false, message: "Expiration date must be in the future" });
             }
 
             // min=Order max-orders checking
@@ -96,6 +100,7 @@ const mongoose = require('mongoose');
 
             await newCoupon.save();
             res.status(201).json({ success: true, message: "Coupon added successfully", coupon: newCoupon });
+            console.log(newCoupon);
         } catch (error) {
             console.error("Error in addCoupon:", error);
             res.status(500).json({ success: false, message: "Server error" });
@@ -135,9 +140,13 @@ const mongoose = require('mongoose');
             }
 
             // Validate expiration date
-            const parsedExpireOn = new Date(expireOn);
-            if (isNaN(parsedExpireOn.getTime()) || parsedExpireOn < new Date()) {
-                return res.status(400).json({ success: false, message: "Expiration date must be a valid future date" });
+            let parsedExpireOn = new Date(expireOn);
+            if (isNaN(parsedExpireOn.getTime())) {
+                return res.status(400).json({ success: false, message: "Expiration date must be a valid date" });
+            }
+            parsedExpireOn.setHours(23, 59, 59, 999);
+            if (parsedExpireOn < new Date()) {
+                return res.status(400).json({ success: false, message: "Expiration date must be in the future" });
             }
 
             // Check if coupon exists
@@ -176,6 +185,7 @@ const mongoose = require('mongoose');
 
             await coupon.save();
             res.status(200).json({ success: true, message: "Coupon updated successfully", coupon });
+            console.log(coupon);
         } catch (error) {
             console.error("Error in editCoupon:", error);
             res.status(500).json({ success: false, message: "Server error: " + error.message });
@@ -214,11 +224,51 @@ const mongoose = require('mongoose');
             res.status(500).json({ success: false, message: "Server error" });
         }
     };
+    const applyCoupon = async (req, res) => {
+    try {
+        const { code } = req.body;
+        const userId = req.user ? req.user._id : null;
 
-    module.exports = {
-        loadCouponManagement,
-        addCoupon,
-        editCoupon,
-        deleteCoupon,
-        toggleCouponStatus
-    };
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Please log in to apply a coupon" });
+        }
+
+        const coupon = await Coupon.findOne({ code: code.toUpperCase(), isList: true, expireOn: { $gte: new Date() } });
+        if (!coupon) {
+            return res.status(404).json({ success: false, message: "Coupon not found or expired" });
+        }
+
+        if (coupon.usedCount >= coupon.usageLimit) {
+            return res.status(400).json({ success: false, message: "Coupon usage limit reached" });
+        }
+
+        if (coupon.isPremium && !req.user.isPremium) {
+            return res.status(403).json({ success: false, message: "This coupon is for premium users only" });
+        }
+
+        if (coupon.userId.includes(userId)) {
+            return res.status(400).json({ success: false, message: "You have already used this coupon" });
+        }
+
+        coupon.usedCount += 1;
+        coupon.userId.push(userId);
+        await coupon.save();
+
+        res.status(200).json({ success: true, message: "Coupon applied successfully", coupon });
+    } catch (error) {
+        console.error("Error in applyCoupon:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+module.exports = {
+    loadCouponManagement,
+    // loadClientCoupons,
+    addCoupon,
+    editCoupon,
+    deleteCoupon,
+    toggleCouponStatus,
+    applyCoupon
+};
+
+   
