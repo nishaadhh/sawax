@@ -96,6 +96,7 @@ const addCoupon = async (req, res) => {
 
         await newCoupon.save();
         res.status(201).json({ success: true, message: "Coupon added successfully", coupon: newCoupon });
+        console.log("\nCoupon Added successfully")
     } catch (error) {
         console.error("Error in addCoupon:", error);
         res.status(500).json({ success: false, message: "Server error" });
@@ -176,6 +177,7 @@ const editCoupon = async (req, res) => {
 
         await coupon.save();
         res.status(200).json({ success: true, message: "Coupon updated successfully", coupon });
+        console.log("\n Coupon updated successfully")
     } catch (error) {
         console.error("Error in editCoupon:", error);
         res.status(500).json({ success: false, message: "Server error: " + error.message });
