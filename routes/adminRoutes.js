@@ -77,12 +77,14 @@ router.post("/orders/update-return-status", adminAuth, orderController.updateRet
 // Banner Management Routes
 router.get("/banner", adminAuth, bannerController.getBannerpage);
 
-// Coupon Management Routes
-router.get('/couponManagement', adminAuth, couponController.loadCouponManagement);
-router.post('/coupon/add', adminAuth, couponController.addCoupon);
-router.put('/coupon/edit/:id', adminAuth, couponController.editCoupon);
-router.delete('/coupon/delete/:id', adminAuth, couponController.deleteCoupon);
-router.put('/coupon/toggle/:id', adminAuth, couponController.toggleCouponStatus);
+// Coupon management routes
+router.get("/couponManagement", adminAuth, couponController.loadCoupon);
+router.post("/couponManagement", adminAuth, couponController.createCoupon);
+router.get("/editCoupon", adminAuth, couponController.editCoupon);
+router.post("/updateCoupon", adminAuth, couponController.updateCoupon);
+router.delete("/deleteCoupon", adminAuth, couponController.deleteCoupon);
+
+
 
 // Sales report routes
 router.get('/sales-report', adminAuth, salesController.getSalesReport);
