@@ -140,7 +140,7 @@
     <div class="content-header">
         <h2 class="content-title">Add New Product</h2>
     </div>
-    <form id="productForm" method="POST" action="/admin/addProducts" enctype="multipart/form-data">
+    <form id="productForm" method="POST" action="/admin/addProducts" onsubmit="validateProductForm(event)"  enctype="multipart/form-data">
         <div class="form-container">
             <div class="form-group">
                 <label for="product_name">Product Name</label>
@@ -210,7 +210,60 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+<script>
+  function validateProductForm(event) {
+    document.querySelectorAll(".error-message").forEach(el => el.innerHTML = "");
+    let isValid = true;
 
+    // Helper to check empty or only spaces
+    function isEmptyOrSpaces(str) {
+        return str.trim().length === 0;
+    }
+
+    // Product Name
+    const productNameInput = document.getElementById("product_name");
+    const productName = productNameInput.value.trim(); // trim spaces
+    productNameInput.value = productName; // update input value to trimmed
+    if (isEmptyOrSpaces(productName)) {
+        document.getElementById("productName-error").innerText = "Product Name cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    // Description
+    const descriptionInput = document.querySelector("textarea[name='description']");
+    const description = descriptionInput.value.trim();
+    descriptionInput.value = description;
+    if (isEmptyOrSpaces(description)) {
+        document.getElementById("description-error").innerText = "Description cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    // Brand
+    const brandInput = document.querySelector("input[name='brand']");
+    const brand = brandInput.value.trim();
+    brandInput.value = brand;
+    if (isEmptyOrSpaces(brand)) {
+        document.getElementById("brand-error").innerText = "Brand cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    // Color
+    const colorInput = document.querySelector("input[name='color']");
+    const color = colorInput.value.trim();
+    colorInput.value = color;
+    if (isEmptyOrSpaces(color)) {
+        document.getElementById("color-error").innerText = "Color cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    if (!isValid) {
+        event.preventDefault(); // stop form submission
+    }
+
+    return isValid;
+}
+
+</script>
 <script>
   let croppers = {};
   let croppedImages = {}; // Store cropped images

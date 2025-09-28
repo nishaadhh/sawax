@@ -201,7 +201,10 @@
             color: var(--success-color);
             font-weight: 500;
         }
-
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+        }
         @media (min-width: 992px) {
             .col-lg-3 {
                 flex: 0 0 25%;
@@ -227,14 +230,16 @@
     </div>
     <div class="card mb-4">
         <div class="card-body">
-            <form id="editProductForm" method="POST" action="/admin/editProduct/<%= product._id %>" enctype="multipart/form-data">
+            <form id="editProductForm" method="POST" action="/admin/editProduct/<%= product._id %>" onsubmit="validateProductForm(event)" enctype="multipart/form-data">
                 <div class="mb-4">
                     <label for="product_name" class="form-label">Product Name</label>
                     <input type="text" name="productName" value="<%= product.productName %>" class="form-control" id="product_name" required>
+                    <div id="productName-error" class="error-message"></div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label">Description</label>
                     <textarea name="description" class="form-control" rows="4" required><%= product.description %></textarea>
+                     <div id="description-error" class="error-message"></div>
                 </div>
                 <div class="row">
                     <div class="col-lg-3">
@@ -253,6 +258,7 @@
                         <div class="mb-4">
                             <label class="form-label">Color</label>
                             <input name="color" type="text" value="<%= product.color %>" class="form-control" required>
+                            <div id="color-error" class="error-message"></div>
                         </div>
                     </div>
                 </div>
@@ -261,6 +267,7 @@
                         <div class="mb-4">
                             <label class="form-label">Brand</label>
                             <input name="brand" type="text" value="<%= product.brand %>" class="form-control" required>
+                            <div id="brand-error" class="error-message"></div>
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -317,6 +324,61 @@
 </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function validateProductForm(event) {
+    document.querySelectorAll(".error-message").forEach(el => el.innerHTML = "");
+    let isValid = true;
+
+    // Helper to check empty or only spaces
+    function isEmptyOrSpaces(str) {
+        return str.trim().length === 0;
+    }
+
+    // Product Name
+    const productNameInput = document.getElementById("product_name");
+    const productName = productNameInput.value.trim(); // trim spaces
+    productNameInput.value = productName; // update input value to trimmed
+    if (isEmptyOrSpaces(productName)) {
+        document.getElementById("productName-error").innerText = "Product Name cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    // Description
+    const descriptionInput = document.querySelector("textarea[name='description']");
+    const description = descriptionInput.value.trim();
+    descriptionInput.value = description;
+    if (isEmptyOrSpaces(description)) {
+        document.getElementById("description-error").innerText = "Description cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    // Brand
+    const brandInput = document.querySelector("input[name='brand']");
+    const brand = brandInput.value.trim();
+    brandInput.value = brand;
+    if (isEmptyOrSpaces(brand)) {
+        document.getElementById("brand-error").innerText = "Brand cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    // Color
+    const colorInput = document.querySelector("input[name='color']");
+    const color = colorInput.value.trim();
+    colorInput.value = color;
+    if (isEmptyOrSpaces(color)) {
+        document.getElementById("color-error").innerText = "Color cannot be empty or spaces only";
+        isValid = false;
+    }
+
+    if (!isValid) {
+        event.preventDefault(); // stop form submission
+    }
+
+    return isValid;
+}
+</script>
+
 <script>
     let croppers = {};
     
