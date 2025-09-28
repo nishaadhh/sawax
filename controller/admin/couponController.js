@@ -201,21 +201,36 @@ const deleteCoupon = async (req, res) => {
 const toggleCouponStatus = async (req, res) => {
     try {
         const couponId = req.params.id;
-        const { isList } = req.body;
+        const { newStatus } = req.body; // boolean (desired state) OR undefined
+
+        if (!mongoose.Types.ObjectId.isValid(couponId)) {
+            return res.status(400).json({ success: false, message: 'Invalid coupon id' });
+        }
 
         const coupon = await Coupon.findById(couponId);
         if (!coupon) {
-            return res.status(404).json({ success: false, message: "Coupon not found" });
+            return res.status(404).json({ success: false, message: 'Coupon not found' });
         }
 
-        coupon.isList = !isList;
+        // If client passed newStatus, use it; otherwise toggle current value
+        if (typeof newStatus === 'boolean') {
+            coupon.isList = newStatus;
+        } else {
+            coupon.isList = !coupon.isList;
+        }
+
         await coupon.save();
-        res.status(200).json({ success: true, message: `Coupon ${isList ? 'unlisted' : 'listed'} successfully` });
+
+        res.status(200).json({
+            success: true,
+            message: `Coupon ${coupon.isList ? 'listed' : 'unlisted'} successfully`,
+            isList: coupon.isList
+        });
     } catch (error) {
         console.error("Error in toggleCouponStatus:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
-};
+}
 
 module.exports = {
     loadCouponManagement,
