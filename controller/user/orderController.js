@@ -18,7 +18,7 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
-// Helper function to generate unique order ID
+//function to generate unique order ID
 const generateOrderId = () => {
   const timestamp = Date.now().toString();
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -46,7 +46,7 @@ const distributeDiscount = (cartItems, totalDiscount) => {
   });
 };
 
-// Helper function to calculate coupon discount
+//calculate coupon discount
 const calculateCouponDiscount = (coupon, subtotal, cartItems, shippingCharge) => {
   const { type, discountValue, minOrder, maxDiscount } = coupon;
   let discount = 0;
@@ -68,7 +68,7 @@ const calculateCouponDiscount = (coupon, subtotal, cartItems, shippingCharge) =>
   } else if (type === 'bogo') {
     if (cartItems.length > 1) {
       const prices = cartItems.map(item => item.price * item.quantity);
-      discount = Math.min(...prices); // Discount the cheapest item
+      discount = Math.min(...prices); 
     } else {
       throw new Error('BOGO coupon requires at least two items in the cart');
     }
@@ -176,7 +176,7 @@ const createCheckoutOrder = async (req, res) => {
           });
         }
 
-        // Check if coupon is premium and user is eligible
+        // Checking the                     if coupon is premium and user is eligible
         if (coupon.isPremium && !coupon.userId.includes(userId)) {
           return res.status(400).json({
             success: false,

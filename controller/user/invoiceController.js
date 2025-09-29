@@ -1,6 +1,7 @@
 const { generateInvoicePDF } = require('../../utils/invoiceGenerator');
-// Import your existing models - UPDATE THIS PATH TO MATCH YOUR PROJECT STRUCTURE
-const Order = require('../../models/orderSchema'); // Adjust this path based on your models location
+const Order = require('../../models/orderSchema'); 
+
+
 
 const generateInvoice = async (req, res) => {
   try {

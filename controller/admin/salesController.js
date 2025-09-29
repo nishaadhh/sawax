@@ -219,7 +219,7 @@ const downloadSalesReportExcel = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    // Handle different period filters (same logic as getSalesReport)
+    // Handle period filters 
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');
@@ -378,7 +378,7 @@ const downloadSalesReportPDF = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    // Handle different period filters (same logic in getSalesReport)
+    //different period filters 
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');

@@ -8,7 +8,7 @@ function generateInvoicePDF(order, res) {
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderId}.pdf`);
   
-  // Pipe the PDF to the response
+  // Pipe the PDF to the response http
   doc.pipe(res);
   
   // Add header
@@ -47,7 +47,7 @@ function generateInvoicePDF(order, res) {
     
     addressLines.forEach((line, index) => {
       doc.text(line);
-      if (index < addressLines.length - 1) doc.moveDown(0.2); // Tight spacing for address
+      if (index < addressLines.length - 1) doc.moveDown(0.2); // spacing for address
     });
     doc.moveDown();
   } else {
@@ -135,7 +135,7 @@ function generateInvoicePDF(order, res) {
      .text('Thank you for choosing SAWAX!', startX, currentY, { align: 'center', width: 500 })
      .text('This is a computer generated invoice.', startX, currentY + 15, { align: 'center', width: 500 });
   
-  // Final
+ 
   doc.end();
 }
 
