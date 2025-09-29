@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAWAX Chrono Elite | OTP Verification</title>
   <link rel="stylesheet" href="/css/verify-otp.css">
-  <!-- Added SweetAlert2 CSS -->
+ 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
 </head>
 <body>
@@ -66,10 +66,10 @@
     // Initialize timer on page load
     startTimer();
 
-    // OTP input field behavior
+    // OTP
     const inputs = document.querySelectorAll('.otp-input');
     inputs.forEach((input, index) => {
-      // Move to next input when a digit is entered
+      
       input.addEventListener('input', (e) => {
         // Allow only numbers
         e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -78,7 +78,7 @@
           inputs[index + 1].focus();
         }
         
-        // Auto-submit when all fields are filled
+        
         if (index === inputs.length - 1 && input.value.length === 1) {
           checkAllInputsFilled();
         }
@@ -166,7 +166,7 @@
         });
     }
     
-    // Resend OTP functionality
+   
     
   </script>
 </body>

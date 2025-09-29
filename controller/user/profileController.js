@@ -376,11 +376,10 @@ const sendCurrentEmailOtp = async (req, res) => {
     const { currentEmail, password } = req.body;
     const userId = req.session.user;
 
-    // Input sanitization
-    const sanitizedEmail = validator.escape(currentEmail.trim());
-    const sanitizedPassword = password ? password.trim() : '';
+    // Sanitize inputs
+    const sanitizedEmail = currentEmail?.trim() || "";
+    const sanitizedPassword = password?.trim() || "";
 
-    // Server-side validation
     if (!userId) {
       return res.render("change-email", { 
         message: "Please log in to change your email", 
@@ -388,8 +387,7 @@ const sendCurrentEmailOtp = async (req, res) => {
       });
     }
 
-    // Validate email format
-    if (!validator.isEmail(sanitizedEmail)) {
+    if (!sanitizedEmail || !validator.isEmail(sanitizedEmail)) {
       return res.render("change-email", { 
         message: "Invalid email format", 
         user: { email: sanitizedEmail } 
@@ -411,15 +409,13 @@ const sendCurrentEmailOtp = async (req, res) => {
       });
     }
 
-    // Check if password is set (for OAuth users)
     if (!user.password) {
       return res.render("change-email", { 
-        message: "Password verification not available for accounts registered via Google or other OAuth providers", 
+        message: "Password verification not available for OAuth accounts", 
         user: { email: sanitizedEmail } 
       });
     }
 
-    // Validate password
     if (!sanitizedPassword) {
       return res.render("change-email", { 
         message: "Password is required", 
@@ -427,10 +423,11 @@ const sendCurrentEmailOtp = async (req, res) => {
       });
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // Password regex: min 8 chars, uppercase, lowercase, number (special char optional)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(sanitizedPassword)) {
       return res.render("change-email", { 
-        message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character", 
+        message: "Password must be at least 8 characters long and include uppercase, lowercase, and number", 
         user: { email: sanitizedEmail } 
       });
     }
@@ -443,41 +440,38 @@ const sendCurrentEmailOtp = async (req, res) => {
       });
     }
 
-    // Rate limiting for OTP requests
-    const lastOtpRequest = req.session.pendingEmailVerification?.createdAt;
-    if (lastOtpRequest && (new Date() - new Date(lastOtpRequest)) < 60000) { // 1 minute cooldown
+    // Rate limiting
+    const lastRequest = req.session.pendingEmailVerification?.createdAt;
+    if (lastRequest && (Date.now() - new Date(lastRequest).getTime()) < 60000) {
       return res.render("change-email", { 
         message: "Please wait before requesting another OTP", 
         user: { email: sanitizedEmail } 
       });
     }
 
-    // Generate OTP and send to current email
-    const otp = generateOtp();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+    // Generate OTP
+    const otp = generateOtp().toString().padStart(6, "0"); // ensure 6 digits
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
-    // Store pending email verification data in session
     req.session.pendingEmailVerification = {
-      userId: userId,
+      userId,
       currentEmail: sanitizedEmail,
-      otp: otp,
-      otpExpiry: otpExpiry,
+      otp,
+      otpExpiry,
       createdAt: new Date()
     };
 
-    // Send OTP to current email
     const emailSent = await sendVerificationEmail(sanitizedEmail, otp);
-    
     if (!emailSent) {
       return res.render("change-email", { 
-        message: "Failed to send verification email. Please try again.", 
+        message: "Failed to send OTP. Try again later", 
         user: { email: sanitizedEmail } 
       });
     }
 
     res.redirect(`/verify-current-email-otp-page?message=OTP+sent+to+${encodeURIComponent(sanitizedEmail)}`);
-  } catch (error) {
-    console.error("Error in sendCurrentEmailOtp:", error);
+  } catch (err) {
+    console.error("sendCurrentEmailOtp error:", err);
     res.redirect("/errorpage?message=email-otp-send-error");
   }
 };
@@ -487,15 +481,12 @@ const verifyCurrentEmailOtpPage = async (req, res) => {
     if (!req.session.pendingEmailVerification) {
       return res.redirect("/change-email?message=Session+expired");
     }
-
-    const { currentEmail } = req.session.pendingEmailVerification;
-    
     res.render("otp-verification-email", { 
       message: req.query.message || null,
-      currentEmail: currentEmail
+      currentEmail: req.session.pendingEmailVerification.currentEmail
     });
-  } catch (error) {
-    console.error("Error rendering OTP verification page:", error);
+  } catch (err) {
+    console.error("verifyCurrentEmailOtpPage error:", err);
     res.redirect("/errorpage?message=render-error");
   }
 };
@@ -503,41 +494,41 @@ const verifyCurrentEmailOtpPage = async (req, res) => {
 const verifyCurrentEmailOtp = async (req, res) => {
   try {
     const { digit1, digit2, digit3, digit4, digit5, digit6 } = req.body;
-    const enteredOtp = digit1 + digit2 + digit3 + digit4 + digit5 + digit6;
+    const enteredOtp = `${digit1}${digit2}${digit3}${digit4}${digit5}${digit6}`;
 
-    if (!req.session.pendingEmailVerification) {
+    const pending = req.session.pendingEmailVerification;
+    if (!pending) {
       return res.render("otp-verification-email", { 
-        message: "Session expired. Please try changing your email again.",
+        message: "Session expired. Please try again.",
         currentEmail: ""
       });
     }
 
-    const { userId, currentEmail, otp, otpExpiry } = req.session.pendingEmailVerification;
+    const { currentEmail, otp, otpExpiry } = pending;
 
-    // Check if OTP has expired
-    if (new Date() > new Date(otpExpiry)) {
+    if (Date.now() > new Date(otpExpiry).getTime()) {
       delete req.session.pendingEmailVerification;
       return res.render("otp-verification-email", { 
-        message: "OTP has expired. Please request a new one.",
-        currentEmail: currentEmail
+        message: "OTP expired. Request a new one.",
+        currentEmail
       });
     }
 
-    // Verify OTP
-    if (enteredOtp !== otp) {
+    if (enteredOtp !== otp.toString()) {
       return res.render("otp-verification-email", { 
-        message: "Invalid OTP. Please try again.",
-        currentEmail: currentEmail
+        message: "Invalid OTP. Try again.",
+        currentEmail
       });
     }
 
-    // OTP is valid, proceed to new email input page
+    // OTP valid, proceed
     res.redirect("/new-email");
-  } catch (error) {
-    console.error("Error verifying email OTP:", error);
+  } catch (err) {
+    console.error("verifyCurrentEmailOtp error:", err);
     res.redirect("/errorpage?message=otp-verification-error");
   }
 };
+
 
 const resendCurrentEmailOtp = async (req, res) => {
   try {
