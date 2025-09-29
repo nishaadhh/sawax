@@ -55,7 +55,7 @@ const renderForgotPassword = (req, res) => {
   res.render('forgot-password', { message: '' });
 };
 
-// Handle forgot password form submission (POST /forgot-password)
+
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
