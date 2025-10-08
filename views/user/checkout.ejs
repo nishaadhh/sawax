@@ -1113,7 +1113,6 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  // Global variables to store coupon info and validation state
   let appliedCouponData = null;
   let validationState = {};
   let validationTimeouts = {};
@@ -1122,6 +1121,19 @@
   document.addEventListener('DOMContentLoaded', function() {
     initializeValidation();
     calculateAndDisplaySubtotal();
+    // Auto-retry: if redirected with ?retry=1, switch to online and trigger flow
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('retry') === '1') {
+      const onlineRadio = document.querySelector('input[name="payment"][value="online"]');
+      if (onlineRadio) onlineRadio.checked = true;
+      // Trigger after a short delay to ensure DOM  ready ayo nn
+      setTimeout(() => {
+        const btn = document.getElementById('placeOrderBtn');
+        if (btn && !btn.disabled) {
+          placeOrder();
+        }
+      }, 200);
+    }
   });
 
   function initializeValidation() {
@@ -1814,6 +1826,10 @@
         };
 
         const rzp = new Razorpay(options);
+        // Handle payment failure: redirect to error page with context
+        rzp.on('payment.failed', function () {
+          window.location.href = '/errorpage?type=payment_failed';
+        });
         rzp.open();
 
       } else {

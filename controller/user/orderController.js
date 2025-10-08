@@ -176,7 +176,7 @@ const createCheckoutOrder = async (req, res) => {
           });
         }
 
-        // Checking the                     if coupon is premium and user is eligible
+        // Checking if coupon is premium and user is eligible
         if (coupon.isPremium && !coupon.userId.includes(userId)) {
           return res.status(400).json({
             success: false,

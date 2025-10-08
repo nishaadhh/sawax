@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found | SAWAX</title>
+    <title>Error | SAWAX</title>
     <style>
         :root {
             --primary: #1a1a1a;
@@ -82,11 +82,11 @@
         }
 
         .error-code {
-            font-size: 140px;
+            font-size: 48px;
             font-weight: 900;
             color: var(--primary);
-            margin-bottom: 25px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
             font-family: 'Georgia', serif;
             opacity: 0;
             animation: fadeIn 1s ease forwards;
@@ -282,14 +282,38 @@
                     <rect x="45" y="85" width="10" height="10" rx="2" />
                 </svg>
             </div>
-            <div class="error-code">404</div>
-            <h1 class="error-message">Page Not Found</h1>
-            <p class="error-submessage">Oops! It looks like the page you're looking for doesn't exist. Let's get you back to exploring our premium watches.</p>
-            <div class="button-group">
-                <a href="/" class="home-btn">Back to Home</a>
-                <a href="/contact" class="contact-link">Need Help? Contact Us</a>
+            <div id="payment-failed-block" style="display:none; text-align:center;">
+                <div class="error-code">Payment Failed</div>
+                <h1 class="error-message">We couldn't complete your payment</h1>
+                <p class="error-submessage">Don't worry — your cart is safe. You can retry the payment or return to the checkout page.</p>
+                <div class="button-group">
+                    <a href="/checkout?retry=1" class="home-btn">Retry Online Payment</a>
+                    <a href="/checkout" class="contact-link">Back to Checkout</a>
+                </div>
+            </div>
+            <div id="generic-error-block" style="display:none; text-align:center;">
+                <div class="error-code">404</div>
+                <h1 class="error-message">Page Not Found</h1>
+                <p class="error-submessage">Oops! It looks like the page you're looking for doesn't exist. Let's get you back to exploring our premium watches.</p>
+                <div class="button-group">
+                    <a href="/" class="home-btn">Back to Home</a>
+                    <a href="/contact" class="contact-link">Need Help? Contact Us</a>
+                </div>
             </div>
         </div>
     </section>
+    <script>
+        (function(){
+            var params = new URLSearchParams(window.location.search);
+            var isPaymentFailed = params.get('type') === 'payment_failed';
+            var pf = document.getElementById('payment-failed-block');
+            var ge = document.getElementById('generic-error-block');
+            if (isPaymentFailed) {
+                pf.style.display = 'block';
+            } else {
+                ge.style.display = 'block';
+            }
+        })();
+    </script>
 </body>
 </html>
