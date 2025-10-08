@@ -258,15 +258,7 @@ const editProduct = async (req, res) => {
       quantity, color, brand, category 
     } = req.body;
 
-    const existingProduct = await Product.findOne({
-      productName: productName,
-      _id: { $ne: id },
-    });
-
-    if (existingProduct) {
-      return res.status(400).json({ success: false, message: "Product with this name already exists. Please try another name." });
-    }
-
+    
     const product = await Product.findById(id).populate('category');
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
