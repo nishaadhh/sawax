@@ -116,6 +116,7 @@ router.post("/addToCart/update", userAuth, userController.updateCart);
 router.post("/update-quantity", userAuth, cartController.updateQuantity);
 router.post("/addToCart/remove", userAuth, userController.removeFromCart);
 router.post("/deleteItem", userAuth, cartController.removeFromCart);
+router.get('/cart/count', cartController.getCartCount);
 
 // Address Management
 router.get("/address", userAuth, profileController.loadAddressPage);

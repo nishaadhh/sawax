@@ -281,11 +281,30 @@ const refreshCart = async (req, res) => {
   }
 };
 
+const getCartCount = async (req, res) => {
+  try {
+    const userId = req.session && req.session.user;
+    if (!userId) {
+      return res.json({ success: true, count: 0 });
+    }
+
+    const cart = await Cart.findOne({ userId }).select('items.productId');
+    const count = cart ? cart.items.length : 0;
+    return res.json({ success: true, count });
+  } catch (error) {
+    console.error('Error getting cart count:', error);
+    return res.status(500).json({ success: false, count: 0 });
+  }
+};
+
 module.exports = {
   getCart,
   updateCart,
+  getCartCount,
   updateQuantity,
   addToCart,
   removeFromCart,
   refreshCart,
 };
+
+

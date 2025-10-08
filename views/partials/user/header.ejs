@@ -454,7 +454,10 @@
                         <!-- <div class="header-icon"><i class="fa-solid fa-magnifying-glass"></i></div> -->
                         <a class="header-icon" href="/profile"><i class="fa-solid fa-circle-user"></i></a>
                         <a class="header-icon" href="/wishlist"><i class="fa-solid fa-heart"></i></a>
-                        <a class="header-icon" href="/cart"><i class="fa-solid fa-cart-shopping"></i></a>
+                        <a class="header-icon" href="/cart" style="position: relative; display: inline-block;">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span id="nav-cart-count" style="display:none; position: absolute; top: -6px; right: -10px; background: #fabf00; color: #000000; border-radius: 999px; padding: 0 6px; font-size: 11px; font-weight: 700; line-height: 18px; min-width: 18px; text-align: center;">0</span>
+                        </a>
                         <a class="header-icon" href="/orders"><i class="fa-brands fa-shopify"></i></a>
                         <a class="header-icon" href="/wallet"><i class="fa-solid fa-wallet"></i></a>
                          <!-- <a class="header-icon" href="/coupon"><i class="fa-solid fa-gifts"></i></a> -->
@@ -511,6 +514,33 @@
                 if (!mobileNav.contains(event.target) && !mobileMenu.contains(event.target)) {
                     mobileNav.classList.remove('active');
                 }
+            });
+
+            // Fetch and display cart count for navbar (distinct products)
+            async function updateNavCartCount() {
+                try {
+                    const res = await fetch('/cart/count', { credentials: 'same-origin' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const badge = document.getElementById('nav-cart-count');
+                    const count = (data && data.success) ? (data.count || 0) : 0;
+                    if (badge) {
+                        if (count > 0) {
+                            badge.textContent = count;
+                            badge.style.display = 'inline-block';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                } catch (e) {
+                    // no sadhanagl in cart 
+                }
+            }
+
+            // Initial load and when tab becomes visible
+            updateNavCartCount();
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) updateNavCartCount();
             });
         </script>
     </body>
