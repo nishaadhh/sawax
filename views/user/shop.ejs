@@ -74,6 +74,7 @@
     .wishlist-btn:hover{
         color:red
     }
+    .wishlist-btn i.wishlist-active{ color:red; }
 
     .shop-sidebar {
         background: #fff;
@@ -427,7 +428,7 @@
                                     <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
                                     <a href="/product/<%= product._id %>" class="view-button">View Product</a>
                                     <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
-        <i class="fa-solid fa-heart"></i>
+        <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
                                     </a>
                                 </div>
                             </div>
