@@ -779,19 +779,45 @@ const errorpage =async(req,res)=>{
 }
 
 const loadProductDetails = async (req, res) => {
-    try {
-        const productId = req.params.id;
-        const product = await Product.findById(productId).populate('category');
-        if (!product) {
-            return res.status(404).send('Product not found');
+  try {
+    const productId = req.params.id;
+
+    // Fetch product only if it's not blocked and status is 'available'
+    const product = await Product.findOne({
+      _id: productId,
+      isBlocked: false,
+      status: 'available'
+    }).populate('category');
+
+    // If no product found, render a 404 or redirect
+    if (!product) {
+         const user = req.session.user;
+        let userData = null;
+        if (user) {
+            userData = await User.findOne({ _id: user });
         }
-        const user = req.session.user ? await User.findById(req.session.user) : null;
-        res.render('productDetails', { product, user ,stock:product.quantity}); 
-    } catch (error) {
-        console.log('Product Details Page Not Found:', error);
-        res.status(500).send('Server Error');
+      return res.status(404).render('failure-order', {
+        user: userData,
+        message: 'Product not found or unavailable',
+        title: 'Product Not Available'
+      });
     }
+
+    const user = req.session.user ? await User.findById(req.session.user) : null;
+
+    res.render('productDetails', { 
+      product, 
+      user, 
+      stock: product.quantity 
+    });
+  } catch (error) {
+    console.log('Error loading product details:', error);
+    res.status(500).render('failure-order', { 
+      message: 'Something went wrong. Please try again later.' 
+    });
+  }
 };
+
 
 const cart = async (req, res) => {
   try {

@@ -141,7 +141,7 @@
         }
 
         .btn-primary {
-            background: var(--gradient);
+            background: linear-gradient(135deg, #1a1a1a, #2c3e50);
             color: white;
             box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
         }
@@ -220,27 +220,19 @@
                 <% } %>
             </p>
 
-            <% if (error && typeof error === 'string') { %>
-                <div class="error-details">
-                    <strong>Error Details:</strong>
-                    <div class="error-code"><%= error %></div>
-                </div>
-            <% } %>
+            
 
             <div class="action-buttons">
                 <a href="/" class="btn btn-primary">
                     <i class="fas fa-home"></i>
                     Go Home
                 </a>
-                <a href="javascript:history.back()" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i>
-                    Go Back
-                </a>
+               
             </div>
         </div>
     </section>
 
-    <%- include("../partials/user/footer") %>
+    <!-- <%- include("../partials/user/footer") %> -->
 
     <script>
         // Add loading state to buttons
