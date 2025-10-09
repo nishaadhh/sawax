@@ -92,16 +92,17 @@
     font-size: small;
     display: inline-block;
     padding: 8px 12px;
-    background: #f0b800;
-    color: #ffffff;
-    border: 1px solid #f0b800;
-    border-radius: 5px;
+    background: linear-gradient(135deg, #1a1a1a, #2c3e50);
+    color: white;
+    border: 1px solid;
+    border-radius: 10px;
     text-decoration: none;
     transition: background-color 0.3s ease;
     cursor: pointer;
   }
   .dropdown-address button:hover {
-    background: #ffc400;
+    background:linear-gradient(135deg, #000000, #2c3e50);
+    color: rgb(255, 255, 255);
   }
   .dropdown-address-content {
     display: none;
@@ -1093,7 +1094,7 @@
               <button class="btn apply-btn" type="button" onclick="applyCoupon()">Apply</button>
             </div>
           </div>
-          <a href="/coupon">view all coupons</a> 
+          <!-- <a href="/coupon">view all coupons</a>  -->
 
           <div id="appliedCouponInfo" class="coupon-applied" style="display: none;">
             <span id="appliedCouponText"></span>
