@@ -563,7 +563,7 @@
                     showNotification(result.message || 'Failed to add coupon', 'error');
                 }
             } catch (error) {
-                showNotification('Error adding coupon', 'error');
+                // showNotification('Error adding coupon', 'error');
             }
         });
 
@@ -723,9 +723,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
+        const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
                         entry.target.style.animationPlayState = 'running';
                     }
                 });

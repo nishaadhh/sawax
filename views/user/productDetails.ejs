@@ -259,7 +259,7 @@
     width: 40px;
     height: 40px;
   }
-  .wishlist-btn i.wishlist-active { color:#e74c3c; }
+  .wishlist-btn i.wishlist-active { color:#e01600; }
 
    .wishlist-btn:hover {
    color: #e74c3c;
@@ -570,9 +570,10 @@
     <p class="product-description"><%= product.description %></p>
     <div class="product-actions">
       <button class="add-to-cart" onclick="addToCart('<%= product._id %>')" <%= product.quantity <= 0 ? 'disabled' : '' %>>Add to Cart</button>
-      <div class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
-        <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
-      </div>
+     <div class="wishlist-btn" id="wishlist-<%= product._id %>" onclick="addToWishlist('<%= product._id %>')">
+  <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
+</div>
+
     </div>
   </div>
 </div>
@@ -699,41 +700,49 @@
   }
 
   async function addToWishlist(productId) {
-    try {
-      const response = await fetch(`/addToWishlist/${productId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const data = await response.json();
-      if (data.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Added to Wishlist!',
-          text: 'Product has been added to your wishlist.',
-          confirmButtonColor: '#d4af37',
+  const wishlistIcon = document.querySelector('.wishlist-btn i');
 
-         
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Failed to Add!',
-          text: data.message || 'Failed to add product to wishlist.',
-         confirmButtonColor: '#d4af37',
-        });
-      }
-    } catch (error) {
-      console.error('Error adding to wishlist:', error);
+  try {
+    const response = await fetch(`/addToWishlist/${productId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await response.json();
+
+    if (data.success) {
+      // Toggle heart color instantly
+      wishlistIcon.classList.toggle('wishlist-active');
+
+      const isActive = wishlistIcon.classList.contains('wishlist-active');
+      Swal.fire({
+        icon: 'success',
+        title: isActive ? 'Added to Wishlist!' : 'Removed from Wishlist!',
+        text: isActive
+          ? 'Product has been added to your wishlist.'
+          : 'Product has been removed from your wishlist.',
+        confirmButtonColor: '#d4af37',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } else {
       Swal.fire({
         icon: 'error',
-        title: 'Error!',
-        text: 'An error occurred while adding to wishlist.',
+        title: 'Failed!',
+        text: data.message || 'Could not update wishlist.',
         confirmButtonColor: '#d4af37',
-
-
       });
     }
+  } catch (error) {
+    console.error('Error adding to wishlist:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'An error occurred while adding to wishlist.',
+      confirmButtonColor: '#d4af37',
+    });
   }
+}
+
 
   async function buyNow(productId) {
     const quantity = parseInt(document.getElementById('quantity').value);

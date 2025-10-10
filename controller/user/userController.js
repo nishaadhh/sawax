@@ -890,7 +890,7 @@ const cart = async (req, res) => {
       return res.status(400).json({ success: false, message: `Only ${product.quantity} items in stock` });
     }
 
-    // Save cart
+    // Savee cart
     await cart.save();
 
     res.status(200).json({ success: true, message: "Product added to cart" });

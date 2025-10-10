@@ -429,16 +429,12 @@
                       <ul>
                           <li><a href="/">Home</a></li>
                           <li><a href=" /shop">Shop</a></li>
-                          <!-- <li><a href="/men">Men</a></li>
-                          <li><a href="women">Women</a></li> -->
                           <li><a href="/about">About</a></li>
-                          <!-- <li><a href="">Contact</a></li>  -->
   
                           <% if (user) { %>
                               <li class="dropdown">
                                 <a href="#" class="sign-in-link"><%= user.name %></a>
                                 <div class="dropdown-content">
-                                  <!-- <a href="/profile">Profile</a> -->
                                   <a href="#" style="color: red; padding-left: 30px; background-color: transparent;"   onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                                 </div>
                               </li>
@@ -451,7 +447,6 @@
                               </ul>
                   </nav>
                     <div class="header-icons">
-                        <!-- <div class="header-icon"><i class="fa-solid fa-magnifying-glass"></i></div> -->
                         <a class="header-icon" href="/profile"><i class="fa-solid fa-circle-user"></i></a>
                         <a class="header-icon" href="/wishlist"><i class="fa-solid fa-heart"></i></a>
                         <a class="header-icon" href="/cart" style="position: relative; display: inline-block;">
@@ -460,8 +455,6 @@
                         </a>
                         <a class="header-icon" href="/orders"><i class="fa-brands fa-shopify"></i></a>
                         <a class="header-icon" href="/wallet"><i class="fa-solid fa-wallet"></i></a>
-                         <!-- <a class="header-icon" href="/coupon"><i class="fa-solid fa-gifts"></i></a> -->
-                        <!-- <a class="header-icon" href="/wallet"><i class="fa-brands fa-shopify"></i></a> -->
                         <div class="mobile-menu">☰</div>
                     </div>
                 </div>
@@ -475,7 +468,7 @@
                     <li><a href="/women">Women</a></li>
                     <li><a href="/about">About</a></li>
 
-                    <!-- Simulated user logged-in state for mobile -->
+                    <!-- for mobile -->
                     <li class="mobile-dropdown">
                         <a href="#" class="mobile-sign-in-link" onclick="toggleMobileDropdown(event)">YOU</a>
                         <div class="mobile-dropdown-content">
@@ -483,16 +476,11 @@
                             <a href="#" onclick="confirmLogout()">Logout</a>
                         </div>
                     </li>
-                    <!-- Uncomment to simulate logged-out state -->
-                    <!-- 
-                    <li><a href="/login" style="color: #DF8A00">Login</a></li>
-                    <li><a href="/signup" style="color: #DF8A00">Signup</a></li>
-                    -->
                 </ul>
             </div>
         </header>
     
-        <!-- JavaScript for Mobile Menu Toggle -->
+        <!--  for Mobile Menu Toggle -->
         <script>
             // Toggle mobile menu
             const mobileMenu = document.querySelector('.mobile-menu');
@@ -516,7 +504,7 @@
                 }
             });
 
-            // Fetch and display cart count for navbar (distinct products)
+            // Fetch and display cart count in navbar //
             async function updateNavCartCount() {
                 try {
                     const res = await fetch('/cart/count', { credentials: 'same-origin' });
