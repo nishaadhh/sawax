@@ -23,6 +23,11 @@ router.get("/product/:id", userController.loadProductDetails);
 router.get("/shop", userController.loadShoppingPage);
 router.get("/filter", userController.filterProduct);
 
+
+
+router.get("/locat", userController.location);
+
+
 // Google Authentication
 router.get(
   "/auth/google",

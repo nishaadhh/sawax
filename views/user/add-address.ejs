@@ -1,52 +1,56 @@
 <%- include("../../views/partials/user/header") %>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-:root {
-    --primary: #0A0E27;
-    --primary-light: #1A1F3A;
-    --secondary: #F8FAFC;
-    --accent: #D4AF37;
-    --accent-light: #E8C547;
-    --accent-dark: #B8941F;
+  :root {
+    --primary: #0a0e27;
+    --primary-light: #1a1f3a;
+    --secondary: #f8fafc;
+    --accent: #d4af37;
+    --accent-light: #e8c547;
+    --accent-dark: #b8941f;
     --teal: #046963;
-    --teal-light: #0891B2;
-    --text: #1E293B;
-    --text-light: #64748B;
-    --text-muted: #94A3B8;
-    --border: #E2E8F0;
-    --border-focus: #CBD5E1;
-    --success: #10B981;
-    --warning: #F59E0B;
-    --error: #EF4444;
+    --teal-light: #0891b2;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --border-focus: #cbd5e1;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
     --glass: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
 
-* {
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+  }
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
     background: white;
     min-height: 100vh;
     color: var(--text);
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
-}
+  }
 
-body::before {
-    content: '';
+  body::before {
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
@@ -55,23 +59,28 @@ body::before {
     background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><circle cx="30" cy="30" r="1"/></g></svg>');
     animation: backgroundFloat 20s ease-in-out infinite;
     z-index: -1;
-}
+  }
 
-@keyframes backgroundFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-}
+  @keyframes backgroundFloat {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
 
-.banner-area {
+  .banner-area {
     background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
     padding: 4rem 0 3rem;
     color: white;
     position: relative;
     overflow: hidden;
-}
+  }
 
-.banner-area::before {
-    content: '';
+  .banner-area::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -79,20 +88,24 @@ body::before {
     bottom: 0;
     background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><polygon points="20,0 40,20 20,40 0,20"/></g></svg>');
     animation: patternMove 30s linear infinite;
-}
+  }
 
-@keyframes patternMove {
-    0% { transform: translateX(-40px) translateY(-40px); }
-    100% { transform: translateX(0px) translateY(0px); }
-}
+  @keyframes patternMove {
+    0% {
+      transform: translateX(-40px) translateY(-40px);
+    }
+    100% {
+      transform: translateX(0px) translateY(0px);
+    }
+  }
 
-.breadcrumb-banner {
+  .breadcrumb-banner {
     position: relative;
     z-index: 2;
     text-align: center;
-}
+  }
 
-.breadcrumb-banner h1 {
+  .breadcrumb-banner h1 {
     font-size: 2.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -100,43 +113,43 @@ body::before {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
+  }
 
-.breadcrumb-banner nav {
+  .breadcrumb-banner nav {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
     opacity: 0.9;
-}
+  }
 
-.breadcrumb-banner nav a {
+  .breadcrumb-banner nav a {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     transition: all 0.3s ease;
-}
+  }
 
-.breadcrumb-banner nav a:hover {
+  .breadcrumb-banner nav a:hover {
     color: var(--accent);
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
-}
+  }
 
-.lnr-arrow-right {
+  .lnr-arrow-right {
     color: rgba(255, 255, 255, 0.6);
     margin: 0 0.25rem;
-}
+  }
 
-.form-container {
+  .form-container {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 1.5rem;
-}
+  }
 
-.form-title {
+  .form-title {
     font-size: 2rem;
     font-weight: 600;
     text-align: center;
@@ -146,10 +159,10 @@ body::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     position: relative;
-}
+  }
 
-.form-title::after {
-    content: '';
+  .form-title::after {
+    content: "";
     position: absolute;
     bottom: -10px;
     left: 50%;
@@ -158,9 +171,9 @@ body::before {
     height: 3px;
     background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
     border-radius: 2px;
-}
+  }
 
-#addressForm {
+  #addressForm {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -170,63 +183,69 @@ body::before {
     position: relative;
     overflow: hidden;
     animation: formSlideIn 0.8s ease-out;
-}
+  }
 
-#addressForm::before {
-    content: '';
+  #addressForm::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
-}
+  }
 
-@keyframes formSlideIn {
+  @keyframes formSlideIn {
     from {
-        opacity: 0;
-        transform: translateY(30px);
+      opacity: 0;
+      transform: translateY(30px);
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
+  }
 
-.form-row {
+  .form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
-}
+  }
 
-.form-row.mb-50 {
+  .form-row.mb-50 {
     margin-bottom: 3rem;
-}
+  }
 
-.form-group {
+  .form-group {
     position: relative;
     margin-bottom: 0;
     opacity: 0;
     animation: formGroupFadeIn 0.6s ease forwards;
-}
+  }
 
-.form-group:nth-child(1) { animation-delay: 0.1s; }
-.form-group:nth-child(2) { animation-delay: 0.2s; }
-.form-group:nth-child(3) { animation-delay: 0.3s; }
+  .form-group:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .form-group:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .form-group:nth-child(3) {
+    animation-delay: 0.3s;
+  }
 
-@keyframes formGroupFadeIn {
+  @keyframes formGroupFadeIn {
     from {
-        opacity: 0;
-        transform: translateY(20px);
+      opacity: 0;
+      transform: translateY(20px);
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
+  }
 
-.form-label {
+  .form-label {
     position: absolute;
     left: 1rem;
     top: 1rem;
@@ -238,11 +257,11 @@ body::before {
     padding: 0 0.5rem;
     font-weight: 500;
     z-index: 2;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     letter-spacing: 0.025em;
-}
+  }
 
-.form-control {
+  .form-control {
     width: 100%;
     padding: 1rem 1rem 0.5rem;
     font-size: 1rem;
@@ -255,59 +274,66 @@ body::before {
     position: relative;
     z-index: 1;
     box-sizing: border-box;
-}
+  }
 
-.form-control::placeholder {
+  .form-control::placeholder {
     color: transparent;
-}
+  }
 
-.form-control:focus {
+  .form-control:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), var(--shadow-md);
     transform: translateY(-2px);
-}
+  }
 
-.form-control:focus + .form-label,
-.form-control:not(:placeholder-shown) + .form-label,
-.form-control.has-value + .form-label {
+  .form-control:focus + .form-label,
+  .form-control:not(:placeholder-shown) + .form-label,
+  .form-control.has-value + .form-label {
     top: 0;
     font-size: 0.75rem;
     color: var(--accent);
     font-weight: 600;
     transform: translateY(-50%);
-}
+  }
 
-.form-control:hover {
+  .form-control:hover {
     border-color: var(--border-focus);
     transform: translateY(-1px);
-}
+  }
 
-select.form-control {
+  select.form-control {
     cursor: pointer;
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgOUwxMiAxNUwxOCA5IiBzdHJva2U9IiM2NDc0OEIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=');
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgOUwxMiAxNUwxOCA5IiBzdHJva2U9IiM2NDc0OEIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1.25rem;
     padding-right: 3rem;
     height: calc(2.25rem + 2px) !important;
-    padding-top: 0.70rem !important;
+    padding-top: 0.7rem !important;
     padding-bottom: 0.5rem !important;
-}
+  }
 
-.form-control.error {
+  .form-control.error {
     border-color: var(--error);
     animation: shake 0.5s ease-in-out;
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
+  }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-5px);
+    }
+    75% {
+      transform: translateX(5px);
+    }
+  }
 
-.text-danger {
+  .text-danger {
     color: var(--error);
     font-size: 0.75rem;
     margin-top: 0.5rem;
@@ -319,33 +345,33 @@ select.form-control {
     transform: translateY(-10px);
     animation: slideIn 0.3s ease forwards;
     display: block !important;
-}
+  }
 
-@keyframes slideIn {
+  @keyframes slideIn {
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
+  }
 
-.form-section-divider {
+  .form-section-divider {
     margin: 2.5rem 0;
     position: relative;
     text-align: center;
     grid-column: 1 / -1;
-}
+  }
 
-.form-section-divider::before {
-    content: '';
+  .form-section-divider::before {
+    content: "";
     position: absolute;
     top: 50%;
     left: 0;
     right: 0;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border), transparent);
-}
+  }
 
-.form-section-divider span {
+  .form-section-divider span {
     background: white;
     color: var(--text-light);
     font-size: 0.875rem;
@@ -353,9 +379,9 @@ select.form-control {
     padding: 0 1.5rem;
     position: relative;
     z-index: 1;
-}
+  }
 
-.btn-primary {
+  .btn-primary {
     position: relative;
     background: linear-gradient(135deg, var(--accent) 0%, rgb(18, 14, 14) 100%);
     border: none;
@@ -372,40 +398,45 @@ select.form-control {
     margin: 2rem auto 0;
     display: block;
     min-width: 200px;
-}
+  }
 
-.btn-primary::before {
-    content: '';
+  .btn-primary::before {
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
     transition: left 0.6s ease;
-}
+  }
 
-.btn-primary:hover {
+  .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-xl);
     background: linear-gradient(135deg, var(--accent-light) 0%, black 100%);
-}
+  }
 
-.btn-primary:hover::before {
+  .btn-primary:hover::before {
     left: 100%;
-}
+  }
 
-.btn-primary:active {
+  .btn-primary:active {
     transform: translateY(-1px);
-}
+  }
 
-.btn-primary:disabled {
+  .btn-primary:disabled {
     opacity: 0.7;
     cursor: not-allowed;
     transform: none;
-}
+  }
 
-.loading-overlay {
+  .loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -417,39 +448,47 @@ select.form-control {
     justify-content: center;
     border-radius: 1.5rem;
     z-index: 10;
-}
+  }
 
-.spinner {
+  .spinner {
     width: 40px;
     height: 40px;
     border: 3px solid var(--border);
     border-top: 3px solid var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-}
+  }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 
-.form-success {
+  .form-success {
     text-align: center;
     padding: 3rem;
     display: none;
-}
+  }
 
-.form-success.active {
+  .form-success.active {
     display: block;
     animation: fadeIn 0.5s ease;
-}
+  }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
-.success-checkmark {
+  .success-checkmark {
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -459,261 +498,519 @@ select.form-control {
     stroke-miterlimit: 10;
     margin: 2rem auto;
     box-shadow: inset 0px 0px 0px var(--success);
-    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
-}
+    animation: fill 0.4s ease-in-out 0.4s forwards,
+      scale 0.3s ease-in-out 0.9s both;
+  }
 
-.success-checkmark__circle {
+  .success-checkmark__circle {
     stroke-dasharray: 166;
     stroke-dashoffset: 166;
     stroke-width: 2;
     stroke-miterlimit: 10;
     stroke: var(--success);
     fill: none;
-    animation: stroke .6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-}
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
 
-.success-checkmark__check {
+  .success-checkmark__check {
     transform-origin: 50% 50%;
     stroke-dasharray: 48;
     stroke-dashoffset: 48;
-    animation: stroke .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards;
-}
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
 
-@keyframes stroke {
-    100% { stroke-dashoffset: 0; }
-}
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
 
-@keyframes scale {
-    0%, 100% { transform: none; }
-    50% { transform: scale3d(1.1, 1.1, 1); }
-}
+  @keyframes scale {
+    0%,
+    100% {
+      transform: none;
+    }
+    50% {
+      transform: scale3d(1.1, 1.1, 1);
+    }
+  }
 
-@keyframes fill {
-    100% { box-shadow: inset 0px 0px 0px 30px var(--success); }
-}
+  @keyframes fill {
+    100% {
+      box-shadow: inset 0px 0px 0px 30px var(--success);
+    }
+  }
 
-.form-success h3 {
+  .form-success h3 {
     color: var(--success);
     font-size: 1.5rem;
     font-weight: 600;
     margin: 1rem 0;
-}
+  }
 
-.form-success p {
+  .form-success p {
     color: var(--text-light);
     margin-bottom: 2rem;
-}
+  }
 
-@media (max-width: 1024px) {
+  @media (max-width: 1024px) {
     #addressForm {
-        margin: 0 1rem;
-        padding: 2.5rem;
+      margin: 0 1rem;
+      padding: 2.5rem;
     }
-    
-    .form-row {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-}
 
-@media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
     .banner-area {
-        padding: 3rem 0 2rem;
+      padding: 3rem 0 2rem;
     }
 
     .breadcrumb-banner h1 {
-        font-size: 2rem;
+      font-size: 2rem;
     }
 
     #addressForm {
-        padding: 2rem;
-        margin: 0 1rem;
-        border-radius: 1rem;
+      padding: 2rem;
+      margin: 0 1rem;
+      border-radius: 1rem;
     }
 
     .form-row {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
 
     .form-container {
-        padding: 2rem 1rem;
+      padding: 2rem 1rem;
     }
 
     .form-title {
-        font-size: 1.75rem;
+      font-size: 1.75rem;
     }
-}
+  }
 
-@media (max-width: 480px) {
+  @media (max-width: 480px) {
     .form-container {
-        padding: 1rem 0.5rem;
+      padding: 1rem 0.5rem;
     }
 
     .breadcrumb-banner h1 {
-        font-size: 1.75rem;
+      font-size: 1.75rem;
     }
 
     #addressForm {
-        padding: 1.5rem;
-        margin: 0 0.5rem;
+      padding: 1.5rem;
+      margin: 0 0.5rem;
     }
 
     .form-control {
-        padding: 0.875rem 0.75rem 0.375rem;
+      padding: 0.875rem 0.75rem 0.375rem;
     }
 
     .form-label {
-        left: 0.75rem;
+      left: 0.75rem;
     }
 
     .btn-primary {
-        padding: 0.875rem 2rem;
-        font-size: 0.9rem;
-        min-width: 180px;
+      padding: 0.875rem 2rem;
+      font-size: 0.9rem;
+      min-width: 180px;
     }
 
     .breadcrumb-banner nav {
-        flex-wrap: wrap;
-        gap: 0.25rem;
-        font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      font-size: 0.8rem;
     }
+  }
+  #map {
+  height: 300px;
+  width: 100%;
+  max-width: 100%;
+  background-color: #046963;
+  border-radius: 0.75rem;
+  display: none;
 }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+  }
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  ul#suggestions {
+    list-style: none;
+    padding: 0;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: -5px;
+  }
+  ul#suggestions li {
+    padding: 5px;
+    cursor: pointer;
+  }
+  ul#suggestions li:hover {
+    background-color: #eee;
+  }
 </style>
 
 <section class="banner-area organic-breadcrumb">
-    <div class="container">
-        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-            <div class="col-first">
-                <h1>Add Address</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/profile">Profile<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/address">Address<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/addAddress">Add Address</a>
-                </nav>
-            </div>
-        </div>
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Add Address</h1>
+        <nav class="d-flex align-items-center">
+          <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="/profile"
+            >Profile<span class="lnr lnr-arrow-right"></span
+          ></a>
+          <a href="/address"
+            >Address<span class="lnr lnr-arrow-right"></span
+          ></a>
+          <a href="/addAddress">Add Address</a>
+        </nav>
+      </div>
     </div>
+  </div>
 </section>
 
 <div class="form-container">
-    <h3 class="form-title">Create User Address</h3>
-    <form id="addressForm" method="POST" action="/addAddress">
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="spinner"></div>
-        </div>
+  <h3 class="form-title">Create User Address</h3>
+  <form id="addressForm" method="POST" action="/addAddress">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+    </div>
 
-        <div class="form-row mb-50">
-            <div class="form-group">
-                <input type="text" class="form-control" id="addressType" name="addressType" placeholder=" " required>
-                <label for="addressType" class="form-label">Address Type</label>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="name" name="name" placeholder=" " required>
-                <label for="name" class="form-label">Full Name</label>
-            </div>
-            <div class="form-group">
-                <select class="form-control" id="country" name="country" required>
-                    <option value="India">India</option>
-                </select>
-                <label for="country" class="form-label">Country</label>
-            </div>
-        </div>
+    <div class="form-row mb-50">
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="addressType"
+          name="addressType"
+          placeholder=" "
+          required
+        />
+        <label for="addressType" class="form-label">Address Type</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          placeholder=" "
+          required
+        />
+        <label for="name" class="form-label">Full Name</label>
+      </div>
+      <div class="form-group">
+        <select class="form-control" id="country" name="country" required>
+          <option value="India">India</option>
+          <option value="Saudi Arabia">Saudi Arabia</option>
+        </select>
+        <label for="country" class="form-label">Country</label>
+      </div>
+    </div>
 
-        <div class="form-section-divider">
-            <span>Location Details</span>
-        </div>
+    <div class="form-section-divider">
+      <span>Location Details</span>
+    </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" class="form-control" id="city" name="city" placeholder=" " required>
-                <label for="city" class="form-label">City</label>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="landMark" name="landMark" placeholder=" " required>
-                <label for="landMark" class="form-label">Landmark</label>
-            </div>
-            <div class="form-group">
-                <select class="form-control" id="state" name="state" required>
-                    <option value="Kerala">Kerala</option>
-                </select>
-                <label for="state" class="form-label">State</label>
-            </div>
-        </div>
+    <div class="form-row">
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="city"
+          name="city"
+          placeholder=" "
+          required
+        />
+        <label for="city" class="form-label">City</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="landMark"
+          name="landMark"
+          placeholder=" "
+          required
+        />
+        <label for="landMark" class="form-label">Landmark</label>
+      </div>
+      <div class="form-group">
+        <select class="form-control" id="state" name="state" required>
+         <option value="">Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala" selected>Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Delhi">Delhi</option>
+        </select>
+        <label for="state" class="form-label">State</label>
+      </div>
+    </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" class="form-control" id="streetAddress" name="streetAddress" placeholder=" " required>
-                <label for="streetAddress" class="form-label">Street Address</label>
-            </div>
-            <div class="form-group">
-                <input type="number" class="form-control" id="pincode" name="pincode" placeholder=" " required>
-                <label for="pincode" class="form-label">Pincode</label>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="phone" name="phone" placeholder=" " required>
-                <label for="phone" class="form-label">Primary Phone</label>
-            </div>
-        </div>
+    <div class="form-row">
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="streetAddress"
+          name="streetAddress"
+          placeholder=" "
+          required
+        />
+        <label for="streetAddress" class="form-label">Street Address</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="number"
+          class="form-control"
+          id="pincode"
+          name="pincode"
+          placeholder=" "
+          required
+        />
+        <label for="pincode" class="form-label">Pincode</label>
+      </div>
+      <div class="form-group">
+        <input
+          id="address"
+          name="address"
+          type="text"
+          placeholder="Enter delivery address"
+          autocomplete="off"
+          required
+        />
+        <ul id="suggestions"></ul>
+        <input type="hidden" id="lat" name="lat" />
+        <input type="hidden" id="lng" name="lng" />
+      </div>
 
-        <div class="form-section-divider">
-            <span>Contact Information</span>
-        </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="phone"
+          name="phone"
+          placeholder=" "
+          required
+        />
+        <label for="phone" class="form-label">Primary Phone</label>
+      </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <input type="email" class="form-control" id="email" name="email" placeholder=" " required>
-                <label for="email" class="form-label">Email Address</label>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" id="altPhone" name="altPhone" placeholder=" " required>
-                <label for="altPhone" class="form-label">Alternate Phone</label>
-            </div>
-        </div>
+      <!-- //---------------------------------------------------------------- -->
+    </div>
 
-        <button type="submit" id="submitButton" class="btn-primary">Create Address</button>
 
-        <div class="form-success" id="formSuccess">
-            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-                <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-            </svg>
-            <h3>Address Created Successfully!</h3>
-            <p>Your address information has been saved and is ready to use.</p>
-        </div>
-    </form>
+
+    <div class="form-section-divider">
+      <span>Contact Information</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder=" "
+          required
+        />
+        <label for="email" class="form-label">Email Address</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="altPhone"
+          name="altPhone"
+          placeholder=" "
+          required
+        />
+        <label for="altPhone" class="form-label">Alternate Phone</label>
+      </div>
+    </div>
+
+    <button type="submit" id="submitButton" class="btn-primary">
+      Create Address
+    </button>
+
+    <div class="form-success" id="formSuccess">
+      <svg
+        class="success-checkmark"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 52 52"
+      >
+        <circle
+          class="success-checkmark__circle"
+          cx="26"
+          cy="26"
+          r="25"
+          fill="none"
+        />
+        <path
+          class="success-checkmark__check"
+          fill="none"
+          d="M14.1 27.2l7.1 7.2 16.7-16.8"
+        />
+      </svg>
+      <h3>Address Created Successfully!</h3>
+      <p>Your address information has been saved and is ready to use.</p>
+    </div>
+  </form>
+
+      <div class="form-group" style="grid-column: 1 / -1">
+      <div id="map"></div>
+    </div>
 </div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Initialize map
+  const map = L.map("map").setView([28.6139, 77.209], 13); // Default center
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
+  }).addTo(map);
+
+  let marker = L.marker([28.6139, 77.209], { draggable: true }).addTo(map);
+
+  const addressInput = document.getElementById("address");
+  const suggestionsList = document.getElementById("suggestions");
+  const latInput = document.getElementById("lat");
+  const lngInput = document.getElementById("lng");
+
+  // Update hidden fields when marker is dragged
+  marker.on("dragend", function (e) {
+    const pos = marker.getLatLng();
+    latInput.value = pos.lat;
+    lngInput.value = pos.lng;
+  });
+
+  // Autocomplete using Photon API
+  addressInput.addEventListener("input", async () => {
+    const query = addressInput.value;
+    if (query.length < 3) {
+      suggestionsList.innerHTML = "";
+      return;
+    }
+
+    const res = await fetch(
+      `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`
+    );
+    const data = await res.json();
+
+    suggestionsList.innerHTML = "";
+    data.features.forEach((f) => {
+      const li = document.createElement("li");
+      li.textContent =
+        f.properties.name +
+        ", " +
+        (f.properties.city || f.properties.country || "");
+      li.addEventListener("click", () => {
+        addressInput.value = li.textContent;
+        const lat = f.geometry.coordinates[1];
+        const lng = f.geometry.coordinates[0];
+        latInput.value = lat;
+        lngInput.value = lng;
+        marker.setLatLng([lat, lng]);
+        map.setView([lat, lng], 15);
+        suggestionsList.innerHTML = "";
+      });
+      suggestionsList.appendChild(li);
+    });
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.getElementById('addressForm').addEventListener('submit', function(event) {
-    if (!validateForm()) {
+  document
+    .getElementById("addressForm")
+    .addEventListener("submit", function (event) {
+      if (!validateForm()) {
         event.preventDefault();
-    }
-});
+      }
+    });
 
-function validateForm() {
+  function validateForm() {
     let isValid = true;
-    
+
     // Clear previous errors
-    document.querySelectorAll('.text-danger').forEach(error => error.remove());
+    document
+      .querySelectorAll(".text-danger")
+      .forEach((error) => error.remove());
 
-    const requiredFields = ["addressType", "name", "country", "city", "landMark", "state", "streetAddress", "pincode", "phone", "email", "altPhone"];
-    
+    const requiredFields = [
+      "addressType",
+      "name",
+      "country",
+      "city",
+      "landMark",
+      "state",
+      "streetAddress",
+      "pincode",
+      "phone",
+      "email",
+      "altPhone",
+    ];
+
     // Check required fields
-    requiredFields.forEach(function(field) {
-        const input = document.getElementById(field);
-        const inputValue = input.value.trim();
+    requiredFields.forEach(function (field) {
+      const input = document.getElementById(field);
+      const inputValue = input.value.trim();
 
-        if (inputValue === "") {
-            showFieldError(input, "This field is required.");
-            isValid = false;
-        }
+      if (inputValue === "") {
+        showFieldError(input, "This field is required.");
+        isValid = false;
+      }
     });
 
     if (!isValid) {
-        return false;
+      return false;
     }
 
     // Pattern validations
@@ -723,50 +1020,80 @@ function validateForm() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const validations = [
-        { field: 'name', pattern: namePattern, message: 'Name should contain alphabets only.' },
-        { field: 'city', pattern: namePattern, message: 'City should contain alphabets only.' },
-        { field: 'landMark', pattern: namePattern, message: 'Landmark should contain alphabets only.' },
-        { field: 'pincode', pattern: pincodePattern, message: 'Pincode should be a 6-digit number.' },
-        { field: 'phone', pattern: phonePattern, message: 'Phone number should be a 10-digit number.' },
-        { field: 'altPhone', pattern: phonePattern, message: 'Alternate phone number should be a 10-digit number.' },
-        { field: 'email', pattern: emailPattern, message: 'Please enter a valid email address.' }
+      {
+        field: "name",
+        pattern: namePattern,
+        message: "Name should contain alphabets only.",
+      },
+      {
+        field: "city",
+        pattern: namePattern,
+        message: "City should contain alphabets only.",
+      },
+      {
+        field: "landMark",
+        pattern: namePattern,
+        message: "Landmark should contain alphabets only.",
+      },
+      {
+        field: "pincode",
+        pattern: pincodePattern,
+        message: "Pincode should be a 6-digit number.",
+      },
+      {
+        field: "phone",
+        pattern: phonePattern,
+        message: "Phone number should be a 10-digit number.",
+      },
+      {
+        field: "altPhone",
+        pattern: phonePattern,
+        message: "Alternate phone number should be a 10-digit number.",
+      },
+      {
+        field: "email",
+        pattern: emailPattern,
+        message: "Please enter a valid email address.",
+      },
     ];
 
     for (let validation of validations) {
-        const input = document.getElementById(validation.field);
-        if (input.value && !validation.pattern.test(input.value)) {
-            showFieldError(input, validation.message);
-            isValid = false;
-            break; // Show one error at a time
-        }
+      const input = document.getElementById(validation.field);
+      if (input.value && !validation.pattern.test(input.value)) {
+        showFieldError(input, validation.message);
+        isValid = false;
+        break; // Show one error at a time
+      }
     }
 
     // Check if phone numbers are different
-    const phone = document.getElementById('phone').value;
-    const altPhone = document.getElementById('altPhone').value;
+    const phone = document.getElementById("phone").value;
+    const altPhone = document.getElementById("altPhone").value;
     if (phone && altPhone && phone === altPhone) {
-        showFieldError(document.getElementById('altPhone'), 'Phone number and alternate phone number should be different.');
-        isValid = false;
+      showFieldError(
+        document.getElementById("altPhone"),
+        "Phone number and alternate phone number should be different."
+      );
+      isValid = false;
     }
 
     return isValid;
-}
+  }
 
-function showFieldError(input, message) {
-    const errorDiv = document.createElement('div');
+  function showFieldError(input, message) {
+    const errorDiv = document.createElement("div");
     errorDiv.className = "text-danger";
     errorDiv.textContent = message;
     input.parentNode.appendChild(errorDiv);
-}
+  }
 
-// Real-time validation - clear errors when user starts typing
-document.querySelectorAll('.form-control').forEach(input => {
-    input.addEventListener('input', function() {
-        const existingError = this.parentNode.querySelector('.text-danger');
-        if (existingError) {
-            existingError.remove();
-        }
+  // Real-time validation - clear errors when user starts typing
+  document.querySelectorAll(".form-control").forEach((input) => {
+    input.addEventListener("input", function () {
+      const existingError = this.parentNode.querySelector(".text-danger");
+      if (existingError) {
+        existingError.remove();
+      }
     });
-});
+  });
 </script>
-

@@ -1106,6 +1106,12 @@ const addAddress = async (req, res) => {
             errors.push('Please select a valid state.');
         }
 
+        // const country = "India"
+
+        //  if (country && country.toLowerCase() !== 'india') {
+        //     validationErrors.push('Currently, we only support Indian addresses');
+        // }
+
         // Validate zipCode (pincode)
         const pincode = parseInt(zipCode, 10);
         if (!zipCode || !/^\d{5,6}$/.test(zipCode) || isNaN(pincode)) {
@@ -1372,8 +1378,18 @@ const couponload = async (req, res) => {
     }
 }
 
+
+const location = async(req,res)=>{
+    try{
+        res.render('locat')
+    }
+catch(error){
+    console.log("errrrrrrrrr")
+}    }
+
 module.exports = {
     loadHomePage,
+    location,
     pageNotFound,
     loadLoginPage,
     loadSignUpPage,

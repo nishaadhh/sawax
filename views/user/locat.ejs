@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 300px; margin-top: 10px; }
+    input { width: 100%; padding: 8px; margin-bottom: 5px; }
+    button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
+    ul#suggestions { list-style: none; padding: 0; border: 1px solid #ccc; max-height: 150px; overflow-y: auto; margin-top: -5px; }
+    ul#suggestions li { padding: 5px; cursor: pointer; }
+    ul#suggestions li:hover { background-color: #eee; }
+  </style>
+</head>
+<body>
+  <h1>Delivery Address</h1>
+
+  <form action="/place-order" method="POST" id="checkoutForm">
+    <input id="address" name="address" type="text" placeholder="Enter delivery address" autocomplete="off" required />
+    <ul id="suggestions"></ul>
+    <input type="hidden" id="lat" name="lat" />
+    <input type="hidden" id="lng" name="lng" />
+    <button type="submit">Place Order</button>
+  </form>
+
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([28.6139, 77.209], 13); // Default center
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = L.marker([28.6139, 77.209], { draggable: true }).addTo(map);
+
+    const addressInput = document.getElementById('address');
+    const suggestionsList = document.getElementById('suggestions');
+    const latInput = document.getElementById('lat');
+    const lngInput = document.getElementById('lng');
+
+    // Update hidden fields when marker is dragged
+    marker.on('dragend', function(e) {
+      const pos = marker.getLatLng();
+      latInput.value = pos.lat;
+      lngInput.value = pos.lng;
+    });
+
+    // Autocomplete using Photon API
+    addressInput.addEventListener('input', async () => {
+      const query = addressInput.value;
+      if(query.length < 3) { suggestionsList.innerHTML = ''; return; }
+
+      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
+      const data = await res.json();
+
+      suggestionsList.innerHTML = '';
+      data.features.forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = f.properties.name + ', ' + (f.properties.city || f.properties.country || '');
+        li.addEventListener('click', () => {
+          addressInput.value = li.textContent;
+          const lat = f.geometry.coordinates[1];
+          const lng = f.geometry.coordinates[0];
+          latInput.value = lat;
+          lngInput.value = lng;
+          marker.setLatLng([lat, lng]);
+          map.setView([lat, lng], 15);
+          suggestionsList.innerHTML = '';
+        });
+        suggestionsList.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>
