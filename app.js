@@ -11,6 +11,7 @@ const db = require('./config/db');
 const nocache = require("nocache")
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRoutes');
+const axios = require('axios');
 
 
 app.use(express.json());
@@ -54,6 +55,66 @@ app.use('/admin',adminRouter );
 //ADMIN SIDE
 
 app.use('/admin',adminRouter)
+
+// Install axios: npm install axios
+
+// Proxy endpoint for geocode.maps.co (bypasses CORS)
+// FIXED: Separate endpoints for search and reverse geocoding
+app.get('/api/geocode/search', async (req, res) => {
+    try {
+        const { q } = req.query;
+        const apiKey = process.env.GEOCODE_MAPS_CO_API_KEY || '68eb69ab749ab618160266qij4cc435';
+        
+        if (!q) {
+            return res.status(400).json({ error: 'Missing search query (q parameter)' });
+        }
+        
+        if (!apiKey) {
+            return res.status(500).json({ error: 'API key not configured' });
+        }
+
+        const apiUrl = `https://geocode.maps.co/search?q=${encodeURIComponent(q)}&limit=5&api_key=${apiKey}`;
+        
+        const response = await axios.get(apiUrl, { timeout: 10000 });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Search proxy error:', error.message);
+        res.status(500).json({ error: 'Search failed', details: error.message });
+    }
+});
+
+app.get('/api/geocode/reverse', async (req, res) => {
+    try {
+        const { lat, lon } = req.query;
+        const apiKey = process.env.GEOCODE_MAPS_CO_API_KEY || '68eb69ab749ab618160266qij4cc435';
+        
+        if (!lat || !lon) {
+            return res.status(400).json({ error: 'Missing lat or lon parameters' });
+        }
+
+        const apiUrl = `https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}&api_key=${apiKey}`;
+        
+        console.log('🔍 Reverse geocoding for:', lat, lon);
+        
+        const response = await axios.get(apiUrl, { 
+            timeout: 10000,
+            headers: { 'User-Agent': 'YourApp/1.0' }
+        });
+        
+        console.log('📍 Reverse geocode response structure:', Object.keys(response.data));
+        if (response.data.address) {
+            console.log('🏠 Address components:', Object.keys(response.data.address));
+        }
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('❌ Reverse proxy error:', error.response?.status, error.message);
+        res.status(error.response?.status || 500).json({ 
+            error: 'Reverse geocoding failed',
+            details: error.response?.data || error.message 
+        });
+    }
+});
 
 
 

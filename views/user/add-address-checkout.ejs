@@ -590,7 +590,7 @@
 
 <div class="form-container">
   <h3 class="form-title">Create User Address</h3>
-  <form id="addressForm" method="POST" action="/addAddress">
+  <form id="addressForm" method="POST" action="/checkout-add-address">
     <div class="loading-overlay" id="loadingOverlay">
       <div class="spinner"></div>
     </div>
@@ -619,7 +619,7 @@
 
     <div class="form-row">
       <div class="form-group geolocation-section">
-        <button type="button" id="getCurrentLocation" class="geolocation-btn" >
+        <button type="button" id="getCurrentLocation" class="geolocation-btn">
           <i class="fa-solid fa-location-dot"></i>  Use Current Location 
         </button>
         <div id="locationStatus" class="location-status"></div>
@@ -729,7 +729,7 @@
     
     try {
       button.disabled = true;
-      button.innerHTML = `<i class="fa-solid fa-hourglass-start"></i> Detecting...`;
+      button.innerHTML = `<i class="fa-solid fa-location-dot"></i> Detecting...`;
       showLocationStatus(' Fetching your location...', 'loading');
       
       const position = await new Promise((resolve, reject) => {

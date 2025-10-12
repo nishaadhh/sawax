@@ -445,12 +445,52 @@ const validateAddressField = async (req, res) => {
 };
 
 
+const addCheckoutAddress = async (req,res) => {
+    try {
+        const user = req.session.user;
+        const userData = await User.findById(user);
+        res.render("add-address-checkout",{
+            theUser:user,
+            user:userData
+        })
+    } catch (error) {
+        res.redirect("/pageNotFound")
+    }
+}
+
+const postAddAddressCheckout2 = async (req,res) => {
+    try {
+        const userId = req.session.user;
+        const userData = await User.findOne({_id:userId})
+        const { addressType, name, country, city, landMark, state, streetAddress, pincode, phone, email, altPhone } = req.body;
+
+        const userAddress = await Address.findOne({userId:userData._id});
+        
+        if(!userAddress){
+            const newAddress = new Address({
+                userId:userData,
+                address: [{addressType, name, country, city, landMark, state, streetAddress, pincode, phone, email, altPhone}]
+            });
+            await newAddress.save();
+        }else{
+            userAddress.address.push({addressType, name, country, city, landMark, state, streetAddress, pincode, phone, email, altPhone})
+            await userAddress.save();
+        }
+
+        res.redirect("/checkout")
+    } catch (error) {
+        console.error("Error adding address",error)
+        res.redirect("/pageNotFound")
+    }
+}
 
 module.exports = {
     loadCheckoutPage,
     addAddressCheckout,
     postAddAddressCheckout,
     validateAddressField,
+    addCheckoutAddress,
+    postAddAddressCheckout2
     
     
 

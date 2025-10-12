@@ -2,516 +2,958 @@
 
 <style>
     #country {
-    height: calc(2.25rem + 2px) !important; /* Matches Bootstrap input field height */
-    padding-top: 5px !important; /* Adjust vertical alignment */
-}
+        height: calc(2.25rem + 2px) !important;
+        padding-top: 5px !important;
+    }
 
-/* Edit Address Theme */
-:root {
-    --primary: #1a1a1a;
-    --secondary: #f8f8f8;
-    --accent: #d4af37;
-    --teal: #046963;
-    --text: #333;
-    --light-text: #777;
-    --border: #e0e0e0;
-    --error: #e74c3c;
-}
+    :root {
+        --primary: #1a1a1a;
+        --secondary: #f8f8f8;
+        --accent: #d4af37;
+        --teal: #046963;
+        --text: #333;
+        --light-text: #777;
+        --border: #e0e0e0;
+        --error: #e74c3c;
+        --primary-color: #d4af37;
+        --secondary-color: #685619;
+        --danger-color: #dc3545;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+    }
 
-body {
-    background-color: var(--secondary);
-    color: var(--text);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-}
+    body {
+        background-color: var(--secondary);
+        color: var(--text);
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-/* Banner Section */
-.banner-area.organic-breadcrumb {
-     background: linear-gradient(135deg, #d4af37 0%, black  100%);;
-    padding: 60px 0;
-    color: white;
-    box-shadow: 0 4px 10px #0000001a;
-}
-
-.breadcrumb-banner {
-    text-align: right;
-}
-
-.breadcrumb-banner h1 {
-    font-size: 36px;
-    font-weight: 300;
-    margin-bottom: 10px;
-    color: white;
-    position: relative;
-}
-
-.breadcrumb-banner h1::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 60px;
-    height: 2px;
-    background-color: var(--accent);
-}
-
-.breadcrumb-banner nav a {
-    color: var(--secondary);
-    font-size: 16px;
-    transition: color 0.3s;
-}
-
-.breadcrumb-banner nav a:hover {
-    color: var(--accent);
-}
-
-.breadcrumb-banner nav .lnr {
-    color: var(--secondary);
-    margin: 0 5px;
-}
-
-/* Form Container */
-.container.mt-4 {
-    padding: 40px 20px;
-}
-
-.container.mt-4 h3 {
-    font-size: 28px;
-    font-weight: 600;
-    text-align: center;
-    position: relative;
-}
-
-.container.mt-4 h3::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background-color: var(--accent);
-}
-
-/* Form Styling */
-#addressForm {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    padding: 30px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 8px;
-    display: block;
-}
-
-.form-control {
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    height: calc(2.25rem + 2px); /* Match #country */
-}
-
-.form-control:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
-    outline: none;
-}
-
-.form-control.border-3 {
-    border-width: 2px;
-}
-
-select.form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
-    padding-right: 30px;
-}
-
-/* Error Styling */
-.text-danger {
-    color: var(--error);
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
-}
-
-/* Submit Button */
-.btn-primary {
-    background: linear-gradient(135deg, #1a1a1a, #2c3e50);
-    border-color: var(--accent);
-    color: #ffff;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 12px 30px;
-    border-radius: 10px;
-    transition: all 0.3s;
-    width: 100%;
-    max-width: 200px;
-    display: block;
-    margin: 20px auto 0;
-}
-
-
-
-
-
-
-.btn-primary:hover {
-    background-color: #c1a033;
-    border-color: #c1a033;
-    transform: translateY(-2px);
-}
-
-.btn-primary:focus {
-    box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
-}
-
-.btn-primary:disabled {
-    background-color: #ccc;
-    border-color: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Loading spinner */
-.spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #333;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s ease-in-out infinite;
-    margin-right: 8px;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
     .banner-area.organic-breadcrumb {
-        padding: 40px 0;
-    }
-
-    .breadcrumb-banner h1 {
-        font-size: 28px;
-    }
-
-    .breadcrumb-banner nav a {
-        font-size: 14px;
-    }
-
-    .container.mt-4 {
-        padding: 20px 15px;
-    }
-
-    .container.mt-4 h3 {
-        font-size: 24px;
-    }
-
-    #addressForm {
-        padding: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-control {
-        font-size: 14px;
-    }
-
-    .btn-primary {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 576px) {
-    .row.mb-50, .row.mb-3 {
-        margin-bottom: 20px !important;
-    }
-
-    .form-group {
-        margin-bottom: 10px;
+        background: linear-gradient(135deg, #d4af37 0%, black 100%);
+        padding: 60px 0;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     .breadcrumb-banner {
-        text-align: center;
-        justify-content: center;
+        text-align: right;
     }
 
     .breadcrumb-banner h1 {
-        font-size: 24px;
+        font-size: 36px;
+        font-weight: 300;
+        margin-bottom: 10px;
+        color: white;
+        position: relative;
+    }
+
+    .breadcrumb-banner h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background-color: var(--accent);
+    }
+
+    .breadcrumb-banner nav a {
+        color: var(--secondary);
+        font-size: 16px;
+        transition: color 0.3s;
+        text-decoration: none;
+    }
+
+    .breadcrumb-banner nav a:hover {
+        color: var(--accent);
+    }
+
+    .container.mt-4 h3 {
+        font-size: 28px;
+        font-weight: 600;
+        text-align: center;
+        color: var(--teal);
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+    #addressForm {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-group label.required::after {
+        content: ' *';
+        color: var(--danger-color);
+        font-weight: bold;
+    }
+
+    .form-control {
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        width: 100%;
+        height: calc(2.25rem + 2px);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+        outline: none;
+    }
+
+    .form-control.is-valid {
+        border-color: var(--success-color);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--danger-color);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    .validation-message {
+        font-size: 0.875rem;
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    .validation-message.valid { color: var(--success-color); }
+    .validation-message.invalid { color: var(--danger-color); }
+
+    .char-counter {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 2px;
+    }
+
+    .char-counter.warning { color: var(--warning-color); }
+    .char-counter.danger { color: var(--danger-color); }
+
+    .form-progress {
+        height: 4px;
+        background-color: #e9ecef;
+        border-radius: 2px;
+        margin-bottom: 20px;
+    }
+
+    .form-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
+    }
+
+    .validation-summary {
+        background-color: #f8d7da;
+        border: 1px solid #f5c2c7;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: none;
+        color: #721c24;
+    }
+
+    .validation-summary.show { display: block; }
+
+    .geolocation-btn {
+        background: linear-gradient(135deg, var(--teal), #0a5d4a);
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .geolocation-btn:hover:not(:disabled) {
+        background: linear-gradient(135deg, #0a5d4a, var(--teal));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(4, 105, 99, 0.3);
+    }
+
+    .geolocation-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .location-status {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: none;
+        text-align: center;
+    }
+
+    .location-status.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        display: block;
+    }
+
+    .location-status.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        display: block;
+    }
+
+    .location-status.loading {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+        display: block;
+    }
+
+    .pac-container {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1051;
+        max-height: 200px;
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    .pac-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    .pac-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .pac-item:last-child {
+        border-bottom: none;
     }
 
     .btn-primary {
-        font-size: 12px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 8px;
+        transition: all 0.3s;
+        width: 100%;
+        max-width: 200px;
+        margin: 20px auto;
+        display: block;
     }
-}
+
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-primary:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+        #addressForm { padding: 20px; }
+        .geolocation-btn { padding: 14px 20px; font-size: 16px; }
+    }
 </style>
 
 <section class="banner-area organic-breadcrumb">
     <div class="container">
-        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-            <div class="col-first">
-                <h1>Edit Address</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/profile">Profile<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/address">Address<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="#">Edit Address</a>
-                </nav>
-            </div>
+        <div class="breadcrumb-banner">
+            <h1>Edit Address</h1>
+            <nav>
+                <a href="/">Home</a> <span class="lnr lnr-arrow-right"></span>
+                <a href="/profile">Profile</a> <span class="lnr lnr-arrow-right"></span>
+                <a href="/address">Address</a> <span class="lnr lnr-arrow-right"></span>
+                <a href="#">Edit Address</a>
+            </nav>
         </div>
     </div>
 </section>
 
 <div class="container mt-4">
-   <h3 class="mt-3" style="color: #046963; margin-bottom:70px">Update User Address</h3>
-   <form id="addressForm" class="border-0 p-3">
-       <div class="row mb-50">
-           <div class="form-group col-md-4">
-               <label for="addressType">Address Type:</label>
-               <input type="text" class="form-control border-3" value="<%=address.addressType%>" id="addressType" name="addressType" required>
-           </div>
-           <div class="form-group col-md-4">
-               <label for="name">Name:</label>
-               <input type="text" class="form-control border-3" value="<%=address.name%>" id="name" name="name" required>
-           </div>
-           <div class="form-group col-md-4">
-            <label for="country">Country:</label>
-            <select class="form-control border-3" id="country" name="country" required>
-                <option value="">Select Country</option>
-                <option value="India" <%= address.country === 'India' ? 'selected' : '' %>>India</option>
-                <option value="United States" <%= address.country === 'United States' ? 'selected' : '' %>>United States</option>
-                <option value="United Kingdom" <%= address.country === 'United Kingdom' ? 'selected' : '' %>>United Kingdom</option>
-                <option value="Canada" <%= address.country === 'Canada' ? 'selected' : '' %>>Canada</option>
-                <option value="Australia" <%= address.country === 'Australia' ? 'selected' : '' %>>Australia</option>
-            </select>
+    <h3>Update User Address</h3>
+    
+    <form id="addressForm">
+        <!-- Form Progress -->
+        <div class="form-progress">
+            <div class="form-progress-bar" id="formProgressBar"></div>
         </div>
-       </div>
-       <div class="row mb-3">
-           <div class="form-group col-md-4">
-               <label for="city">City:</label>
-               <input type="text" class="form-control border-3" value="<%=address.city%>" id="city" name="city" required>
-           </div>
-           <div class="form-group col-md-4">
-               <label for="landMark">Landmark:</label>
-               <input type="text" class="form-control border-3" value="<%=address.landMark%>" id="landMark" name="landMark" required>
-           </div>
-           <div class="form-group col-md-4">
-            <label for="state">State:</label>
-            <select class="form-control border-3" id="state" name="state" required>
-                <option value="">Select State</option>
-                <option value="Kerala" <%= address.state === 'Kerala' ? 'selected' : '' %>>Kerala</option>
-                <option value="Karnataka" <%= address.state === 'Karnataka' ? 'selected' : '' %>>Karnataka</option>
-                <option value="Tamil Nadu" <%= address.state === 'Tamil Nadu' ? 'selected' : '' %>>Tamil Nadu</option>
-                <option value="Maharashtra" <%= address.state === 'Maharashtra' ? 'selected' : '' %>>Maharashtra</option>
-                <option value="Gujarat" <%= address.state === 'Gujarat' ? 'selected' : '' %>>Gujarat</option>
-                <option value="Rajasthan" <%= address.state === 'Rajasthan' ? 'selected' : '' %>>Rajasthan</option>
-                <option value="Punjab" <%= address.state === 'Punjab' ? 'selected' : '' %>>Punjab</option>
-                <option value="Haryana" <%= address.state === 'Haryana' ? 'selected' : '' %>>Haryana</option>
-                <option value="Delhi" <%= address.state === 'Delhi' ? 'selected' : '' %>>Delhi</option>
-                <option value="West Bengal" <%= address.state === 'West Bengal' ? 'selected' : '' %>>West Bengal</option>
-            </select>
+        
+        <!-- Validation Summary -->
+        <div class="validation-summary" id="validationSummary">
+            <h5>Please fix the following errors:</h5>
+            <ul id="validationSummaryList"></ul>
         </div>
-       </div>
-       <div class="row mb-3">
-           <div class="form-group col-md-4">
-               <label for="streetAddress">Street Address:</label>
-               <input type="text" class="form-control border-3" value="<%=address.streetAddress%>" id="streetAddress" name="streetAddress" required>
-           </div>
-           <div class="form-group col-md-4">
-               <label for="pincode">Pincode:</label>
-               <input type="number" class="form-control border-3" value="<%=address.pincode%>" id="pincode" name="pincode" required>
-           </div>
-           <div class="form-group col-md-4">
-               <label for="phone">Phone:</label>
-               <input type="text" class="form-control border-3" value="<%=address.phone%>" id="phone" name="phone" required>
-           </div>
-       </div>
-       <div class="row mb-3">
-           <div class="form-group col-md-4">
-               <label for="email">Email:</label>
-               <input type="email" class="form-control border-3" value="<%=address.email%>" id="email" name="email" required>
-           </div>
-           <div class="form-group col-md-4">
-               <label for="altPhone">Alternate Phone:</label>
-               <input type="text" class="form-control border-3" value="<%=address.altPhone%>" id="altPhone" name="altPhone" required>
-           </div>
-       </div>
-       <button type="submit" id="submitButton" class="btn btn-primary">
-           <span id="buttonText">Update Address</span>
-       </button>
-   </form>
+
+        <!-- Row 1: Address Type, Name, Country -->
+        <div class="row mb-3">
+            <div class="form-group col-md-4">
+                <label for="addressType" class="required">Address Type:</label>
+                <select class="form-control" id="addressType" name="addressType" required>
+                    <option value="Home" <%= address.addressType === 'Home' ? 'selected' : '' %>>Home</option>
+                    <option value="Work" <%= address.addressType === 'Work' ? 'selected' : '' %>>Work</option>
+                    <option value="Other" <%= address.addressType === 'Other' ? 'selected' : '' %>>Other</option>
+                </select>
+                <div class="validation-message" id="addressType-message"></div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="name" class="required">Name:</label>
+                <input type="text" class="form-control" value="<%= address.name || '' %>" id="name" name="name" required maxlength="50">
+                <div class="validation-message" id="name-message"></div>
+                <div class="char-counter"><span id="name-count">0</span>/50</div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="country" class="required">Country:</label>
+                <select class="form-control" id="country" name="country" required>
+                    <option value="">Select Country</option>
+                    <option value="India" <%= address.country === 'India' ? 'selected' : '' %>>India</option>
+                </select>
+                <div class="validation-message" id="country-message"></div>
+            </div>
+        </div>
+
+        <!-- Geolocation Section -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button type="button" id="getCurrentLocation" class="geolocation-btn">
+                    
+                    <i class="fa-solid fa-location-dot"></i>  Use Current Location 
+                </button>
+                <div id="locationStatus" class="location-status"></div>
+            </div>
+        </div>
+
+        <!-- Street Address with Autocomplete -->
+        <div class="row mb-3">
+            <div class="form-group col-md-12" style="position: relative;">
+                <label for="streetAddress" class="required">Street Address:</label>
+                <input type="text" 
+                       class="form-control" 
+                       value="<%= address.streetAddress || '' %>" 
+                       id="streetAddress" 
+                       name="streetAddress" 
+                       required 
+                       maxlength="200"
+                       placeholder="Start typing or use location button above">
+                <div id="suggestions-dropdown" class="pac-container"></div>
+                <div class="validation-message" id="streetAddress-message"></div>
+                <div class="char-counter"><span id="streetAddress-count">0</span>/200</div>
+            </div>
+        </div>
+
+        <!-- Row 2: City, Landmark, State -->
+        <div class="row mb-3">
+            <div class="form-group col-md-4">
+                <label for="city" class="required">City:</label>
+                <input type="text" class="form-control" value="<%= address.city || '' %>" id="city" name="city" required maxlength="50">
+                <div class="validation-message" id="city-message"></div>
+                <div class="char-counter"><span id="city-count">0</span>/50</div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="landMark">Landmark:</label>
+                <input type="text" class="form-control" value="<%= address.landMark || '' %>" id="landMark" name="landMark" maxlength="100">
+                <div class="validation-message" id="landMark-message"></div>
+                <div class="char-counter"><span id="landMark-count">0</span>/100</div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="state" class="required">State:</label>
+                <select class="form-control" id="state" name="state" required>
+                    <option value="">Select State</option>
+                    <option value="Andhra Pradesh" <%= address.state === 'Andhra Pradesh' ? 'selected' : '' %>>Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh" <%= address.state === 'Arunachal Pradesh' ? 'selected' : '' %>>Arunachal Pradesh</option>
+                    <option value="Assam" <%= address.state === 'Assam' ? 'selected' : '' %>>Assam</option>
+                    <option value="Bihar" <%= address.state === 'Bihar' ? 'selected' : '' %>>Bihar</option>
+                    <option value="Chhattisgarh" <%= address.state === 'Chhattisgarh' ? 'selected' : '' %>>Chhattisgarh</option>
+                    <option value="Goa" <%= address.state === 'Goa' ? 'selected' : '' %>>Goa</option>
+                    <option value="Gujarat" <%= address.state === 'Gujarat' ? 'selected' : '' %>>Gujarat</option>
+                    <option value="Haryana" <%= address.state === 'Haryana' ? 'selected' : '' %>>Haryana</option>
+                    <option value="Himachal Pradesh" <%= address.state === 'Himachal Pradesh' ? 'selected' : '' %>>Himachal Pradesh</option>
+                    <option value="Jharkhand" <%= address.state === 'Jharkhand' ? 'selected' : '' %>>Jharkhand</option>
+                    <option value="Karnataka" <%= address.state === 'Karnataka' ? 'selected' : '' %>>Karnataka</option>
+                    <option value="Kerala" <%= address.state === 'Kerala' ? 'selected' : '' %>>Kerala</option>
+                    <option value="Madhya Pradesh" <%= address.state === 'Madhya Pradesh' ? 'selected' : '' %>>Madhya Pradesh</option>
+                    <option value="Maharashtra" <%= address.state === 'Maharashtra' ? 'selected' : '' %>>Maharashtra</option>
+                    <option value="Manipur" <%= address.state === 'Manipur' ? 'selected' : '' %>>Manipur</option>
+                    <option value="Meghalaya" <%= address.state === 'Meghalaya' ? 'selected' : '' %>>Meghalaya</option>
+                    <option value="Mizoram" <%= address.state === 'Mizoram' ? 'selected' : '' %>>Mizoram</option>
+                    <option value="Nagaland" <%= address.state === 'Nagaland' ? 'selected' : '' %>>Nagaland</option>
+                    <option value="Odisha" <%= address.state === 'Odisha' ? 'selected' : '' %>>Odisha</option>
+                    <option value="Punjab" <%= address.state === 'Punjab' ? 'selected' : '' %>>Punjab</option>
+                    <option value="Rajasthan" <%= address.state === 'Rajasthan' ? 'selected' : '' %>>Rajasthan</option>
+                    <option value="Sikkim" <%= address.state === 'Sikkim' ? 'selected' : '' %>>Sikkim</option>
+                    <option value="Tamil Nadu" <%= address.state === 'Tamil Nadu' ? 'selected' : '' %>>Tamil Nadu</option>
+                    <option value="Telangana" <%= address.state === 'Telangana' ? 'selected' : '' %>>Telangana</option>
+                    <option value="Tripura" <%= address.state === 'Tripura' ? 'selected' : '' %>>Tripura</option>
+                    <option value="Uttar Pradesh" <%= address.state === 'Uttar Pradesh' ? 'selected' : '' %>>Uttar Pradesh</option>
+                    <option value="Uttarakhand" <%= address.state === 'Uttarakhand' ? 'selected' : '' %>>Uttarakhand</option>
+                    <option value="West Bengal" <%= address.state === 'West Bengal' ? 'selected' : '' %>>West Bengal</option>
+                    <option value="Delhi" <%= address.state === 'Delhi' ? 'selected' : '' %>>Delhi</option>
+                </select>
+                <div class="validation-message" id="state-message"></div>
+            </div>
+        </div>
+
+        <!-- Row 3: Pincode, Phone, Email -->
+        <div class="row mb-3">
+            <div class="form-group col-md-4">
+                <label for="pincode" class="required">Pincode:</label>
+                <input type="text" class="form-control" value="<%= address.pincode || '' %>" id="pincode" name="pincode" required maxlength="6">
+                <div class="validation-message" id="pincode-message"></div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="phone" class="required">Phone:</label>
+                <input type="tel" class="form-control" value="<%= address.phone || '' %>" id="phone" name="phone" required maxlength="10">
+                <div class="validation-message" id="phone-message"></div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="email" class="required">Email:</label>
+                <input type="email" class="form-control" value="<%= address.email || '' %>" id="email" name="email" required>
+                <div class="validation-message" id="email-message"></div>
+            </div>
+        </div>
+
+        <!-- Alternate Phone -->
+        <div class="row mb-3">
+            <div class="form-group col-md-4">
+                <label for="altPhone">Alternate Phone:</label>
+                <input type="tel" class="form-control" value="<%= address.altPhone || '' %>" id="altPhone" name="altPhone" maxlength="10">
+                <div class="validation-message" id="altPhone-message"></div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submitButton" class="btn btn-primary" disabled>
+            <span id="buttonText">Update Address</span>
+        </button>
+    </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   document.getElementById('addressForm').addEventListener('submit', async function(event) {
-       event.preventDefault();
-       
-       if (!validateForm()) {
-           return;
-       }
+// === CONFIGURATION ===
+const GEOCODE_MAPS_CO_API_KEY = 'YOUR_GEOCODE_MAPS_CO_API_KEY'; // Replace with your actual key
+const USE_PROXY = true; // Set to false for production HTTPS only
+const API_BASE = USE_PROXY ? '/api/geocode' : 'https://geocode.maps.co';
 
-       const submitButton = document.getElementById('submitButton');
-       const buttonText = document.getElementById('buttonText');
-       
-       // Disable button and show loading state
-       submitButton.disabled = true;
-       buttonText.innerHTML = '<span class="spinner"></span>Updating...';
+let autocompleteXHR = null;
+let validationState = {};
+let validationTimeouts = {};
 
-       try {
-           const formData = new FormData(this);
-           const data = Object.fromEntries(formData);
+// Complete Initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log(' DOM loaded - Initializing Edit Address Form');
+    console.log(' Using proxy:', USE_PROXY);
+    console.log(' API Base:', API_BASE);
+    
+    // Initialize all components
+    initAutocomplete();
+    initializeCharacterCounters();
+    initializeValidation();
+    setupGeolocationButton();
+    
+    // Validate existing form data
+    setTimeout(() => {
+        validateExistingFields();
+        updateFormProgress();
+        updateSubmitButton();
+    }, 300);
+    
+    console.log(' All components initialized');
+});
 
-           const response = await fetch(`/editAddress?id=<%= address._id.toString() %>`, {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify(data)
-           });
+// FIXED: Character Counters
+function initializeCharacterCounters() {
+    const fields = ['name', 'city', 'landMark', 'streetAddress'];
+    fields.forEach(id => {
+        const field = document.getElementById(id);
+        const counter = document.getElementById(`${id}-count`);
+        if (field && counter) {
+            updateCharacterCount(field);
+            field.addEventListener('input', () => updateCharacterCount(field));
+        }
+    });
+    console.log(' Character counters initialized');
+}
 
-           const result = await response.json();
+// FIXED: Geolocation Button Setup
+function setupGeolocationButton() {
+    const button = document.getElementById('getCurrentLocation');
+    if (!button) {
+        console.error(' Geolocation button not found! Check ID="getCurrentLocation"');
+        return;
+    }
+    
+    console.log(' Geolocation button found and setting up...');
+    
+    // Clear any existing listeners
+    button.onclick = null;
+    
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(' GEOLOCATION BUTTON CLICKED!');
+        handleGeolocationClick.call(this);
+    });
+    
+    console.log(' Geolocation button event listener attached');
+}
 
-           if (response.ok && result.success) {
-               // Show success SweetAlert
-               const swalResult = await Swal.fire({
-                   title: 'Success!',
-                   text: 'Address updated successfully!',
-                   icon: 'success',
-                   confirmButtonText: 'OK',
-                   confirmButtonColor: '#d4af37',
-                   showClass: {
-                       popup: 'animate__animated animate__fadeInDown'
-                   },
-                   hideClass: {
-                       popup: 'animate__animated animate__fadeOutUp'
-                   }
-               });
+// COMPLETE Geolocation Handler
+async function handleGeolocationClick() {
+    console.log('Starting location api flow...');
+    const button = this;
+    const originalHTML = button.innerHTML;
+    
+    try {
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+        showLocationStatus(' Getting your location...', 'loading');
+        
+        if (!navigator.geolocation) {
+            throw new Error('Geolocation not supported');
+        }
+        
+        console.log(' Requesting location...');
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 30000
+            });
+        });
+        
+        const { latitude, longitude } = position.coords;
+        console.log(' Location obtained:', latitude, longitude);
+        
+        const address = await reverseGeocode(latitude, longitude);
+        console.log(' Address geocoded:', address);
+        
+        if (address) {
+            selectPlace(address);
+            showLocationStatus(' Address filled from your location!', 'success');
+        } else {
+            throw new Error('No address returned');
+        }
+        
+    } catch (error) {
+        console.error(' Geolocation failed:', error);
+        let message = 'Location Error: ';
+        
+        switch (error.code || 0) {
+            case 1: message += 'Access denied - enable location permissions'; break;
+            case 2: message += 'Location unavailable'; break;
+            case 3: message += 'Request timed out'; break;
+            default: message += error.message || 'Unknown error';
+        }
+        
+        showLocationStatus(message, 'error');
+        
+    } finally {
+        button.disabled = false;
+        button.innerHTML = originalHTML;
+    }
+}
 
-               if (swalResult.isConfirmed) {
-                   window.location.href = '/address';
-               }
-           } else {
-               throw new Error(result.message || 'Failed to update address');
-           }
-       } catch (error) {
-           console.error('Error updating address:', error);
-           Swal.fire({
-               title: 'Error!',
-               text: error.message || 'Failed to update address. Please try again.',
-               icon: 'error',
-               confirmButtonText: 'OK',
-               confirmButtonColor: '#e74c3c'
-           });
-       } finally {
-           // Re-enable button
-           submitButton.disabled = false;
-           buttonText.innerHTML = 'Update Address';
-       }
-   });
+async function reverseGeocode(lat, lon) {
+    const url = USE_PROXY 
+        ? `${API_BASE}/reverse?lat=${lat}&lon=${lon}`
+        : `${API_BASE}/reverse?lat=${lat}&lon=${lon}&api_key=${GEOCODE_MAPS_CO_API_KEY}`;
+    
+    console.log(' Reverse location api URL:', url);
+    
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        console.log(' Raw location api response:', data);
+        
+        // Handle different response structures
+        if (data.address) {
+            return data; // geocode.maps.co structure
+        } else if (data.results && data.results[0]) {
+            // Google Maps style
+            return data.results[0];
+        } else if (Array.isArray(data) && data[0]) {
+            return data[0];
+        }
+        
+        return data;
+    } catch (error) {
+        console.error(' Reverse location api error:', error);
+        throw error;
+    }
+}
+// Autocomplete Functions
+function initAutocomplete() {
+    const input = document.getElementById('streetAddress');
+    if (!input) return console.warn('Street address input not found');
+    
+    input.addEventListener('input', debounceAutocomplete);
+    input.addEventListener('focus', function() {
+        if (this.value.length >= 3) debounceAutocomplete.call(this);
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#streetAddress')) hideSuggestions();
+    });
+}
 
-   function validateForm() {
-       let isValid = true;
-       
-       // Clear previous errors
-       document.querySelectorAll('.text-danger').forEach(error => error.remove());
+let autocompleteTimeout;
+function debounceAutocomplete() {
+    clearTimeout(autocompleteTimeout);
+    autocompleteTimeout = setTimeout(() => performAutocomplete.call(this), 300);
+}
 
-       const requiredFields = ["addressType", "name", "country", "city", "landMark", "state", "streetAddress", "pincode", "phone", "email", "altPhone"];
-       
-       // Check required fields
-       requiredFields.forEach(function(field) {
-           const input = document.getElementById(field);
-           const inputValue = input.value.trim();
+function performAutocomplete() {
+    const query = this.value.trim();
+    if (query.length < 3) return hideSuggestions();
+    
+    const url = USE_PROXY 
+        ? `${API_BASE}/search?q=${encodeURIComponent(query)}`
+        : `${API_BASE}/search?q=${encodeURIComponent(query)}&limit=5&api_key=${GEOCODE_MAPS_CO_API_KEY}`;
+    
+    if (autocompleteXHR?.readyState !== 4) autocompleteXHR?.abort();
+    
+    autocompleteXHR = new XMLHttpRequest();
+    autocompleteXHR.open('GET', url);
+    autocompleteXHR.onload = () => {
+        if (autocompleteXHR.status === 200) {
+            const places = JSON.parse(autocompleteXHR.responseText);
+            showSuggestions(places);
+        }
+    };
+    autocompleteXHR.onerror = () => console.error('Autocomplete failed');
+    autocompleteXHR.send();
+}
 
-           if (inputValue === "") {
-               showFieldError(input, "This field is required.");
-               isValid = false;
-           }
-       });
+function showSuggestions(places) {
+    const dropdown = document.getElementById('suggestions-dropdown');
+    dropdown.innerHTML = '';
+    
+    if (!Array.isArray(places) || !places.length) return hideSuggestions();
+    
+    places.slice(0, 5).forEach(place => {
+        const item = document.createElement('div');
+        item.className = 'pac-item';
+        item.textContent = place.address?.display_name || place.display_name || 'Address';
+        item.onclick = () => selectPlace(place);
+        dropdown.appendChild(item);
+    });
+    
+    dropdown.style.display = 'block';
+}
 
-       if (!isValid) {
-           return false;
-       }
+function selectPlace(place) {
+    const fields = {
+        streetAddress: document.getElementById('streetAddress'),
+        city: document.getElementById('city'),
+        state: document.getElementById('state'),
+        country: document.getElementById('country'),
+        pincode: document.getElementById('pincode'),
+        landMark: document.getElementById('landMark')
+    };
+    
+    const addr = place.address || place;
+    console.log(' Full address data:', addr); // Debug log
+    
+    // Helper function to extract value from multiple possible field names
+    function getAddressComponent(components, possibleNames) {
+        for (const name of possibleNames) {
+            // Try exact match first
+            let value = components[name];
+            if (value) return value;
+            
+            // Try lowercase
+            value = components[name.toLowerCase()];
+            if (value) return value;
+            
+            // Try camelCase to snake_case conversion
+            const snakeCase = name.replace(/([A-Z])/g, '_$1').toLowerCase();
+            value = components[snakeCase];
+            if (value) return value;
+            
+            // Try removing spaces and underscores
+            const cleanName = name.replace(/[\s_]/g, '');
+            value = components[cleanName];
+            if (value) return value;
+        }
+        return '';
+    }
+    
+    // Street Address - combine multiple components
+    const road = getAddressComponent(addr, ['road', 'street', 'avenue', 'lane', 'drive', 'path', 'way']);
+    const house = getAddressComponent(addr, ['house_number', 'housenumber', 'building', 'flat']);
+    const neighbourhood = getAddressComponent(addr, ['neighbourhood', 'neighborhood', 'suburb', 'village']);
+    
+    let streetValue = '';
+    if (house) streetValue += house + ', ';
+    if (road) streetValue += road + ', ';
+    if (neighbourhood) streetValue += neighbourhood;
+    
+    // Fallback to display_name or formatted_address
+    if (!streetValue.trim()) {
+        streetValue = addr.display_name || addr.formatted_address || addr.address_line_1 || '';
+    }
+    
+    fields.streetAddress.value = streetValue.trim();
+    
+    // CITY - Try extensive list of possible city/district fields
+    const cityCandidates = [
+        'city', 'city_district', 'district', 'town', 'municipality', 
+        'administrative', 'hamlet', 'suburb', 'county', 'region',
+        'local_administrity', 'place', 'village', 'borough', 'ward',
+        'locality', 'sublocality', 'sublocality_level_1', 'sublocality_level_2'
+    ];
+    const cityValue = getAddressComponent(addr, cityCandidates);
+    fields.city.value = cityValue || '';
+    
+    // LANDMARK - Try even more fields for landmarks/local details
+    const landmarkCandidates = [
+        'landmark', 'poi', 'point_of_interest', 'amenity', 'leisure',
+        'shop', 'office', 'restaurant', 'cafe', 'bar', 'pub',
+        'neighbourhood', 'neighborhood', 'suburb', 'village',
+        'sublocality', 'sublocality_level_1', 'residential',
+        'commercial', 'industrial', 'building', 'house_name',
+        'destination', 'attraction', 'tourist_attraction'
+    ];
+    let landmarkValue = getAddressComponent(addr, landmarkCandidates);
+    
+    // If no specific landmark, try combining smaller location components
+    if (!landmarkValue) {
+        const subComponents = [];
+        const smallComponents = ['house_number', 'flat', 'unit', 'door', 'gate', 'block', 'wing'];
+        smallComponents.forEach(comp => {
+            const val = getAddressComponent(addr, [comp]);
+            if (val) subComponents.push(val);
+        });
+        landmarkValue = subComponents.join(', ') || '';
+    }
+    
+    if (fields.landMark) {
+        fields.landMark.value = landmarkValue || '';
+    }
+    
+    // State
+    const stateValue = getAddressComponent(addr, ['state', 'state_district', 'province', 'region']);
+    fields.state.value = stateValue || '';
+    
+    // Country
+    fields.country.value = (addr.country || addr.country_code === 'IN') ? 'India' : 'India';
+    
+    // Pincode/Postal Code
+    const pincodeValue = getAddressComponent(addr, ['postcode', 'pincode', 'postalcode', 'zipcode']);
+    fields.pincode.value = pincodeValue || '';
+    
+    // Trigger validation for all fields
+    Object.values(fields).forEach(f => f && validateField(f, true));
+    
+    hideSuggestions();
+    updateFormProgress();
+    updateSubmitButton();
+    
+    console.log(' Fields populated:', {
+        street: fields.streetAddress.value,
+        city: fields.city.value,
+        state: fields.state.value,
+        landmark: fields.landMark?.value || 'N/A',
+        pincode: fields.pincode.value
+    });
+}
+function hideSuggestions() {
+    document.getElementById('suggestions-dropdown').style.display = 'none';
+}
 
-       // Pattern validations
-       const namePattern = /^[A-Za-z\s]+$/;
-       const pincodePattern = /^\d{6}$/;
-       const phonePattern = /^\d{10}$/;
-       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function showLocationStatus(message, type) {
+    const el = document.getElementById('locationStatus');
+    if (!el) return;
+    el.textContent = message;
+    el.className = `location-status ${type}`;
+    el.style.display = type ? 'block' : 'none';
+    if (type === 'success') setTimeout(() => el.style.display = 'none', 5000);
+}
 
-       const validations = [
-           { field: 'name', pattern: namePattern, message: 'Name should contain alphabets only.' },
-           { field: 'city', pattern: namePattern, message: 'City should contain alphabets only.' },
-           { field: 'landMark', pattern: namePattern, message: 'Landmark should contain alphabets only.' },
-           { field: 'pincode', pattern: pincodePattern, message: 'Pincode should be a 6-digit number.' },
-           { field: 'phone', pattern: phonePattern, message: 'Phone number should be a 10-digit number.' },
-           { field: 'altPhone', pattern: phonePattern, message: 'Alternate phone number should be a 10-digit number.' },
-           { field: 'email', pattern: emailPattern, message: 'Please enter a valid email address.' }
-       ];
+// Validation System
+function initializeValidation() {
+    const form = document.getElementById('addressForm');
+    form.querySelectorAll('input, select').forEach(field => {
+        const name = field.name;
+        validationState[name] = !!field.value.trim();
+        
+        field.addEventListener('input', () => {
+            updateCharacterCount(field);
+            debounceValidation(field);
+        });
+        field.addEventListener('blur', () => validateField(field, true));
+        field.addEventListener('change', () => validateField(field, true));
+        
+        if (field.value.trim()) validateField(field, true);
+    });
+}
 
-       for (let validation of validations) {
-           const input = document.getElementById(validation.field);
-           if (input.value && !validation.pattern.test(input.value)) {
-               showFieldError(input, validation.message);
-               isValid = false;
-               break; // Show one error at a time
-           }
-       }
+function debounceValidation(field) {
+    const name = field.name;
+    clearTimeout(validationTimeouts[name]);
+    validationTimeouts[name] = setTimeout(() => validateField(field), 500);
+}
 
-       // Check if phone numbers are different
-       const phone = document.getElementById('phone').value;
-       const altPhone = document.getElementById('altPhone').value;
-       if (phone && altPhone && phone === altPhone) {
-           showFieldError(document.getElementById('altPhone'), 'Phone number and alternate phone number should be different.');
-           isValid = false;
-       }
+function validateField(field, showMsg = false) {
+    const name = field.name;
+    const value = field.value.trim();
+    let isValid = true;
+    let message = '';
+    
+    if (field.hasAttribute('required') && !value) {
+        isValid = false;
+        message = 'Required';
+    } else if (value) {
+        const result = validateFieldValue(name, value);
+        isValid = result.valid;
+        message = result.message;
+    }
+    
+    validationState[name] = isValid;
+    if (showMsg) setFieldState(field, isValid ? 'valid' : 'invalid', message);
+    
+    updateFormProgress();
+    updateSubmitButton();
+    return isValid;
+}
 
-       return isValid;
-   }
+function validateFieldValue(name, value) {
+    const validators = {
+        addressType: v => ({ valid: ['Home', 'Work', 'Other'].includes(v), message: '' }),
+        name: v => ({ valid: v.length >= 2 && /^[a-zA-Z\s]+$/.test(v), message: '' }),
+        country: v => ({ valid: v === 'India', message: '' }),
+        email: v => ({ valid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), message: '' }),
+        phone: v => ({ valid: /^[6-9]\d{9}$/.test(v), message: '' }),
+        pincode: v => ({ valid: /^\d{6}$/.test(v), message: '' })
+    };
+    return validators[name]?.(value) || { valid: true, message: '' };
+}
 
-   function showFieldError(input, message) {
-       const errorDiv = document.createElement('div');
-       errorDiv.className = "text-danger";
-       errorDiv.textContent = message;
-       input.parentNode.appendChild(errorDiv);
-   }
+function setFieldState(field, state, message) {
+    const msgEl = document.getElementById(`${field.id}-message`);
+    field.classList.toggle('is-valid', state === 'valid');
+    field.classList.toggle('is-invalid', state === 'invalid');
+    
+    if (msgEl) {
+        msgEl.classList.toggle('valid', state === 'valid');
+        msgEl.classList.toggle('invalid', state === 'invalid');
+        msgEl.textContent = message;
+    }
+}
 
-   // Real-time validation - clear errors when user starts typing
-   document.querySelectorAll('.form-control').forEach(input => {
-       input.addEventListener('input', function() {
-           const existingError = this.parentNode.querySelector('.text-danger');
-           if (existingError) {
-               existingError.remove();
-           }
-       });
-   });
+function updateCharacterCount(field) {
+    const counter = document.getElementById(`${field.id}-count`);
+    if (!counter) return;
+    const length = field.value.length;
+    counter.textContent = length;
+}
+
+function updateFormProgress() {
+    const total = Object.keys(validationState).length;
+    const valid = Object.values(validationState).filter(Boolean).length;
+    document.getElementById('formProgressBar').style.width = total ? `${(valid/total)*100}%` : '0%';
+}
+
+function updateSubmitButton() {
+    const btn = document.getElementById('submitButton');
+    const required = ['addressType', 'name', 'country', 'state', 'city', 'streetAddress', 'pincode', 'phone', 'email'];
+    btn.disabled = !required.every(f => validationState[f]);
+}
+
+function validateExistingFields() {
+    document.querySelectorAll('[required]').forEach(field => validateField(field, true));
+}
+
+// Form Submission
+document.getElementById('addressForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    
+    // Your existing form submission logic here
+    console.log('Form submitted:', data);
+    
+    try {
+        const response = await fetch(`/editAddress?id=<%= address._id %>`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            Swal.fire('Success!', 'Address updated!', 'success');
+            window.location.href = '/address';
+        } else {
+            Swal.fire('Error!', result.message || 'Update failed', 'error');
+        }
+    } catch (error) {
+        Swal.fire('Error!', 'Network error', 'error');
+    }
+});
+
+// Country/State Sync
+document.getElementById('country').addEventListener('change', function() {
+    const stateSelect = document.getElementById('state');
+    if (this.value !== 'India') {
+        stateSelect.innerHTML = '<option value="">Select State</option>';
+    }
+    validateField(this);
+    validateField(stateSelect);
+});
 </script>

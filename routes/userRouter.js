@@ -132,6 +132,10 @@ router.post("/editAddress", userAuth, profileController.postEditAddress);
 router.get("/deleteAddress", userAuth, profileController.deleteAddress);
 
 
+router.get("/checkout-add", userAuth, checkoutController.addCheckoutAddress);
+router.post("/checkout-add-address", userAuth, checkoutController.postAddAddressCheckout2);
+
+
 
 router.get("/coupon", userAuth, couponController.loadCoupons);
 router.post("/coupon/apply", userAuth, couponController.applyCoupon);
