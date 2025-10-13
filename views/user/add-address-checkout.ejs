@@ -597,7 +597,11 @@
 
     <div class="form-row mb-50">
       <div class="form-group">
-        <input type="text" class="form-control" id="addressType" name="addressType" placeholder=" " required />
+        <!-- <input type="text" class="form-control" id="addressType" name="addressType" placeholder=" " required /> -->
+        <select class="form-control" id="addressType" name="addressType" required>
+          <option value="Home">Home</option>
+          <option value="Work">Work</option>
+        </select>
         <label for="addressType" class="form-label">Address Type</label>
       </div>
       <div class="form-group">
@@ -607,7 +611,7 @@
       <div class="form-group">
         <select class="form-control" id="country" name="country" required>
           <option value="India">India</option>
-          <option value="Saudi Arabia">Saudi Arabia</option>
+          <!-- <option value="Saudi Arabia">Saudi Arabia</option> -->
         </select>
         <label for="country" class="form-label">Country</label>
       </div>

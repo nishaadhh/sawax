@@ -355,9 +355,6 @@
                 <label for="type">Type</label>
                 <select id="type" class="form-input" required>
                     <option value="percentage">Percentage Off</option>
-                    <!-- <option value="fixed">Fixed Amount</option>
-                    <option value="shipping">Free Shipping</option>
-                    <option value="bogo">Buy One Get One</option> -->
                 </select>
             </div>
             <div class="form-group">
@@ -366,12 +363,9 @@
             </div>
             <div class="form-group">
                 <label for="discountType">Discount Type</label>
-                <!-- <input type="text" id="discountType" class="form-input" required> -->
-                <select  class="form-input" id="discountType">
+                <select class="form-input" id="discountType">
                     <option value="coupon">Coupons</option>
                 </select>
-
-
             </div>
             <div class="form-group">
                 <label for="code">Coupon Code</label>
@@ -436,7 +430,20 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="action-btn edit" onclick="openEditModal('<%= coupon._id %>', '<%= coupon.title %>', '<%= coupon.description %>', '<%= coupon.type %>', '<%= coupon.discountValue %>', '<%= coupon.discountType %>', '<%= coupon.code %>', '<%= coupon.minOrder %>', '<%= coupon.maxDiscount %>', '<%= coupon.expireOn.toISOString().split('T')[0] %>', '<%= coupon.usageLimit %>', '<%= coupon.isPremium %>')">Edit</button>
+                                <button class="action-btn edit" onclick="openEditModal(
+                                    '<%= coupon._id %>',
+                                    '<%= coupon.title.replace(/'/g, '\\\'') %>',
+                                    '<%= coupon.description ? coupon.description.replace(/'/g, '\\\'') : '' %>',
+                                    '<%= coupon.type %>',
+                                    '<%= coupon.discountValue %>',
+                                    '<%= coupon.discountType %>',
+                                    '<%= coupon.code %>',
+                                    '<%= coupon.minOrder %>',
+                                    '<%= coupon.maxDiscount %>',
+                                    '<%= new Date(coupon.expireOn).toISOString().split('T')[0] %>',
+                                    '<%= coupon.usageLimit %>',
+                                    '<%= coupon.isPremium %>'
+                                )">Edit</button>
                                 <button class="action-btn delete" onclick="deleteCoupon('<%= coupon._id %>')">Delete</button>
                                 <button class="action-btn toggle" onclick="toggleCouponStatus('<%= coupon._id %>', <%= coupon.isList %>)">
                                     <%= coupon.isList ? 'Unlist' : 'List' %>
@@ -515,19 +522,56 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        function openEditModal(id, title, description, type, discountValue, discountType, code, minOrder, maxDiscount, expireOn, usageLimit, isPremium) {
+            try {
+                // Ensure date is in YYYY-MM-DD format
+                let formattedExpireOn = expireOn;
+                if (expireOn) {
+                    const date = new Date(expireOn);
+                    if (!isNaN(date)) {
+                        formattedExpireOn = date.toISOString().split('T')[0];
+                    }
+                }
+
+                // Set form values
+                document.getElementById('editCouponId').value = id || '';
+                document.getElementById('editTitle').value = title || '';
+                document.getElementById('editDescription').value = description || '';
+                document.getElementById('editType').value = type || 'percentage';
+                document.getElementById('editDiscountValue').value = parseFloat(discountValue) || 0;
+                document.getElementById('editDiscountType').value = discountType || '';
+                document.getElementById('editCode').value = code || '';
+                document.getElementById('editMinOrder').value = parseFloat(minOrder) || 0;
+                document.getElementById('editMaxDiscount').value = parseFloat(maxDiscount) || 0;
+                document.getElementById('editExpireOn').value = formattedExpireOn || '';
+                document.getElementById('editUsageLimit').value = parseInt(usageLimit) || 0;
+                document.getElementById('editIsPremium').value = isPremium.toString() || 'false';
+
+                // Show the modal
+                document.getElementById('editCouponModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error opening edit modal:', error);
+                showNotification('Error opening edit modal', 'error');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editCouponModal').style.display = 'none';
+        }
+
         document.getElementById('addCouponForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const couponData = {
                 title: document.getElementById('title').value.trim(),
                 description: document.getElementById('description').value.trim(),
                 type: document.getElementById('type').value,
-                discountValue: document.getElementById('discountValue').value,
+                discountValue: parseFloat(document.getElementById('discountValue').value),
                 discountType: document.getElementById('discountType').value.trim(),
-                code: document.getElementById('code').value.trim(),
-                minOrder: document.getElementById('minOrder').value,
-                maxDiscount: document.getElementById('maxDiscount').value,
+                code: document.getElementById('code').value.trim().toUpperCase(),
+                minOrder: parseFloat(document.getElementById('minOrder').value),
+                maxDiscount: parseFloat(document.getElementById('maxDiscount').value),
                 expireOn: document.getElementById('expireOn').value,
-                usageLimit: document.getElementById('usageLimit').value,
+                usageLimit: parseInt(document.getElementById('usageLimit').value),
                 isPremium: document.getElementById('isPremium').value === 'true'
             };
 
@@ -551,7 +595,20 @@
                             <td>${new Date(result.coupon.expireOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
                             <td><span class="status-badge active">Active</span></td>
                             <td>
-                                <button class="action-btn edit" onclick="openEditModal('${result.coupon._id}', '${result.coupon.title}', '${result.coupon.description}', '${result.coupon.type}', '${result.coupon.discountValue}', '${result.coupon.discountType}', '${result.coupon.code}', '${result.coupon.minOrder}', '${result.coupon.maxDiscount}', '${result.coupon.expireOn.toISOString().split('T')[0]}', '${result.coupon.usageLimit}', '${result.coupon.isPremium}')">Edit</button>
+                                <button class="action-btn edit" onclick="openEditModal(
+                                    '${result.coupon._id}',
+                                    '${result.coupon.title.replace(/'/g, '\\\'')}',
+                                    '${result.coupon.description ? result.coupon.description.replace(/'/g, '\\\'') : ''}',
+                                    '${result.coupon.type}',
+                                    '${result.coupon.discountValue}',
+                                    '${result.coupon.discountType}',
+                                    '${result.coupon.code}',
+                                    '${result.coupon.minOrder}',
+                                    '${result.coupon.maxDiscount}',
+                                    '${new Date(result.coupon.expireOn).toISOString().split('T')[0]}',
+                                    '${result.coupon.usageLimit}',
+                                    '${result.coupon.isPremium}'
+                                )">Edit</button>
                                 <button class="action-btn delete" onclick="deleteCoupon('${result.coupon._id}')">Delete</button>
                                 <button class="action-btn toggle" onclick="toggleCouponStatus('${result.coupon._id}', true)">Unlist</button>
                             </td>
@@ -563,29 +620,10 @@
                     showNotification(result.message || 'Failed to add coupon', 'error');
                 }
             } catch (error) {
-                // showNotification('Error adding coupon', 'error');
+                console.error('Error adding coupon:', error);
+                showNotification('Error adding coupon: ' + error.message, 'error');
             }
         });
-
-        function openEditModal(id, title, description, type, discountValue, discountType, code, minOrder, maxDiscount, expireOn, usageLimit, isPremium) {
-            document.getElementById('editCouponId').value = id;
-            document.getElementById('editTitle').value = title;
-            document.getElementById('editDescription').value = description || '';
-            document.getElementById('editType').value = type;
-            document.getElementById('editDiscountValue').value = Number(discountValue);
-            document.getElementById('editDiscountType').value = discountType;
-            document.getElementById('editCode').value = code;
-            document.getElementById('editMinOrder').value = Number(minOrder);
-            document.getElementById('editMaxDiscount').value = Number(maxDiscount);
-            document.getElementById('editExpireOn').value = expireOn;
-            document.getElementById('editUsageLimit').value = Number(usageLimit);
-            document.getElementById('editIsPremium').value = isPremium.toString();
-            document.getElementById('editCouponModal').style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editCouponModal').style.display = 'none';
-        }
 
         document.getElementById('editCouponForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -681,7 +719,8 @@
                             showNotification(result.message || 'Failed to delete coupon', 'error');
                         }
                     } catch (error) {
-                        showNotification('Error deleting coupon', 'error');
+                        console.error('Error deleting coupon:', error);
+                        showNotification('Error deleting coupon: ' + error.message, 'error');
                     }
                 }
             });
@@ -702,7 +741,8 @@
                     showNotification(result.message || 'Failed to toggle coupon status', 'error');
                 }
             } catch (error) {
-                showNotification('Error toggling coupon status', 'error');
+                console.error('Error toggling coupon status:', error);
+                showNotification('Error toggling coupon status: ' + error.message, 'error');
             }
         }
 
@@ -723,9 +763,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-        const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
                         entry.target.style.animationPlayState = 'running';
                     }
                 });

@@ -572,7 +572,7 @@ const loadShoppingPage = async (req, res) => {
             selectedCategory: null,
             searchQuery: '',
             minPrice: 0,
-            maxPrice: 30000,
+            maxPrice: 40000,
             sort: 'relevance',
             alphaFilter: ''
         });
