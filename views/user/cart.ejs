@@ -778,92 +778,123 @@
       }
 
       async function checkStockAndPriceBeforeCheckout(event) {
-        event.preventDefault();
-        try {
-          const response = await fetch("/refresh-cart", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-          });
+  event.preventDefault();
 
-          if (!response.ok) {
-            const text = await response.text();
-            if (text.startsWith("<!DOCTYPE")) {
-              throw new Error("Received HTML instead of JSON. Possible authentication issue.");
+  try {
+    const response = await fetch("/refresh-cart");
+    const data = await response.json();
+
+    if (data.success) {
+      let hasOutOfStock = false;
+      let hasBlockedItem = false; 
+
+      data.cart.forEach(item => {
+        const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
+
+        if (cartItem) {
+          // Update price and total dynamically
+          const priceElement = cartItem.querySelector(".product-price");
+          const totalElement = cartItem.querySelector(".cart-item-price");
+          const quantityElement = cartItem.querySelector(".quantity-display");
+
+          if (priceElement) priceElement.textContent = `₹${item.price.toFixed(2)}`;
+          if (totalElement) {
+            totalElement.dataset.price = item.price;
+            totalElement.textContent = `₹${(item.price * item.quantity).toFixed(2)}`;
+          }
+          if (quantityElement) quantityElement.dataset.stock = item.stock;
+
+          // Checking stock
+          if (item.stock === 0) {
+            hasOutOfStock = true;
+            if (!cartItem.querySelector(".out-of-stock")) {
+              cartItem.querySelector(".cart-item-details").innerHTML +=
+                '<p class="out-of-stock" style="color:red;">Out of Stock</p>';
             }
-            const data = await response.json();
-            if (data.redirect) {
-              window.location.href = data.redirect;
-              return;
-            }
-            throw new Error(data.message || `HTTP error: ${response.status}`);
           }
 
-          const data = await response.json();
-          if (data.success) {
-            let hasOutOfStock = false;
-            data.cart.forEach(item => {
-              const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
-              if (cartItem) {
-                cartItem.querySelector(".product-price").textContent = `₹${item.price.toFixed(2)}`;
-                cartItem.querySelector(".cart-item-price").dataset.price = item.price;
-                cartItem.querySelector(".cart-item-price").textContent = `₹${(item.price * item.quantity).toFixed(2)}`;
-                cartItem.querySelector(".quantity-display").dataset.stock = item.stock;
-                if (item.stock === 0) {
-                  hasOutOfStock = true;
-                  if (!cartItem.querySelector(".out-of-stock")) {
-                    cartItem.querySelector(".cart-item-details").innerHTML += '<p class="out-of-stock">Out of Stock</p>';
-                  }
-                }
-              }
-            });
-            updateCartTotal();
-            if (data.priceChanged) {
-              Swal.fire({
-                icon: "info",
-                title: "Price Update",
-                text: "Some product prices have been updated. Please review before proceeding.",
-                confirmButtonColor: "#d4af37",
-                background: "#f8f8f8",
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: false
-              });
-              return;
+          // Checking if product is blocked by admin
+          if (item.isBlocked) {
+            hasBlockedItem = true;
+            if (!cartItem.querySelector(".blocked-item")) {
+              cartItem.querySelector(".cart-item-details").innerHTML +=
+                '<p class="blocked-item" style="color:red;">This product is blocked</p>';
             }
-            if (hasOutOfStock) {
-              Swal.fire({
-                icon: "warning",
-                title: "Out of Stock!",
-                text: "One or more products in your cart are out of stock. Please remove them to proceed.",
-                confirmButtonColor: "#d4af37",
-                background: "#f8f8f8",
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: false
-              });
-              return;
-            }
-            window.location.href = "/checkout";
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: data.message || "Failed to validate cart.",
-              confirmButtonColor: "#d4af37",
-              background: "#f8f8f8"
-            });
           }
-        } catch (error) {
-          console.error("Error validating cart:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: error.message || "Failed to validate cart.",
-            confirmButtonColor: "#d4af37",
-            background: "#f8f8f8"
-          });
         }
+      });
+
+      // Update the total amount after all checks
+      updateCartTotal();
+
+      // If price changed
+      if (data.priceChanged) {
+        Swal.fire({
+          icon: "info",
+          title: "Price Updated!",
+          text: "Some product prices have been updated. Please review before checkout.",
+          confirmButtonColor: "#d4af37",
+          background: "#f8f8f8",
+          timer: 2500,
+          timerProgressBar: true,
+        });
+        return;
       }
+
+      // If any out-of-stock items found
+      if (hasOutOfStock) {
+        Swal.fire({
+          icon: "error",
+          title: "Out of Stock!",
+          text: "One or more items are out of stock. Please remove them to proceed.",
+          confirmButtonColor: "#d4af37",
+          background: "#f8f8f8",
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      // If any blocked items found
+      if (hasBlockedItem) {
+        Swal.fire({
+          icon: "error",
+          title: "Blocked Product!",
+          text: "One or more products in your cart are blocked by admin. Please remove them to proceed.",
+          confirmButtonColor: "#d4af37",
+          background: "#f8f8f8",
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      // Everything fine → proceed to checkout
+      window.location.href = "/checkout";
+
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to refresh cart data. Please try again later.",
+        confirmButtonColor: "#d4af37",
+        background: "#f8f8f8",
+      });
+    }
+
+  } catch (error) {
+    console.error("Error checking stock and price:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops!",
+      text: "Something went wrong while verifying your cart.",
+      confirmButtonColor: "#d4af37",
+      background: "#f8f8f8",
+    });
+  }
+}
 
       async function updateQuantity(productId, change) {
         try {
@@ -972,12 +1003,6 @@
           const price = parseFloat(cartItem.querySelector(".cart-item-price").dataset.price);
           cartItem.querySelector(".cart-item-price").textContent = `${(price * currentQuantity).toFixed(2)}`;
           updateCartTotal();
-
-
-
-
-
-          
           Swal.fire({
             icon: "error",
             title: "Error!",

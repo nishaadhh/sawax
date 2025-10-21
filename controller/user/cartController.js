@@ -268,7 +268,8 @@ const refreshCart = async (req, res) => {
         image: item.image,
         price: item.price,
         quantity: item.quantity,
-        stock: item.productId.quantity
+        stock: item.productId.quantity,
+        isBlocked: item.productId.isBlocked
       }));
 
     res.json({ success: true, cart: cartItems, priceChanged });
@@ -297,6 +298,41 @@ const getCartCount = async (req, res) => {
   }
 };
 
+
+const proceedToCheckout = async (req, res) => {
+  try {
+    const userId = req.session.user;
+
+    if (!userId) {
+      return res.redirect("/login");
+    }
+
+    const cart = await Cart.findOne({ userId }).populate("items.productId");
+
+    if (!cart || cart.items.length === 0) {
+      return res.redirect("/cart?message=" + encodeURIComponent("Your cart is empty"));
+    }
+
+    // ✅ Check for blocked items
+    const blockedItems = cart.items.filter(
+      (item) => item.productId && item.productId.isBlocked === true
+    );
+
+    if (blockedItems.length > 0) {
+      // ⛔ If any product is blocked, redirect back to cart with a message
+      const message = encodeURIComponent("Some items in your cart are blocked. Please remove them to proceed.");
+      return res.redirect("/cart?message=" + message);
+    }
+
+    // ✅ Otherwise, allow checkout
+    return res.render("checkout", { cart: cart.items });
+  } catch (error) {
+    console.error("Error checking blocked items:", error);
+    return res.redirect("/page-404");
+  }
+};
+
+
 module.exports = {
   getCart,
   updateCart,
@@ -305,6 +341,7 @@ module.exports = {
   addToCart,
   removeFromCart,
   refreshCart,
+  proceedToCheckout
 };
 
 
