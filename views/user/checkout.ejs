@@ -7,9 +7,6 @@
       <div class="col-first">
         <h1>Checkout</h1>
         <nav class="d-flex align-items-center">
-          <!-- <a href="/">Home / <span class="lnr lnr-arrow-right" style="text-decoration: none; color: #d4af37;"></span></a>
-          <a href="/cart">Cart <span class="lnr lnr-arrow-right" style="text-decoration: none; color: #d4af37;"></span></a>
-          <a href="/checkout" style="text-decoration: none; color: #d4af37;">/ Checkout</a> -->
         </nav>
       </div>
     </div>
@@ -813,7 +810,6 @@
         <% } %>
         <div class="dropdown-address">
           <a type="button" id="newAddressBtn" href="/checkout-add" class="add-address"> Add Adress</a>
-          <!-- <button type="button" onclick="toggleAddressDropdown(event)" id="newAddressBtn" aria-expanded="false" aria-controls="addressDropdown">New Address</button> -->
           <div class="dropdown-address-content" id="addressDropdown">
             <!-- Form Progress Indicator -->
             <div class="form-progress">
@@ -1025,7 +1021,6 @@
             <div class="available-coupons-header">
               <div class="d-flex align-items-center">
                 <h4 class="coupons-title">
-                  <!-- <i class="fas fa-gift"></i> -->
                   Available Offers
                 </h4>
                 <span class="coupons-count ml-2"><%= availableCoupons.length %> Available</span>
@@ -1114,7 +1109,6 @@
               <button class="btn apply-btn" type="button" onclick="applyCoupon()">Apply</button>
             </div>
           </div>
-          <!-- <a href="/coupon">view all coupons</a>  -->
 
           <div id="appliedCouponInfo" class="coupon-applied" style="display: none;">
             <span id="appliedCouponText"></span>
@@ -1147,7 +1141,7 @@
     if (params.get('retry') === '1') {
       const onlineRadio = document.querySelector('input[name="payment"][value="online"]');
       if (onlineRadio) onlineRadio.checked = true;
-      // Trigger after a short delay to ensure DOM  ready ayo nn
+      // Trigger after a short delay to ensure DOM ready
       setTimeout(() => {
         const btn = document.getElementById('placeOrderBtn');
         if (btn && !btn.disabled) {
@@ -1847,10 +1841,78 @@
         };
 
         const rzp = new Razorpay(options);
-        // Handle payment failure: redirect to error page with context
-        rzp.on('payment.failed', function () {
-          window.location.href = '/errorpage?type=payment_failed';
+        
+        // Handle payment failure: NEW - Create orders with pending payment
+        rzp.on('payment.failed', function (response) {
+          console.log('Payment failed:', response.error);
+          
+          // Create orders with pending payment status
+          fetch('/handlePaymentFailure', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              razorpay_order_id: orderData.order_id,
+              error_description: response.error.description
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Payment Failed',
+                html: `
+                  <div style="text-align: left; margin: 20px 0;">
+                    <p>Payment failed, but your order has been placed.</p>
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ffeaa7;">
+                      <p style="margin: 0; color: #856404;"><i class="fas fa-info-circle"></i> <strong>What's Next?</strong></p>
+                      <p style="margin: 5px 0; font-size: 14px; color: #856404;">You can complete the payment from your orders page.</p>
+                    </div>
+                  </div>
+                `,
+                confirmButtonText: 'View Orders',
+                showCancelButton: true,
+                cancelButtonText: 'Stay Here'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = '/orders';
+                } else {
+                  // Remove loading state
+                  placeOrderBtn.classList.remove('loading');
+                  placeOrderBtn.disabled = false;
+                  placeOrderBtn.textContent = 'Place Order';
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Order Creation Failed',
+                text: data.message || 'Failed to create order after payment failure',
+                confirmButtonText: 'OK'
+              });
+              // Remove loading state
+              placeOrderBtn.classList.remove('loading');
+              placeOrderBtn.disabled = false;
+              placeOrderBtn.textContent = 'Place Order';
+            }
+          })
+          .catch(error => {
+            console.error('Error handling payment failure:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Something went wrong. Please try again.',
+              confirmButtonText: 'OK'
+            });
+            // Remove loading state
+            placeOrderBtn.classList.remove('loading');
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = 'Place Order';
+          });
         });
+        
         rzp.open();
 
       } else {
@@ -1985,5 +2047,3 @@
     }
   });
 </script>
-
-

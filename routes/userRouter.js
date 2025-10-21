@@ -69,15 +69,6 @@ router.post('/reset-password', userController.resetPassword);
 router.get('/referral', userController.loadReferralPage);
 router.post('/validate-referral', userController.validateReferralCode);
 
-
-
-
-
-
-
-
-
-
 // Static Pages
 router.get("/about", userController.about);
 
