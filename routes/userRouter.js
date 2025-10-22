@@ -164,6 +164,14 @@ router.post("/cancelOrder", userAuth, orderController.cancelOrder);
 router.post("/requestReturn", userAuth, orderController.requestReturn);
 router.get("/order-success/:orderId", userAuth, orderController.renderSuccessPage);
 
+
+
+router.post('/retryGroupPayment', userAuth, orderController.retryGroupPayment);
+router.post('/verifyGroupPayment', userAuth, orderController. verifyGroupPayment);
+
+
+
+
 // Wishlist Routes
 router.get('/wishlist', userAuth, userController.wishlistpage);
 router.post('/addToWishlist/:id', userAuth, userController.addToWishlist);

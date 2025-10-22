@@ -587,188 +587,6 @@ const verifyRetryPayment = async (req, res) => {
   }
 };
 
-// NEW: Retry payment for entire group
-const retryGroupPayment = async (req, res) => {
-  try {
-    const { groupId } = req.body;
-    const userId = req.session.user;
-
-    console.log('RetryGroupPayment request:', { groupId, userId });
-
-    // Find all pending orders in group
-    const pendingOrders = await Order.find({
-      orderGroupId: groupId,
-      userId,
-      $or: [
-        { status: 'payment_pending' },
-        { paymentMethod: 'online', paymentStatus: { $in: ['failed', 'pending'] } }
-      ]
-    });
-
-    if (pendingOrders.length === 0) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'No pending payments in group' 
-      });
-    }
-
-    const totalAmount = pendingOrders.reduce((sum, o) => sum + o.finalAmount, 0);
-
-    // Create new Razorpay order for group retry
-    const receiptId = generateReceiptId('group_retry');
-    const options = {
-      amount: Math.round(totalAmount * 100),
-      currency: "INR",
-      receipt: receiptId,
-      notes: {
-        group_id: groupId,
-        retry_group: 'true',
-        num_orders: pendingOrders.length,
-        purpose: 'group_payment_retry'
-      }
-    };
-
-    const razorpayOrder = await razorpay.orders.create(options);
-
-    // Store retry details in session
-    req.session.retryGroupPayment = {
-      groupId,
-      razorpayOrderId: razorpayOrder.id,
-      pendingOrderIds: pendingOrders.map(o => o._id)
-    };
-
-    // Get user details
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    res.json({
-      success: true,
-      order_id: razorpayOrder.id,
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency,
-      key_id: process.env.RAZORPAY_KEY_ID,
-      user: {
-        name: user.name,
-        email: user.email
-      },
-      groupDetails: {
-        groupId,
-        totalAmount,
-        numOrders: pendingOrders.length
-      }
-    });
-
-  } catch (error) {
-    console.error('Error in retry group payment:', error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Failed to create group retry payment',
-      error: error.message
-    });
-  }
-};
-
-// NEW: Verify group retry payment
-const verifyGroupPayment = async (req, res) => {
-  try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const userId = req.session.user;
-
-    console.log('VerifyGroupPayment request:', { razorpay_order_id, razorpay_payment_id });
-
-    // Verify signature
-    const sign = razorpay_order_id + "|" + razorpay_payment_id;
-    const expectedSign = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(sign.toString())
-      .digest("hex");
-
-    if (razorpay_signature !== expectedSign) {
-      console.error('Group payment signature verification failed');
-      return res.status(400).json({
-        success: false,
-        message: 'Payment verification failed - Invalid signature'
-      });
-    }
-
-    // Get retry group payment details from session
-    const retryGroup = req.session.retryGroupPayment;
-    if (!retryGroup || retryGroup.razorpayOrderId !== razorpay_order_id) {
-      return res.status(400).json({
-        success: false,
-        message: 'Group retry payment details not found or mismatch'
-      });
-    }
-
-    // Get payment details from Razorpay
-    const payment = await razorpay.payments.fetch(razorpay_payment_id);
-    console.log('Group payment details:', { status: payment.status, amount: payment.amount });
-
-    if (payment.status !== 'captured') {
-      return res.status(400).json({
-        success: false,
-        message: 'Payment not captured'
-      });
-    }
-
-    // Update all pending orders in the group
-    const updatedOrders = await Promise.all(retryGroup.pendingOrderIds.map(async (orderId) => {
-      const updated = await Order.findByIdAndUpdate(
-        orderId,
-        {
-          paymentStatus: 'completed',
-          status: 'pending',
-          razorpayPaymentId: razorpay_payment_id,
-          updatedOn: new Date()
-        },
-        { new: true }
-      );
-
-      if (!updated) {
-        throw new Error(`Order ${orderId} not found`);
-      }
-
-      // Update product quantities now that payment is successful
-      for (const item of updated.orderedItems) {
-        await Product.findByIdAndUpdate(item.product, {
-          $inc: { quantity: -item.quantity },
-        });
-      }
-
-      return updated;
-    }));
-
-    // Clear session
-    delete req.session.retryGroupPayment;
-
-    console.log('Group retry payment successful for group:', retryGroup.groupId);
-
-    res.json({
-      success: true,
-      message: 'Group payment completed successfully',
-      orders: updatedOrders.map(o => ({
-        orderId: o.orderId,
-        finalAmount: o.finalAmount,
-        paymentStatus: o.paymentStatus
-      })),
-      redirectUrl: '/orders'
-    });
-
-  } catch (error) {
-    console.error('Error verifying group payment:', error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Group payment verification failed',
-      error: error.message
-    });
-  }
-};
-
 // Verify Razorpay payment and create orders
 const verifyCheckoutPayment = async (req, res) => {
   try {
@@ -1417,6 +1235,191 @@ const renderSuccessPage = async (req, res) => {
     });
   }
 };
+// Add this to orderController.js
+
+// NEW: Retry payment for entire order group
+const retryGroupPayment = async (req, res) => {
+  try {
+    const { groupId } = req.body;
+    const userId = req.session.user;
+
+    console.log('RetryGroupPayment request:', { groupId, userId });
+
+    // Find all orders in the group that need payment
+    const orders = await Order.find({ 
+      orderGroupId: groupId,
+      userId: userId,
+      paymentStatus: { $in: ['failed', 'pending'] },
+      paymentMethod: 'online'
+    });
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No pending orders found in this group'
+      });
+    }
+
+    // Calculate total amount for all pending orders
+    const totalAmount = orders.reduce((sum, order) => sum + order.finalAmount, 0);
+
+    // Get user details
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Create new Razorpay order for group payment
+    const receiptId = generateReceiptId('grp');
+    const options = {
+      amount: Math.round(totalAmount * 100),
+      currency: "INR",
+      receipt: receiptId,
+      notes: {
+        group_id: groupId.slice(-12),
+        num_orders: orders.length.toString(),
+        purpose: 'group_payment_retry'
+      }
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
+
+    // Store retry details in session
+    req.session.retryGroupPayment = {
+      groupId: groupId,
+      orderIds: orders.map(o => o._id),
+      razorpayOrderId: razorpayOrder.id,
+      totalAmount: totalAmount
+    };
+
+    res.json({
+      success: true,
+      order_id: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      key_id: process.env.RAZORPAY_KEY_ID,
+      user: {
+        name: user.name,
+        email: user.email
+      },
+      groupDetails: {
+        groupId: groupId,
+        numOrders: orders.length,
+        totalAmount: totalAmount
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in retry group payment:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to create group payment',
+      error: error.message
+    });
+  }
+};
+
+// NEW: Verify group payment
+const verifyGroupPayment = async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const userId = req.session.user;
+
+    console.log('VerifyGroupPayment request:', { razorpay_order_id, razorpay_payment_id });
+
+    // Verify signature
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign.toString())
+      .digest("hex");
+
+    if (razorpay_signature !== expectedSign) {
+      console.error('Group payment signature verification failed');
+      return res.status(400).json({
+        success: false,
+        message: 'Payment verification failed - Invalid signature'
+      });
+    }
+
+    // Get retry payment details from session
+    const retryGroupPayment = req.session.retryGroupPayment;
+    if (!retryGroupPayment || retryGroupPayment.razorpayOrderId !== razorpay_order_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Group payment details not found or mismatch'
+      });
+    }
+
+    // Get payment details from Razorpay
+    const payment = await razorpay.payments.fetch(razorpay_payment_id);
+    console.log('Group payment details:', { status: payment.status, amount: payment.amount });
+
+    if (payment.status !== 'captured') {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment not captured'
+      });
+    }
+
+    // Update all orders in the group
+    const updatedOrders = await Order.updateMany(
+      { _id: { $in: retryGroupPayment.orderIds } },
+      {
+        $set: {
+          paymentStatus: 'completed',
+          status: 'pending',
+          razorpayPaymentId: razorpay_payment_id,
+          updatedOn: new Date()
+        }
+      }
+    );
+
+    if (updatedOrders.modifiedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No orders updated'
+      });
+    }
+
+    // Update product quantities for each order
+    const orders = await Order.find({ _id: { $in: retryGroupPayment.orderIds } });
+    for (const order of orders) {
+      for (const item of order.orderedItems) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { quantity: -item.quantity },
+        });
+      }
+    }
+
+    // Clear session
+    delete req.session.retryGroupPayment;
+
+    console.log('Group payment successful:', {
+      groupId: retryGroupPayment.groupId,
+      numOrders: orders.length
+    });
+
+    res.json({
+      success: true,
+      message: 'Group payment completed successfully',
+      groupId: retryGroupPayment.groupId,
+      numOrders: orders.length,
+      redirectUrl: '/orders'
+    });
+
+  } catch (error) {
+    console.error('Error verifying group payment:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Payment verification failed',
+      error: error.message
+    });
+  }
+};
 
 module.exports = {
   placeOrder,
@@ -1425,9 +1428,9 @@ module.exports = {
   handlePaymentFailure,
   retryPayment,
   verifyRetryPayment,
-  retryGroupPayment,
-  verifyGroupPayment,
   getOrders,
+   retryGroupPayment,
+  verifyGroupPayment,
   loadOrderDetails,
   cancelOrder,
   requestReturn,
