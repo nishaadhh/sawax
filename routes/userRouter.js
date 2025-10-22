@@ -69,6 +69,15 @@ router.post('/reset-password', userController.resetPassword);
 router.get('/referral', userController.loadReferralPage);
 router.post('/validate-referral', userController.validateReferralCode);
 
+
+
+
+
+
+
+
+
+
 // Static Pages
 router.get("/about", userController.about);
 
@@ -145,6 +154,9 @@ router.post("/addAddressCheckout", userAuth, checkoutController.postAddAddressCh
 router.post("/placeOrder", userAuth, orderController.placeOrder);
 router.post("/createCheckoutOrder", userAuth, orderController.createCheckoutOrder);
 router.post("/verifyCheckoutPayment", userAuth, orderController.verifyCheckoutPayment);
+router.post("/handlePaymentFailure", userAuth, orderController.handlePaymentFailure);
+router.post("/retryPayment", userAuth, orderController.retryPayment);
+router.post("/verifyRetryPayment", userAuth, orderController.verifyRetryPayment);
 router.get("/orders", userAuth, orderController.getOrders);
 router.get("/order-details", userAuth, orderController.loadOrderDetails);
 router.get("/order-details/:orderId", userAuth, orderController.loadOrderDetails);

@@ -119,7 +119,7 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'return_requested', 'returning', 'returned'],
+    enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'return_requested', 'returning', 'returned', 'payment_pending'],
     default: 'pending',
   },
   trackingNumber: {
@@ -176,6 +176,15 @@ const orderSchema = new mongoose.Schema({
   razorpayPaymentId: {
     type: String,
   },
+  // Order grouping fields
+  orderGroupId: {
+    type: String,
+    index: true,
+  },
+  isGrouped: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true
 });
@@ -185,8 +194,11 @@ orderSchema.index({ userId: 1, createdOn: -1 });
 orderSchema.index({ orderId: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ paymentMethod: 1 });
+orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ razorpayOrderId: 1 });
 orderSchema.index({ razorpayPaymentId: 1 });
+orderSchema.index({ orderGroupId: 1 });
+orderSchema.index({ userId: 1, orderGroupId: 1 });
 
 // Middleware to update 'updatedOn' field
 orderSchema.pre('save', function(next) {
@@ -233,6 +245,13 @@ orderSchema.virtual('isReturnEligible').get(function() {
   
   const daysSinceDelivery = Math.floor((new Date() - this.deliveredOn) / (1000 * 60 * 60 * 24));
   return daysSinceDelivery <= 7;
+});
+
+// Virtual for checking if payment retry is needed
+orderSchema.virtual('needsPaymentRetry').get(function() {
+  return this.paymentMethod === 'online' && 
+         (this.paymentStatus === 'failed' || this.paymentStatus === 'pending') &&
+         this.status === 'payment_pending';
 });
 
 // Virtual for formatted order amount

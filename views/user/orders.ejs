@@ -288,32 +288,276 @@
             color: #721c24; 
             border: 1px solid #f5c6cb;
         }
-
-        /* Payment Status Indicator */
-        .payment-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-            margin-left: 10px;
+        .status-payment-pending,
+        .status-payment_pending { 
+            background: #ffebcd; 
+            color: #d2691e; 
+            border: 1px solid #ffd700;
+        }
+        .status-mixed { 
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+            color: #495057; 
+            border: 1px solid #adb5bd;
         }
 
-        .payment-status.pending {
-            background: #fff3cd;
+        /* Payment Pending Alert */
+        .payment-pending-alert {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid var(--warning);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-pending-alert i {
+            color: var(--warning);
+            font-size: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .payment-pending-text {
+            flex: 1;
+            font-weight: 500;
             color: #856404;
         }
 
-        .payment-status.completed {
-            background: #d1f2eb;
-            color: #00695c;
+        /* Order Group Styles */
+        .order-group-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+            position: relative;
+            overflow: hidden;
         }
 
-        .payment-status.failed {
-            background: #f8d7da;
-            color: #721c24;
+        .order-group-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #c1a033, var(--accent));
+        }
+
+        .order-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .group-info .group-id {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .group-info .group-id i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        .group-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--light-text);
+            flex-wrap: wrap;
+        }
+
+        .group-count {
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .group-items {
+            background: var(--info);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .group-status-badges {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .group-summary {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .group-amount {
+            text-align: right;
+        }
+
+        .group-amount .amount-label {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 5px;
+        }
+
+        .group-amount .amount-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .group-amount .discount-info {
+            font-size: 12px;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .group-payment-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .group-details {
+            border-top: 2px solid var(--border);
+            padding-top: 20px;
+            margin-top: 15px;
+        }
+
+        .group-details-header {
+            margin-bottom: 15px;
+        }
+
+        .group-details-header h4 {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .group-details-header i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        .group-orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .group-order-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .group-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .group-order-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .group-order-body {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .product-image-small {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-image-small.placeholder {
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+        }
+
+        .group-order-details {
+            flex: 1;
+        }
+
+        .group-order-details .product-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .group-order-details .order-meta {
+            font-size: 12px;
+            color: var(--light-text);
+        }
+
+        .group-order-amount {
+            text-align: right;
+        }
+
+        .group-order-amount .amount-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .group-order-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
         }
 
         /* Action Buttons */
@@ -321,6 +565,7 @@
             display: flex;
             gap: 12px;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -384,6 +629,16 @@
             box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
         }
 
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #e67e22);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.3);
+        }
+
         .btn-outline {
             background: transparent;
             border: 2px solid var(--accent);
@@ -393,25 +648,6 @@
         .btn-outline:hover {
             background: var(--accent);
             color: white;
-        }
-
-        /* NEW: Payment button styles */
-        .btn-payment {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            animation: pulse 2s infinite;
-        }
-
-        .btn-payment:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
-            animation: none;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
         }
 
         .btn:disabled {
@@ -453,8 +689,8 @@
         }
 
         .empty-orders i {
-            font-size: 64px;
-            color: var(--light-text);
+            font-size: 18px;
+            color: rgb(23, 22, 22);
             margin-bottom: 30px;
         }
 
@@ -471,7 +707,7 @@
         }
 
         .btn-shop {
-            background: linear-gradient(135deg,#d4af37, #403616);
+             background: linear-gradient(135deg,#d4af37, #403616);
             color: rgb(227, 221, 221);
             padding: 15px 30px;
             text-decoration: none;
@@ -632,118 +868,6 @@
         .order-card:nth-child(3n) {
             animation-delay: 0.2s;
         }
-
-        /* Bulk Order Styles */
-        .bulk-order-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bulk-order-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), #c1a033);
-        }
-
-        .bulk-order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            border-color: var(--accent);
-        }
-
-        .group-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .group-header h3 {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .group-header .order-ids {
-            font-size: 14px;
-            color: var(--light-text);
-            margin-bottom: 10px;
-        }
-
-        .group-header .order-date {
-            font-size: 14px;
-            color: var(--light-text);
-            margin-bottom: 10px;
-        }
-
-        .group-header .payment-method {
-            font-size: 14px;
-            color: var(--light-text);
-            margin-bottom: 10px;
-        }
-
-        .group-header .address-details {
-            background: var(--secondary);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .group-header .address-details h4 {
-            font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .group-header .address-details p {
-            font-size: 14px;
-            color: var(--light-text);
-            margin: 5px 0;
-        }
-
-        .group-header .total-amount {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .group-header .total-saved {
-            font-size: 14px;
-            color: var(--success);
-        }
-
-        .group-items .sub-order-card {
-            border-top: 1px solid var(--border);
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
-        .group-items .sub-order-card:first-child {
-            border-top: none;
-            padding-top: 0;
-            margin-top: 0;
-        }
-
-        .group-items .status-badge {
-            margin-bottom: 10px;
-            display: inline-block;
-        }
-
-        .group-items .order-actions {
-            margin-top: 10px;
-            justify-content: flex-start;
-        }
     </style>
 </head>
 <body>
@@ -782,16 +906,204 @@
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="return_requested">Return Requested</option>
+                        <option value="payment_pending">Payment Pending</option>
                     </select>
                 </div>
             </div>
 
             <!-- Orders Grid -->
             <div class="orders-grid" id="orders-container">
-                <% if (groups && groups.length > 0) { %>
-                    <% groups.forEach((group, groupIndex) => { %>
-                        <% if (group.length === 1) { %>
-                            <% let order = group[0]; %>
+                <% if (orders && orders.length > 0) { %>
+                    <% orders.forEach((orderData, index) => { %>
+                        <% if (orderData.type === 'group') { %>
+                            <!-- Order Group Card -->
+                            <div class="order-group-card order-item" 
+                                 data-order-id="<%= orderData.orderGroupId %>" 
+                                 data-date="<%= orderData.createdOn ? new Date(orderData.createdOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '' %>" 
+                                 data-status="<%= orderData.groupStatus.toLowerCase().replace('_', '-') %>" 
+                                 data-product-names="<%= orderData.orders.map(o => o.orderedItems.map(item => item.productName ? item.productName.toLowerCase() : '').join(',')).join(',') %>"
+                                 style="animation-delay: <%= index * 0.1 %>s">
+                                
+                                <!-- Group Header -->
+                                <div class="order-group-header">
+                                    <div class="group-info">
+                                        <div class="group-id">
+                                            <i class="fas fa-layer-group"></i>
+                                            Group #<%= orderData.orderGroupId %>
+                                        </div>
+                                        <div class="group-meta">
+                                            <span class="group-count"><%= orderData.orders.length %> Orders</span>
+                                            <span class="group-items"><%= orderData.groupTotalItems %> Items</span>
+                                            <span class="group-date">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <%= new Date(orderData.createdOn).toLocaleDateString('en-US', { 
+                                                    year: 'numeric', 
+                                                    month: 'long', 
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                }) %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="group-status-badges">
+                                        <% if (orderData.groupStatus === 'mixed') { %>
+                                            <span class="status-badge status-mixed">
+                                                <i class="fas fa-tasks"></i> Mixed Status
+                                            </span>
+                                        <% } else { %>
+                                            <span class="status-badge status-<%= orderData.groupStatus.toLowerCase().replace('_', '-') %>">
+                                                <i class="fas fa-<%= 
+                                                    orderData.groupStatus === 'pending' ? 'clock' :
+                                                    orderData.groupStatus === 'confirmed' ? 'check-circle' :
+                                                    orderData.groupStatus === 'shipped' ? 'truck' :
+                                                    orderData.groupStatus === 'delivered' ? 'check-double' :
+                                                    orderData.groupStatus === 'cancelled' ? 'times-circle' :
+                                                    orderData.groupStatus === 'payment_pending' ? 'credit-card' :
+                                                    'question-circle'
+                                                %>"></i>
+                                                <%= orderData.groupStatus.charAt(0).toUpperCase() + orderData.groupStatus.slice(1).replace('_', ' ') %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Group Summary -->
+                                <div class="group-summary">
+                                    <div class="group-amount">
+                                        <div class="amount-label">Total Amount</div>
+                                        <div class="amount-value">₹<%= orderData.groupTotalAmount.toFixed(2) %></div>
+                                        <% if (orderData.groupTotalDiscount > 0) { %>
+                                            <div class="discount-info">
+                                                <i class="fas fa-tag"></i> Saved ₹<%= orderData.groupTotalDiscount.toFixed(2) %>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="group-payment-info">
+                                        <span><i class="fas fa-credit-card"></i> <%= 
+                                            orderData.paymentMethod === 'cod' ? 'Cash on Delivery' :
+                                            orderData.paymentMethod === 'online' ? 'Online Payment' :
+                                            orderData.paymentMethod === 'wallet' ? 'Wallet Payment' : 'Unknown'
+                                        %></span>
+                                        <% if (orderData.address && orderData.address.city) { %>
+                                            <span><i class="fas fa-map-marker-alt"></i> <%= orderData.address.city %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Group Actions -->
+                                <div class="group-actions">
+                                    <button class="btn btn-primary" onclick="toggleGroupDetails('<%= orderData.orderGroupId %>')">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </button>
+                                    
+                                    <% const pendingOrders = orderData.orders.filter(o => o.status === 'payment_pending' || (o.paymentMethod === 'online' && (o.paymentStatus === 'failed' || o.paymentStatus === 'pending'))); %>
+                                    <% if (pendingOrders.length > 0) { %>
+                                        <% if (pendingOrders.length === 1) { %>
+                                            <button class="btn btn-warning" onclick="retryPayment('<%= pendingOrders[0]._id %>', '<%= pendingOrders[0].orderId %>', <%= pendingOrders[0].finalAmount %>)">
+                                                <i class="fas fa-credit-card"></i> Complete Payment
+                                            </button>
+                                        <% } else { %>
+                                            <% const groupPendingAmount = pendingOrders.reduce((sum, o) => sum + o.finalAmount, 0); %>
+                                            <button class="btn btn-warning" onclick="retryGroupPayment('<%= orderData.orderGroupId %>', <%= groupPendingAmount %>)">
+                                                <i class="fas fa-credit-card"></i> Pay Entire Group (₹<%= groupPendingAmount.toFixed(2) %>)
+                                            </button>
+                                            <button class="btn btn-outline" onclick="toggleGroupDetails('<%= orderData.orderGroupId %>')">
+                                                <i class="fas fa-list"></i> Pay Individual Orders
+                                            </button>
+                                        <% } %>
+                                    <% } %>
+                                </div>
+
+                                <!-- Expandable Group Details -->
+                                <div class="group-details" id="group-details-<%= orderData.orderGroupId %>" style="display: none;">
+                                    <div class="group-details-header">
+                                        <h4><i class="fas fa-list"></i> Order Details</h4>
+                                    </div>
+                                    <div class="group-orders-list">
+                                        <% orderData.orders.forEach((order, orderIndex) => { %>
+                                            <div class="group-order-item">
+                                                <div class="group-order-header">
+                                                    <div class="group-order-id">#<%= order.orderId %></div>
+                                                    <span class="status-badge status-<%= 
+                                                        order.requestStatus === 'rejected' ? 'return-rejected' :
+                                                        order.requestStatus === 'approved' ? 'return-approved' :
+                                                        order.status === 'return_requested' && !order.requestStatus ? 'return-requested' :
+                                                        (order.status || '').toLowerCase().replace('_', '-')
+                                                    %>">
+                                                        <%= 
+                                                            order.requestStatus === 'rejected' ? 'Return Rejected' :
+                                                            order.requestStatus === 'approved' ? 'Return Approved' :
+                                                            order.status === 'return_requested' && !order.requestStatus ? 'Return Requested' :
+                                                            order.status === 'payment_pending' ? 'Payment Pending' :
+                                                            (order.status || '').charAt(0).toUpperCase() + (order.status || '').slice(1).replace('_', ' ')
+                                                        %>
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="group-order-body">
+                                                    <% if (order.orderedItems && order.orderedItems.length > 0 && order.orderedItems[0].productImages && order.orderedItems[0].productImages.length > 0) { %>
+                                                        <img class="product-image-small" 
+                                                             src="<%= order.orderedItems[0].productImages[0] %>" 
+                                                             alt="<%= order.orderedItems[0].productName %>"
+                                                             loading="lazy">
+                                                    <% } else { %>
+                                                        <div class="product-image-small placeholder">
+                                                            <i class="fas fa-image"></i>
+                                                        </div>
+                                                    <% } %>
+                                                    
+                                                    <div class="group-order-details">
+                                                        <div class="product-name">
+                                                            <%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems[0].productName || 'Product Not Found' : 'No Items' %>
+                                                        </div>
+                                                        <div class="order-meta">
+                                                            <span>Qty: <%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems[0].quantity || 0 : 0 %></span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="group-order-amount">
+                                                        <div class="amount-value">₹<%= order.finalAmount ? order.finalAmount.toFixed(2) : '0.00' %></div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="group-order-actions">
+                                                    <a href="/order-details?orderId=<%= order._id %>" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-eye"></i> View
+                                                    </a>
+                                                    
+                                                    <!-- Individual order actions -->
+                                                    <% if (order.status === 'payment_pending' || (order.paymentMethod === 'online' && (order.paymentStatus === 'failed' || order.paymentStatus === 'pending'))) { %>
+                                                        <button class="btn btn-sm btn-warning" onclick="retryPayment('<%= order._id %>', '<%= order.orderId %>', <%= order.finalAmount %>)">
+                                                            <i class="fas fa-credit-card"></i> Pay
+                                                        </button>
+                                                    <% } %>
+                                                    
+                                                    <% if (['pending', 'confirmed', 'shipped'].includes(order.status) && !order.requestStatus) { %>
+                                                        <button class="btn btn-sm btn-danger" onclick="cancelOrder('<%= order._id %>')">
+                                                            <i class="fas fa-times"></i> Cancel
+                                                        </button>
+                                                    <% } %>
+                                                    
+                                                    <% if (order.status === 'delivered' && !order.requestStatus && order.deliveredOn) { %>
+                                                        <% const deliveryDate = new Date(order.deliveredOn); %>
+                                                        <% const currentDate = new Date(); %>
+                                                        <% const daysSinceDelivery = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60 * 24)); %>
+                                                        <% if (daysSinceDelivery <= 7) { %>
+                                                            <button class="btn btn-sm btn-success" onclick="requestReturn('<%= order._id %>')">
+                                                                <i class="fas fa-undo"></i> Return
+                                                            </button>
+                                                        <% } %>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <!-- Single Order Card -->
+                            <% const order = orderData.order; %>
                             <div class="order-card order-item" 
                                  data-order-id="<%= order.orderId || '' %>" 
                                  data-date="<%= order.createdOn ? new Date(order.createdOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '' %>" 
@@ -802,9 +1114,18 @@
                                      (order.status || '').toLowerCase().replace('_', '-')
                                  %>" 
                                  data-product-names="<%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems.map(item => item.productName ? item.productName.toLowerCase() : '').join(',') : '' %>"
-                                 data-payment-status="<%= order.paymentStatus || 'pending' %>"
-                                 style="animation-delay: <%= groupIndex * 0.1 %>s">
-                                
+                                 style="animation-delay: <%= index * 0.1 %>s">
+                            
+                                <!-- Payment Pending Alert -->
+                                <% if (order.status === 'payment_pending' || (order.paymentMethod === 'online' && (order.paymentStatus === 'failed' || order.paymentStatus === 'pending'))) { %>
+                                    <div class="payment-pending-alert">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <div class="payment-pending-text">
+                                            <strong>Payment Required!</strong> Complete your payment to process this order.
+                                        </div>
+                                    </div>
+                                <% } %>
+
                                 <!-- Order Header -->
                                 <div class="order-header">
                                     <div>
@@ -820,40 +1141,29 @@
                                             }) : 'N/A' %>
                                         </div>
                                     </div>
-                                    <div>
-                                        <span class="status-badge status-<%= 
-                                            order.requestStatus === 'rejected' ? 'return-rejected' :
-                                            order.requestStatus === 'approved' ? 'return-approved' :
-                                            order.status === 'return_requested' && !order.requestStatus ? 'return-requested' :
-                                            (order.status || '').toLowerCase().replace('_', '-')
-                                        %>">
-                                            <i class="fas fa-<%= 
-                                                order.status === 'pending' ? 'clock' :
-                                                order.status === 'confirmed' ? 'check-circle' :
-                                                order.status === 'shipped' ? 'truck' :
-                                                order.status === 'delivered' ? 'check-double' :
-                                                order.status === 'cancelled' ? 'times-circle' :
-                                                'question-circle'
-                                            %>"></i>
-                                            <%= 
-                                                order.requestStatus === 'rejected' ? 'Return Rejected' :
-                                                order.requestStatus === 'approved' ? 'Return Approved' :
-                                                order.status === 'return_requested' && !order.requestStatus ? 'Return Requested' :
-                                                (order.status || '').charAt(0).toUpperCase() + (order.status || '').slice(1).replace('_', ' ')
-                                            %>
-                                        </span>
-                                        <!-- NEW: Payment Status Badge -->
-                                        <% if (order.paymentMethod === 'online') { %>
-                                            <span class="payment-status <%= order.paymentStatus || 'pending' %>">
-                                                <i class="fas fa-<%= 
-                                                    order.paymentStatus === 'completed' ? 'check-circle' :
-                                                    order.paymentStatus === 'failed' ? 'times-circle' :
-                                                    'clock'
-                                                %>"></i>
-                                                Payment <%= (order.paymentStatus || 'pending').charAt(0).toUpperCase() + (order.paymentStatus || 'pending').slice(1) %>
-                                            </span>
-                                        <% } %>
-                                    </div>
+                                    <span class="status-badge status-<%= 
+                                        order.requestStatus === 'rejected' ? 'return-rejected' :
+                                        order.requestStatus === 'approved' ? 'return-approved' :
+                                        order.status === 'return_requested' && !order.requestStatus ? 'return-requested' :
+                                        (order.status || '').toLowerCase().replace('_', '-')
+                                    %>">
+                                        <i class="fas fa-<%= 
+                                            order.status === 'pending' ? 'clock' :
+                                            order.status === 'confirmed' ? 'check-circle' :
+                                            order.status === 'shipped' ? 'truck' :
+                                            order.status === 'delivered' ? 'check-double' :
+                                            order.status === 'cancelled' ? 'times-circle' :
+                                            order.status === 'payment_pending' ? 'credit-card' :
+                                            'question-circle'
+                                        %>"></i>
+                                        <%= 
+                                            order.requestStatus === 'rejected' ? 'Return Rejected' :
+                                            order.requestStatus === 'approved' ? 'Return Approved' :
+                                            order.status === 'return_requested' && !order.requestStatus ? 'Return Requested' :
+                                            order.status === 'payment_pending' ? 'Payment Pending' :
+                                            (order.status || '').charAt(0).toUpperCase() + (order.status || '').slice(1).replace('_', ' ')
+                                        %>
+                                    </span>
                                 </div>
 
                                 <!-- Order Body -->
@@ -907,9 +1217,9 @@
                                         <i class="fas fa-eye"></i> View Details
                                     </a>
                                     
-                                    <!-- NEW: Complete Payment Button for pending online payments -->
-                                    <% if (order.paymentMethod === 'online' && order.paymentStatus === 'pending' && ['pending', 'confirmed'].includes(order.status)) { %>
-                                        <button class="btn btn-payment" onclick="completePayment('<%= order._id %>')">
+                                    <!-- Complete Payment Button for Failed/Pending Payments -->
+                                    <% if (order.status === 'payment_pending' || (order.paymentMethod === 'online' && (order.paymentStatus === 'failed' || order.paymentStatus === 'pending'))) { %>
+                                        <button class="btn btn-warning" onclick="retryPayment('<%= order._id %>', '<%= order.orderId %>', <%= order.finalAmount %>)">
                                             <i class="fas fa-credit-card"></i> Complete Payment
                                         </button>
                                     <% } %>
@@ -938,165 +1248,6 @@
                                     <% } %>
                                 </div>
                             </div>
-                        <% } else { %>
-                            <div class="bulk-order-card order-item" 
-                                 data-order-id="<%= group.map(o => o.orderId || '').join(',') %>" 
-                                 data-date="<%= group[0].createdOn ? new Date(group[0].createdOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '' %>" 
-                                 data-status="<%= 
-                                     group[0].requestStatus === 'rejected' ? 'return-rejected' :
-                                     group[0].requestStatus === 'approved' ? 'return-approved' :
-                                     group[0].status === 'return_requested' && !group[0].requestStatus ? 'return-requested' :
-                                     (group[0].status || '').toLowerCase().replace('_', '-')
-                                 %>" 
-                                 data-product-names="<%= group.flatMap(o => o.orderedItems.map(item => item.productName ? item.productName.toLowerCase() : '')).join(',') %>"
-                                 data-payment-status="<%= group[0].paymentStatus || 'pending' %>"
-                                 style="animation-delay: <%= groupIndex * 0.1 %>s">
-
-                                <!-- Group Header -->
-                                <div class="group-header">
-                                    <h3>(<%= group.length %> Orders)</h3>
-                                    <div class="order-ids">Order IDs: <%= group.map(o => '#' + (o.orderId || 'N/A')).join(', ') %></div>
-                                    <div class="order-date">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <%= group[0].createdOn ? new Date(group[0].createdOn).toLocaleDateString('en-US', { 
-                                            year: 'numeric', 
-                                            month: 'long', 
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        }) : 'N/A' %>
-                                    </div>
-                                    <div class="payment-method">
-                                        <i class="fas fa-credit-card"></i> 
-                                        <%= 
-                                            group[0].paymentMethod === 'cod' ? 'Cash on Delivery' :
-                                            group[0].paymentMethod === 'online' ? 'Online Payment' :
-                                            group[0].paymentMethod === 'wallet' ? 'Wallet Payment' : 'Unknown'
-                                        %>
-                                    </div>
-                                    <% if (group[0].paymentMethod === 'online') { %>
-                                        <span class="payment-status <%= group[0].paymentStatus || 'pending' %>">
-                                            <i class="fas fa-<%= 
-                                                group[0].paymentStatus === 'completed' ? 'check-circle' :
-                                                group[0].paymentStatus === 'failed' ? 'times-circle' :
-                                                'clock'
-                                            %>"></i>
-                                            Payment <%= (group[0].paymentStatus || 'pending').charAt(0).toUpperCase() + (group[0].paymentStatus || 'pending').slice(1) %>
-                                        </span>
-                                    <% } %>
-                                    <div class="address-details">
-                                        <h4>Shipping Address</h4>
-                                        <p><%= group[0].address.name %></p>
-                                        <p><%= group[0].address.streetAddress %></p>
-                                        <p><%= group[0].address.city %>, <%= group[0].address.state %> <%= group[0].address.pincode %></p>
-                                        <p>Phone: <%= group[0].address.phone %></p>
-                                        <p>Email: <%= group[0].address.email %></p>
-                                    </div>
-                                    <div class="total-amount">Total: ₹<%= group.reduce((sum, o) => sum + (o.finalAmount || 0), 0).toFixed(2) %></div>
-                                    <% let totalDiscount = group.reduce((sum, o) => sum + (o.discount || 0), 0); %>
-                                    <% if (totalDiscount > 0) { %>
-                                        <div class="total-saved"><i class="fas fa-tag"></i> Saved ₹<%= totalDiscount.toFixed(2) %></div>
-                                    <% } %>
-                                </div>
-
-                                <!-- Group Items -->
-                                <div class="group-items">
-                                    <% group.forEach((order, index) => { %>
-                                        <div class="sub-order-card">
-                                            <span class="status-badge status-<%= 
-                                                order.requestStatus === 'rejected' ? 'return-rejected' :
-                                                order.requestStatus === 'approved' ? 'return-approved' :
-                                                order.status === 'return_requested' && !order.requestStatus ? 'return-requested' :
-                                                (order.status || '').toLowerCase().replace('_', '-')
-                                            %>">
-                                                <i class="fas fa-<%= 
-                                                    order.status === 'pending' ? 'clock' :
-                                                    order.status === 'confirmed' ? 'check-circle' :
-                                                    order.status === 'shipped' ? 'truck' :
-                                                    order.status === 'delivered' ? 'check-double' :
-                                                    order.status === 'cancelled' ? 'times-circle' :
-                                                    'question-circle'
-                                                %>"></i>
-                                                <%= 
-                                                    order.requestStatus === 'rejected' ? 'Return Rejected' :
-                                                    order.requestStatus === 'approved' ? 'Return Approved' :
-                                                    order.status === 'return_requested' && !order.requestStatus ? 'Return Requested' :
-                                                    (order.status || '').charAt(0).toUpperCase() + (order.status || '').slice(1).replace('_', ' ')
-                                                %>
-                                            </span>
-
-                                            <!-- Sub Order Body -->
-                                            <div class="order-body">
-                                                <% if (order.orderedItems && order.orderedItems.length > 0 && order.orderedItems[0].productImages && order.orderedItems[0].productImages.length > 0) { %>
-                                                    <img class="product-image" 
-                                                         src="<%= order.orderedItems[0].productImages[0] %>" 
-                                                         alt="<%= order.orderedItems[0].productName %>"
-                                                         loading="lazy">
-                                                <% } else { %>
-                                                    <div class="product-image" style="background: var(--secondary); display: flex; align-items: center; justify-content: center; color: var(--light-text);">
-                                                        <i class="fas fa-image"></i>
-                                                    </div>
-                                                <% } %>
-
-                                                <div class="order-details">
-                                                    <div class="product-name">
-                                                        <%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems[0].productName || 'Product Not Found' : 'No Items' %>
-                                                    </div>
-                                                    <div class="order-meta">
-                                                        <span><i class="fas fa-boxes"></i> Qty: <%= order.orderedItems && order.orderedItems.length > 0 ? order.orderedItems[0].quantity || 0 : 0 %></span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="order-amount">
-                                                    <div class="amount-value">₹<%= order.finalAmount ? order.finalAmount.toFixed(2) : '0.00' %></div>
-                                                    <% if (order.discount && order.discount > 0) { %>
-                                                        <div style="font-size: 12px; color: var(--success);">
-                                                            <i class="fas fa-tag"></i> Saved ₹<%= order.discount.toFixed(2) %>
-                                                        </div>
-                                                    <% } %>
-                                                </div>
-                                            </div>
-
-                                            <!-- Sub Order Actions -->
-                                            <div class="order-actions">
-                                                <a href="/order-details?orderId=<%= order._id %>" class="btn btn-primary">
-                                                    <i class="fas fa-eye"></i> View Details
-                                                </a>
-                                                
-                                                <!-- NEW: Complete Payment Button for pending online payments -->
-                                                <% if (order.paymentMethod === 'online' && order.paymentStatus === 'pending' && ['pending', 'confirmed'].includes(order.status)) { %>
-                                                    <button class="btn btn-payment" onclick="completePayment('<%= order._id %>')">
-                                                        <i class="fas fa-credit-card"></i> Complete Payment
-                                                    </button>
-                                                <% } %>
-                                                
-                                                <% if (['pending', 'confirmed', 'shipped'].includes(order.status) && !order.requestStatus) { %>
-                                                    <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">
-                                                        <i class="fas fa-times"></i> Cancel
-                                                    </button>
-                                                <% } %>
-                                                
-                                                <% if (order.status === 'delivered' && !order.requestStatus && order.deliveredOn) { %>
-                                                    <% const deliveryDate = new Date(order.deliveredOn); %>
-                                                    <% const currentDate = new Date(); %>
-                                                    <% const daysSinceDelivery = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60 * 24)); %>
-                                                    <% if (daysSinceDelivery <= 7) { %>
-                                                        <button class="btn btn-success" onclick="requestReturn('<%= order._id %>')">
-                                                            <i class="fas fa-undo"></i> Return
-                                                        </button>
-                                                    <% } %>
-                                                <% } %>
-
-                                                <% if (order.status === 'delivered' && !order.requestStatus) { %>
-                                                    <button class="btn btn-outline" onclick="downloadInvoice('<%= order._id %>')">
-                                                        <i class="fas fa-download"></i> Invoice
-                                                    </button>
-                                                <% } %>
-                                            </div>
-                                        </div>
-                                    <% }); %>
-                                </div>
-                            </div>
                         <% } %>
                     <% }); %>
                 <% } else { %>
@@ -1112,7 +1263,7 @@
             </div>
 
             <!-- Pagination -->
-            <% if (groups && groups.length > 0 && totalPages > 1) { %>
+            <% if (orders && orders.length > 0 && totalPages > 1) { %>
                 <div class="pagination-wrapper">
                     <div class="pagination">
                         <% if (currentPage > 1) { %>
@@ -1243,19 +1394,35 @@
         searchFilter.addEventListener('change', filterOrders);
         statusFilter.addEventListener('change', filterOrders);
 
-        // NEW: Complete Payment Function
-        async function completePayment(orderId) {
-            const btn = document.querySelector(`button[onclick="completePayment('${orderId}')"]`);
+        // Group Details Toggle Functionality
+        function toggleGroupDetails(groupId) {
+            const detailsElement = document.getElementById(`group-details-${groupId}`);
+            const button = event.target.closest('button');
             
-            // Show confirmation
+            if (detailsElement.style.display === 'none' || detailsElement.style.display === '') {
+                detailsElement.style.display = 'block';
+                detailsElement.style.animation = 'slideDown 0.3s ease-out';
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Details';
+            } else {
+                detailsElement.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => {
+                    detailsElement.style.display = 'none';
+                }, 300);
+                button.innerHTML = '<i class="fas fa-eye"></i> View Details';
+            }
+        }
+
+        // Retry Payment Functionality
+        async function retryPayment(orderId, orderIdString, amount) {
             const result = await Swal.fire({
                 title: 'Complete Payment',
                 html: `
                     <div style="text-align: left; margin: 20px 0;">
-                        <p>Complete the payment for this order to confirm your purchase.</p>
-                        <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #bee5eb;">
-                            <p style="margin: 0; color: #0c5460;"><i class="fas fa-shield-alt"></i> <strong>Secure Payment</strong></p>
-                            <p style="margin: 5px 0; font-size: 14px; color: #0c5460;">Your payment is processed securely via Razorpay.</p>
+                        <p><strong>Order ID:</strong> #${orderIdString}</p>
+                        <p><strong>Amount:</strong> ₹${amount.toFixed(2)}</p>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <p style="margin: 0; color: #856404;"><i class="fas fa-info-circle"></i> <strong>Note:</strong></p>
+                            <p style="margin: 5px 0; font-size: 14px;">Complete the payment to process your order and confirm your items.</p>
                         </div>
                     </div>
                 `,
@@ -1263,18 +1430,22 @@
                 showCancelButton: true,
                 confirmButtonText: 'Complete Payment',
                 cancelButtonText: 'Cancel',
-                confirmButtonColor: '#ff6b35'
+                confirmButtonColor: '#f39c12'
             });
 
             if (!result.isConfirmed) return;
 
             try {
-                // Add loading state
-                btn.classList.add('loading');
-                btn.disabled = true;
-                btn.textContent = 'Processing...';
+                // Show loading
+                Swal.fire({
+                    title: 'Creating Payment...',
+                    html: 'Please wait while we prepare your payment.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-                // Create retry payment order
                 const response = await fetch('/retryPayment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1287,20 +1458,34 @@
                     throw new Error(orderData.message || 'Failed to create payment');
                 }
 
-                // Initialize Razorpay for retry payment
+                Swal.close();
+
+                // Initialize Razorpay
                 const options = {
                     key: orderData.key_id,
                     amount: orderData.amount,
                     currency: orderData.currency,
                     name: 'SAWAX Store',
-                    description: 'Complete Order Payment',
+                    description: `Payment for Order #${orderData.orderDetails.orderId}`,
                     order_id: orderData.order_id,
                     handler: async function(response) {
                         try {
-                            // Verify retry payment
+                            // Show verification loading
+                            Swal.fire({
+                                title: 'Verifying Payment...',
+                                html: 'Please wait while we verify your payment.',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            // Verify payment
                             const verifyResponse = await fetch('/verifyRetryPayment', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
                                 body: JSON.stringify({
                                     razorpay_order_id: response.razorpay_order_id,
                                     razorpay_payment_id: response.razorpay_payment_id,
@@ -1313,9 +1498,19 @@
                             if (verifyData.success) {
                                 await Swal.fire({
                                     icon: 'success',
-                                    title: 'Payment Completed!',
-                                    text: 'Your payment has been processed successfully. Order confirmed!',
-                                    timer: 3000,
+                                    title: 'Payment Successful!',
+                                    html: `
+                                        <div style="text-align: left; margin: 20px 0;">
+                                            <p>Your payment has been completed successfully!</p>
+                                            <p><strong>Order ID:</strong> #${verifyData.order.orderId}</p>
+                                            <p><strong>Amount Paid:</strong> ₹${verifyData.order.finalAmount.toFixed(2)}</p>
+                                            <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #c3e6cb;">
+                                                <p style="margin: 0; color: #155724;"><i class="fas fa-check"></i> <strong>Order Confirmed!</strong></p>
+                                                <p style="margin: 5px 0; font-size: 14px; color: #155724;">Your order is now being processed for delivery.</p>
+                                            </div>
+                                        </div>
+                                    `,
+                                    timer: 4000,
                                     timerProgressBar: true
                                 });
                                 location.reload();
@@ -1323,8 +1518,8 @@
                                 throw new Error(verifyData.message || 'Payment verification failed');
                             }
                         } catch (error) {
-                            console.error('Error verifying retry payment:', error);
-                            await Swal.fire({
+                            console.error('Error verifying payment:', error);
+                            Swal.fire({
                                 icon: 'error',
                                 title: 'Payment Verification Failed',
                                 text: error.message || 'Please contact support if money was debited.',
@@ -1341,46 +1536,181 @@
                     },
                     modal: {
                         ondismiss: function() {
-                            // Remove loading state
-                            btn.classList.remove('loading');
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-credit-card"></i> Complete Payment';
+                            console.log('Payment modal closed');
                         }
                     }
                 };
 
                 const rzp = new Razorpay(options);
-
-                // Handle payment failure for retry
                 rzp.on('payment.failed', function (response) {
-                    console.log('Retry payment failed:', response.error);
+                    console.log('Payment failed:', response.error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Payment Failed Again',
-                        text: 'Payment failed. Please try again or contact support.',
+                        title: 'Payment Failed',
+                        text: response.error.description || 'Payment failed. Please try again.',
                         confirmButtonText: 'OK'
                     });
-                    // Remove loading state
-                    btn.classList.remove('loading');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-credit-card"></i> Complete Payment';
                 });
-
                 rzp.open();
 
             } catch (error) {
-                console.error('Error creating retry payment:', error);
-                await Swal.fire({
+                console.error('Error in retry payment:', error);
+                Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: error.message || 'Failed to create payment. Please try again.',
+                    title: 'Failed to Create Payment',
+                    text: error.message || 'Unable to process payment. Please try again.',
                     confirmButtonText: 'OK'
                 });
-                
-                // Remove loading state
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-credit-card"></i> Complete Payment';
+            }
+        }
+
+        // Retry Group Payment Functionality
+        async function retryGroupPayment(groupId, amount) {
+            const result = await Swal.fire({
+                title: 'Complete Group Payment',
+                html: `
+                    <div style="text-align: left; margin: 20px 0;">
+                        <p><strong>Group ID:</strong> #${groupId}</p>
+                        <p><strong>Total Amount:</strong> ₹${amount.toFixed(2)}</p>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <p style="margin: 0; color: #856404;"><i class="fas fa-info-circle"></i> <strong>Note:</strong></p>
+                            <p style="margin: 5px 0; font-size: 14px;">This will complete payment for all pending orders in this group.</p>
+                        </div>
+                    </div>
+                `,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Pay Group Amount',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#f39c12'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                Swal.fire({
+                    title: 'Creating Group Payment...',
+                    html: 'Please wait while we prepare your payment.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const response = await fetch('/retryGroupPayment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ groupId })
+                });
+
+                const orderData = await response.json();
+
+                if (!orderData.success) {
+                    throw new Error(orderData.message || 'Failed to create group payment');
+                }
+
+                Swal.close();
+
+                const numOrders = orderData.groupDetails.numOrders;
+
+                const options = {
+                    key: orderData.key_id,
+                    amount: orderData.amount,
+                    currency: orderData.currency,
+                    name: 'SAWAX Store',
+                    description: `Payment for Group #${groupId} (${numOrders} orders)`,
+                    order_id: orderData.order_id,
+                    handler: async function(response) {
+                        try {
+                            Swal.fire({
+                                title: 'Verifying Group Payment...',
+                                html: 'Please wait while we verify your payment.',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            const verifyResponse = await fetch('/verifyGroupPayment', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature
+                                })
+                            });
+
+                            const verifyData = await verifyResponse.json();
+
+                            if (verifyData.success) {
+                                await Swal.fire({
+                                    icon: 'success',
+                                    title: 'Group Payment Successful!',
+                                    html: `
+                                        <div style="text-align: left; margin: 20px 0;">
+                                            <p>Your group payment has been completed successfully!</p>
+                                            <p><strong>Group ID:</strong> #${groupId}</p>
+                                            <p><strong>Total Paid:</strong> ₹${amount.toFixed(2)}</p>
+                                            <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #c3e6cb;">
+                                                <p style="margin: 0; color: #155724;"><i class="fas fa-check"></i> <strong>All Orders Confirmed!</strong></p>
+                                                <p style="margin: 5px 0; font-size: 14px; color: #155724;">${numOrders} orders are now being processed.</p>
+                                            </div>
+                                        </div>
+                                    `,
+                                    timer: 4000,
+                                    timerProgressBar: true
+                                });
+                                location.reload();
+                            } else {
+                                throw new Error(verifyData.message || 'Group payment verification failed');
+                            }
+                        } catch (error) {
+                            console.error('Error verifying group payment:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Group Payment Verification Failed',
+                                text: error.message || 'Please contact support if money was debited.',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    prefill: {
+                        name: orderData.user.name,
+                        email: orderData.user.email
+                    },
+                    theme: {
+                        color: '#d4af37'
+                    },
+                    modal: {
+                        ondismiss: function() {
+                            console.log('Group payment modal closed');
+                        }
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response) {
+                    console.log('Group payment failed:', response.error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Group Payment Failed',
+                        text: response.error.description || 'Payment failed. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                });
+                rzp.open();
+
+            } catch (error) {
+                console.error('Error in retry group payment:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Create Group Payment',
+                    text: error.message || 'Unable to process group payment. Please try again.',
+                    confirmButtonText: 'OK'
+                });
             }
         }
 
@@ -1672,7 +2002,7 @@
                 if (document.visibilityState === 'visible') {
                     const hasPendingOrders = Array.from(orderItems).some(item => {
                         const status = item.getAttribute('data-status');
-                        return ['pending', 'confirmed', 'shipped'].includes(status);
+                        return ['pending', 'confirmed', 'shipped', 'payment-pending'].includes(status);
                     });
                     
                     if (hasPendingOrders) {
@@ -1733,6 +2063,60 @@
         @keyframes slideOutRight {
             from { transform: translateX(0); opacity: 1; }
             to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-10px); 
+                max-height: 0;
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+                max-height: 1000px;
+            }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 1; 
+                transform: translateY(0); 
+                max-height: 1000px;
+            }
+            to { 
+                opacity: 0; 
+                transform: translateY(-10px); 
+                max-height: 0;
+            }
+        }
+
+        /* Responsive Design for Groups */
+        @media (max-width: 768px) {
+            .group-summary {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .group-order-body {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .group-actions,
+            .group-order-actions {
+                justify-content: center;
+            }
+
+            .group-meta {
+                justify-content: center;
+            }
+
+            .group-status-badges {
+                align-items: center;
+            }
         }
     </style>
 
