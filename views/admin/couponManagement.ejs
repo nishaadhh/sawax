@@ -372,12 +372,12 @@
                 <input type="text" id="code" class="form-input" required>
             </div>
             <div class="form-group">
-                <label for="minOrder">Min Order (₹)</label>
-                <input type="number" id="minOrder" class="form-input" required>
+                <label for="minOrder">Min Order (Optional) </label>
+                <input type="number" id="minOrder" class="form-input">
             </div>
             <div class="form-group">
-                <label for="maxDiscount">Max Discount (₹)</label>
-                <input type="number" id="maxDiscount" class="form-input" required>
+                <label for="maxDiscount">Max Discount ₹ (Optional) </label>
+                <input type="number" id="maxDiscount" class="form-input">
             </div>
             <div class="form-group">
                 <label for="expireOn">Expiration Date</label>
@@ -489,12 +489,12 @@
                     <input type="text" id="editCode" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="editMinOrder">Min Order (₹)</label>
-                    <input type="number" id="editMinOrder" class="form-input" required>
+                    <label for="editMinOrder">Min Order (₹) (Optional) </label>
+                    <input type="number" id="editMinOrder" class="form-input">
                 </div>
                 <div class="form-group">
-                    <label for="editMaxDiscount">Max Discount (₹)</label>
-                    <input type="number" id="editMaxDiscount" class="form-input" required>
+                    <label for="editMaxDiscount">Max Discount (₹) (Optional) </label>
+                    <input type="number" id="editMaxDiscount" class="form-input">
                 </div>
                 <div class="form-group">
                     <label for="editExpireOn">Expiration Date</label>
@@ -524,7 +524,6 @@
     <script>
         function openEditModal(id, title, description, type, discountValue, discountType, code, minOrder, maxDiscount, expireOn, usageLimit, isPremium) {
             try {
-                // Ensure date is in YYYY-MM-DD format
                 let formattedExpireOn = expireOn;
                 if (expireOn) {
                     const date = new Date(expireOn);
@@ -533,7 +532,6 @@
                     }
                 }
 
-                // Set form values
                 document.getElementById('editCouponId').value = id || '';
                 document.getElementById('editTitle').value = title || '';
                 document.getElementById('editDescription').value = description || '';
@@ -541,13 +539,12 @@
                 document.getElementById('editDiscountValue').value = parseFloat(discountValue) || 0;
                 document.getElementById('editDiscountType').value = discountType || '';
                 document.getElementById('editCode').value = code || '';
-                document.getElementById('editMinOrder').value = parseFloat(minOrder) || 0;
-                document.getElementById('editMaxDiscount').value = parseFloat(maxDiscount) || 0;
+                document.getElementById('editMinOrder').value = minOrder !== null && minOrder !== undefined ? minOrder : '';
+                document.getElementById('editMaxDiscount').value = maxDiscount !== null && maxDiscount !== undefined ? maxDiscount : '';
                 document.getElementById('editExpireOn').value = formattedExpireOn || '';
                 document.getElementById('editUsageLimit').value = parseInt(usageLimit) || 0;
                 document.getElementById('editIsPremium').value = isPremium.toString() || 'false';
 
-                // Show the modal
                 document.getElementById('editCouponModal').style.display = 'flex';
             } catch (error) {
                 console.error('Error opening edit modal:', error);
@@ -561,6 +558,9 @@
 
         document.getElementById('addCouponForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const minOrderVal = document.getElementById('minOrder').value.trim();
+            const maxDiscountVal = document.getElementById('maxDiscount').value.trim();
+
             const couponData = {
                 title: document.getElementById('title').value.trim(),
                 description: document.getElementById('description').value.trim(),
@@ -568,8 +568,8 @@
                 discountValue: parseFloat(document.getElementById('discountValue').value),
                 discountType: document.getElementById('discountType').value.trim(),
                 code: document.getElementById('code').value.trim().toUpperCase(),
-                minOrder: parseFloat(document.getElementById('minOrder').value),
-                maxDiscount: parseFloat(document.getElementById('maxDiscount').value),
+                minOrder: minOrderVal === '' ? null : parseFloat(minOrderVal),
+                maxDiscount: maxDiscountVal === '' ? null : parseFloat(maxDiscountVal),
                 expireOn: document.getElementById('expireOn').value,
                 usageLimit: parseInt(document.getElementById('usageLimit').value),
                 isPremium: document.getElementById('isPremium').value === 'true'
@@ -590,8 +590,8 @@
                             <td>${result.coupon.title}</td>
                             <td>${result.coupon.code}</td>
                             <td>${result.coupon.discountValue}${result.coupon.type === 'percentage' ? '%' : ''} ${result.coupon.discountType}</td>
-                            <td>₹${result.coupon.minOrder}</td>
-                            <td>₹${result.coupon.maxDiscount}</td>
+                            <td>₹${result.coupon.minOrder ?? 0}</td>
+                            <td>₹${result.coupon.maxDiscount ?? 0}</td>
                             <td>${new Date(result.coupon.expireOn).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
                             <td><span class="status-badge active">Active</span></td>
                             <td>
@@ -628,6 +628,9 @@
         document.getElementById('editCouponForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const couponId = document.getElementById('editCouponId').value;
+            const minOrderVal = document.getElementById('editMinOrder').value.trim();
+            const maxDiscountVal = document.getElementById('editMaxDiscount').value.trim();
+
             const couponData = {
                 title: document.getElementById('editTitle').value.trim(),
                 description: document.getElementById('editDescription').value.trim(),
@@ -635,8 +638,8 @@
                 discountValue: parseFloat(document.getElementById('editDiscountValue').value),
                 discountType: document.getElementById('editDiscountType').value.trim(),
                 code: document.getElementById('editCode').value.trim().toUpperCase(),
-                minOrder: parseFloat(document.getElementById('editMinOrder').value),
-                maxDiscount: parseFloat(document.getElementById('editMaxDiscount').value),
+                minOrder: minOrderVal === '' ? null : parseFloat(minOrderVal),
+                maxDiscount: maxDiscountVal === '' ? null : parseFloat(maxDiscountVal),
                 expireOn: document.getElementById('editExpireOn').value,
                 usageLimit: parseInt(document.getElementById('editUsageLimit').value),
                 isPremium: document.getElementById('editIsPremium').value === 'true'
@@ -650,30 +653,41 @@
                 showNotification('Discount value must be a positive number and not exceed 100% for percentage discounts', 'error');
                 return;
             }
-            if (isNaN(couponData.minOrder) || couponData.minOrder < 0) {
-                showNotification('Minimum order must be a non-negative number', 'error');
-                return;
-            }
-            if (isNaN(couponData.maxDiscount) || couponData.maxDiscount < 0) {
-                showNotification('Maximum discount must be a non-negative number', 'error');
+            if (new Date(couponData.expireOn) < new Date()) {
+                showNotification('Expiration date cannot be in the past', 'error');
                 return;
             }
             if (isNaN(couponData.usageLimit) || couponData.usageLimit <= 0) {
                 showNotification('Usage limit must be a positive number', 'error');
                 return;
             }
-            if (new Date(couponData.expireOn) < new Date()) {
-                showNotification('Expiration date cannot be in the past', 'error');
-                return;
+
+            // Optional Min Order Validation
+            if (couponData.minOrder !== null) {
+                if (isNaN(couponData.minOrder) || couponData.minOrder < 0) {
+                    showNotification('Minimum order must be a non-negative number', 'error');
+                    return;
+                }
             }
+
+            // Optional Max Discount Validation
+            if (couponData.maxDiscount !== null) {
+                if (isNaN(couponData.maxDiscount) || couponData.maxDiscount < 0) {
+                    showNotification('Maximum discount must be a non-negative number', 'error');
+                    return;
+                }
+                if (couponData.maxDiscount < couponData.discountValue) {
+                    showNotification('Max Discount cannot be less than Discount Value', 'error');
+                    return;
+                }
+            }
+
+            // Special case: 100% discount
             if (couponData.type === 'percentage' && couponData.discountValue === 100) {
-                if (couponData.maxDiscount !== couponData.minOrder) {
+                if (couponData.maxDiscount !== null && couponData.maxDiscount !== couponData.minOrder) {
                     showNotification('For 100% discount, Max Discount should equal Min Order to cap the discount properly', 'error');
                     return;
                 }
-            } else if (couponData.maxDiscount < couponData.discountValue) {
-                showNotification('Max Discount cannot be less than Discount Value', 'error');
-                return;
             }
 
             try {
