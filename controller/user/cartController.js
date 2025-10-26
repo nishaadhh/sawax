@@ -324,7 +324,7 @@ const proceedToCheckout = async (req, res) => {
       return res.redirect("/cart?message=" + message);
     }
 
-    // Otherwise, allow checkout
+    // Otherwise, allow to checkout
     return res.render("checkout", { cart: cart.items });
   } catch (error) {
     console.error("Error checking blocked items:", error);

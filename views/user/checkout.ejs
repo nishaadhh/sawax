@@ -449,21 +449,21 @@
   }
 
   .coupons-count {
-    background: linear-gradient(135deg, #d4af37, #b8941f);
-    color: white;
+    background: #f1f1f1;
+    color: rgb(0, 0, 0);
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+    /* box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); */
   }
 
   .coupons-toggle {
     background: none;
-    border: 2px solid #d4af37;
-    color: #d4af37;
+    border: 2px solid #ededed;
+    color: #000000;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -475,8 +475,8 @@
   }
 
   .coupons-toggle:hover {
-    background: #d4af37;
-    color: white;
+    background: #ededed;
+    color: d4af37;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
   }
@@ -1132,7 +1132,66 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  // FIXED: Server-side applied coupon data
+  const serverAppliedCoupon = <%- JSON.stringify(appliedCoupon || null) %>;
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeValidation();
+    calculateAndDisplaySubtotal();
 
+    // FIXED: Restore applied coupon UI after page refresh
+    if (serverAppliedCoupon) {
+        appliedCouponData = serverAppliedCoupon;
+
+        const couponDiscountElement = document.getElementById('couponDiscount');
+        const shippingChargeElement = document.getElementById('shippingCharge');
+        const grandTotalElement = document.getElementById('grandTotal');
+        const appliedCouponInfo = document.getElementById('appliedCouponInfo');
+        const appliedCouponText = document.getElementById('appliedCouponText');
+        const applyBtn = document.querySelector('.apply-btn');
+
+        let subtotal = calculateSubtotal();
+        let originalShipping = <%= shippingCharge || 50 %>;
+        let shippingCharge = originalShipping;
+        let couponDiscount = 0;
+
+        const { type, discountValue, maxDiscount } = appliedCouponData;
+
+        if (type === 'percentage') {
+            couponDiscount = Math.min((subtotal * discountValue) / 100, maxDiscount || Number.MAX_SAFE_INTEGER);
+        } else if (type === 'fixed') {
+            couponDiscount = Math.min(discountValue, maxDiscount || Number.MAX_SAFE_INTEGER);
+        } else if (type === 'shipping') {
+            shippingCharge = 0;
+            couponDiscount = originalShipping;
+        }
+
+        couponDiscountElement.textContent = `(-) ₹${couponDiscount.toFixed(2)}`;
+        shippingChargeElement.textContent = `₹${shippingCharge.toFixed(2)}`;
+        grandTotalElement.textContent = `₹${(subtotal - couponDiscount + shippingCharge).toFixed(2)}`;
+
+        appliedCouponText.textContent = `Applied: ${appliedCouponData.code} (-₹${couponDiscount.toFixed(2)})`;
+        appliedCouponInfo.style.display = 'block';
+
+        document.getElementById('couponCode').disabled = true;
+        applyBtn.disabled = true;
+        applyBtn.textContent = 'Applied';
+    }
+
+    // Auto-retry for online payment
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('retry') === '1') {
+        const onlineRadio = document.querySelector('input[name="payment"][value="online"]');
+        if (onlineRadio) onlineRadio.checked = true;
+        setTimeout(() => {
+            const btn = document.getElementById('placeOrderBtn');
+            if (btn && !btn.disabled) {
+                placeOrder();
+            }
+        }, 200);
+    }
+});
+</script>
 <script>
   let appliedCouponData = null;
   let validationState = {};

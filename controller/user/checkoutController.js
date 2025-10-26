@@ -15,7 +15,7 @@ const validatePhone = (phone) => {
 };
 
 const validatePincode = (pincode) => {
-    const pincodeRegex = /^\d{6}$/; // Exactly 6 digits
+    const pincodeRegex = /^\d{6}$/; //  6 digits
     return pincodeRegex.test(pincode);
 };
 
@@ -82,14 +82,14 @@ const loadCheckoutPage = async (req, res) => {
                 addresses: { address: [] },
                 subtotal: 0,
                 couponDiscount: 0,
-                shippingCharge: 50, // As per orderSchema default
-                grandTotal: 50, // Only shipping charge when cart is empty
+                shippingCharge: 50,
+                grandTotal: 50,
                 message: 'Your cart is empty',
-                availableCoupons: [] // Empty coupons when cart is empty
+                availableCoupons: [],
+                appliedCoupon: null // Explicit
             });
         }
 
-        // Filter out items with invalid or missing product references
         const validCartItems = cart.items.filter(item => 
             item.productId && 
             item.productId._id && 
@@ -109,11 +109,11 @@ const loadCheckoutPage = async (req, res) => {
                 shippingCharge: 50,
                 grandTotal: 50,
                 message: 'No valid items found in cart',
-                availableCoupons: [] // Empty coupons when no valid items
+                availableCoupons: [],
+                appliedCoupon: null
             });
         }
 
-        // Clean cart by removing invalid items if any were filtered out
         if (validCartItems.length !== cart.items.length) {
             cart.items = validCartItems;
             await cart.save();
@@ -121,16 +121,11 @@ const loadCheckoutPage = async (req, res) => {
 
         const addresses = await Address.findOne({ userId }) || { address: [] };
 
-        // Calculate subtotal properly
         const subtotal = validCartItems.reduce((sum, item) => {
             const itemPrice = item.quantity * (item.productId.salePrice || 0);
-            console.log(`Item: ${item.productId.productName}, Quantity: ${item.quantity}, Price: ${item.productId.salePrice}, Total: ${itemPrice}`);
             return sum + itemPrice;
         }, 0);
 
-        console.log('loadCheckoutPage - calculated subtotal:', subtotal);
-
-        // Fetch available coupons for the user
         const currentDate = new Date();
         const availableCoupons = await Coupon.find({
             expireOn: { $gt: currentDate },
@@ -141,21 +136,13 @@ const loadCheckoutPage = async (req, res) => {
             ]
         }).sort({ createdOn: -1 });
 
-        // Filter and enhance coupons with validation status
         const validCoupons = availableCoupons.filter(coupon => {
-            // Check if user has already used this coupon
             const isUsedByUser = coupon.userId.includes(userId);
-            
-            // Check if coupon has reached usage limit
             const hasReachedLimit = coupon.usedCount >= coupon.usageLimit;
-            
-            // Check if minimum order requirement is met
             const meetsMinOrder = subtotal >= coupon.minOrder;
-            
             return !isUsedByUser && !hasReachedLimit && meetsMinOrder;
         }).map(coupon => {
             const daysLeft = Math.ceil((new Date(coupon.expireOn) - currentDate) / (1000 * 60 * 60 * 24));
-            
             return {
                 ...coupon.toObject(),
                 isUsedByUser: false,
@@ -167,27 +154,22 @@ const loadCheckoutPage = async (req, res) => {
             };
         });
 
-        console.log('Available coupons for checkout:', validCoupons.length);
-
-        // Check for applied coupon in session (if any)
         let couponDiscount = 0;
         if (req.session.appliedCoupon) {
             const appliedCoupon = req.session.appliedCoupon;
-            console.log('Applied coupon from session:', appliedCoupon);
-            
-            // Calculate discount based on coupon type
             if (appliedCoupon.type === 'percentage') {
                 couponDiscount = Math.min((subtotal * appliedCoupon.discountValue) / 100, appliedCoupon.maxDiscount || Number.MAX_SAFE_INTEGER);
             } else if (appliedCoupon.type === 'fixed') {
                 couponDiscount = Math.min(appliedCoupon.discountValue, appliedCoupon.maxDiscount || Number.MAX_SAFE_INTEGER);
             } else if (appliedCoupon.type === 'shipping') {
-                couponDiscount = 50; // Shipping charge
+                couponDiscount = 50;
             }
         }
 
         const shippingCharge = req.session.appliedCoupon && req.session.appliedCoupon.type === 'shipping' ? 0 : 50;
         const grandTotal = subtotal - couponDiscount + shippingCharge;
 
+        // FIXED: Pass applied coupon to view
         res.render('checkout', {
             userData: user,
             user,
@@ -198,7 +180,8 @@ const loadCheckoutPage = async (req, res) => {
             shippingCharge,
             grandTotal,
             message: null,
-            availableCoupons: validCoupons // Pass available coupons to the view
+            availableCoupons: validCoupons,
+            appliedCoupon: req.session.appliedCoupon || null  //  CRITICAL FIX
         });
     } catch (error) {
         console.error('Error loading checkout page:', error);
@@ -212,7 +195,8 @@ const loadCheckoutPage = async (req, res) => {
             shippingCharge: 50,
             grandTotal: 50,
             message: 'Failed to load checkout page',
-            availableCoupons: [] // Empty coupons on error
+            availableCoupons: [],
+            appliedCoupon: null
         });
     }
 };
