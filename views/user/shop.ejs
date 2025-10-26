@@ -33,6 +33,33 @@
         transform: scale(1.02);
     }
 
+    .out-of-stock-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-image {
+    position: relative;
+}
+
+.disabled-btn {
+    background: #ccc !important;
+    color: #666 !important;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+
     .product-image img {
         width: 100%;
         height: 299px;
@@ -411,28 +438,40 @@
                 <div class="product-grid" id="product-grid">
                     <% if (products.length > 0) { %>
                         <% products.forEach(product => { %>
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
-                                </div>
-                                <div class="product-details">
-                                    <h3 class="product-name"><%= product.productName %></h3>
-                                    <p class="product-brand">Brand: <%= product.brand %></p>
-                                   <span style="display: flex; gap: 10px; align-items: center;">
-  <% if (product.regularPrice !== product.salePrice) { %>
-    <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
-  <% } %>
-  <p class="product-price">₹ <%= product.salePrice %></p>
-</span>
-                                    <p class="product-color">Color: <%= product.color %></p>
-                                    <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
-                                    <a href="/product/<%= product._id %>" class="view-button">View Product</a>
-                                    <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
-        <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        <% }) %>
+    <div class="product-card">
+        <div class="product-image">
+            <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+            <% if (product.quantity === 0) { %>
+                <div class="out-of-stock-badge">Out of Stock</div>
+            <% } %>
+        </div>
+        <div class="product-details">
+            <h3 class="product-name"><%= product.productName %></h3>
+            <p class="product-brand">Brand: <%= product.brand %></p>
+            <span style="display: flex; gap: 10px; align-items: center;">
+                <% if (product.regularPrice !== product.salePrice) { %>
+                    <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
+                <% } %>
+                <p class="product-price">₹ <%= product.salePrice %></p>
+            </span>
+            <p class="product-color">Color: <%= product.color %></p>
+            <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
+
+            <% if (product.quantity > 0) { %>
+                <a href="/product/<%= product._id %>" class="view-button">View Product</a>
+            <% } else { %>
+                <a href="/product/<%= product._id %>" class="view-button disabled-btn" 
+                   style="background: #ccc; cursor: not-allowed; pointer-events: none;">
+                   Out of Stock
+                </a>
+            <% } %>
+
+            <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
+                <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
+            </a>
+        </div>
+    </div>
+<% }) %>
                     <% } else { %>
                         <p style="text-align: center; color: var(--light-text); font-size: 18px;">
                             No products found. Try adjusting your filters.
@@ -447,6 +486,28 @@
     </div>
 </section>
 
+<script>
+productCard.innerHTML = `
+    <div class="product-image">
+        <img src="/${product.productImage[0]}" alt="${product.productName}">
+        ${product.quantity === 0 ? '<div class="out-of-stock-badge">Out of Stock</div>' : ''}
+    </div>
+    <div class="product-details">
+        <h3 class="product-name">${product.productName}</h3>
+        <p class="product-brand">Brand: ${product.brand}</p>
+        ${priceHTML}
+        <p class="product-color">Color: ${product.color}</p>
+        <p class="product-description">${product.description.slice(0, 100)}...</p>
+        ${product.quantity > 0 
+            ? `<a href="/product/${product._id}" class="view-button">View Product</a>`
+            : `<a href="/product/${product._id}" class="view-button disabled-btn" style="background:#ccc;color:#666;opacity:0.7;cursor:not-allowed;pointer-events:none;">Out of Stock</a>`
+        }
+        <a class="wishlist-btn" onclick="addToWishlist('${product._id}')">
+            <i class="fa-solid fa-heart ${userWishlist.includes(product._id) ? 'wishlist-active' : ''}"></i>
+        </a>
+    </div>
+`;
+</script>
 <script>
 // Global state to track current filters
 let currentFilters = {

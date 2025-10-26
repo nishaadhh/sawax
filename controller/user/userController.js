@@ -535,8 +535,11 @@ const loadShoppingPage = async (req, res) => {
         const queryObj = {
             isBlocked: false,
             category: { $in: categoryIDs },
-            quantity: { $gt: 0 }
+            // quantity: { $gt: 0 }
         };
+
+
+
 
         const sortObj = { createdAt: -1 };
 
