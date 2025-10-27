@@ -6,17 +6,15 @@ const loadCoupons = async (req, res) => {
     const userId = req.session.user;
     const userData = await User.findById(userId);
 
-    // Get current date
+    // current date
     const currentDate = new Date();
 
-    // Fetch non-expired, listed coupons, sorted by createdOn (newest first)
-    // Include premium coupons only if user is premium
     const coupons = await Coupon.find({
       expireOn: { $gt: currentDate },
       isList: true,
       $or: [
         { isPremium: false },
-        { isPremium: true, userId: userId } // Assuming premium coupons are tied to specific users
+        { isPremium: true, userId: userId } 
       ]
     }).sort({ createdOn: -1 });
 
@@ -80,13 +78,19 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Check if coupon is premium and user is eligible
     if (coupon.isPremium && !coupon.userId.includes(userId)) {
       return res.status(403).json({ 
         success: false, 
         message: "Premium coupon not available for this user" 
       });
     }
+
+
+
+
+
+
+
 
     // Store coupon in session for later use
     req.session.appliedCoupon = {
@@ -156,7 +160,7 @@ const removeCoupon = async (req, res) => {
   }
 };
 
-// Function to mark coupon as used (call this after successful order)
+//  mark coupon as used 
 const markCouponAsUsed = async (couponId, userId) => {
   try {
     const coupon = await Coupon.findById(couponId);
