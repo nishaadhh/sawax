@@ -19,7 +19,7 @@ const getSalesReport = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    // Handle  filters
+    
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');
@@ -50,7 +50,7 @@ const getSalesReport = async (req, res) => {
       };
     }
 
-    //  completed orders only
+    
     const baseQuery = {
       status: { $in: ['delivered', 'returned'] },
       paymentStatus: 'completed',
@@ -76,7 +76,7 @@ const getSalesReport = async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Calculate summary statistics
+    // Calculate 
     const summaryPipeline = [
       { $match: baseQuery },
       {
@@ -144,7 +144,7 @@ const getSalesReport = async (req, res) => {
 
     const topProducts = await Order.aggregate(topProductsPipeline);
 
-    // Get daily sales data for chart (last 30 days)
+    // Get daily sales data for chart - last 30 days
     const chartDataPipeline = [
       {
         $match: {
@@ -219,7 +219,7 @@ const downloadSalesReportExcel = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    // Handle period filters 
+    
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');
@@ -378,7 +378,7 @@ const downloadSalesReportPDF = async (req, res) => {
     let reportTitle = 'Sales Report';
     let fromDate, toDate;
 
-    //different period filters 
+    
     if (period === 'today') {
       fromDate = moment().startOf('day');
       toDate = moment().endOf('day');
@@ -425,7 +425,7 @@ const downloadSalesReportPDF = async (req, res) => {
         select: 'productName brand'
       })
       .sort({ createdOn: -1 })
-      .limit(100); // Limit for PDF to avoid performance issues
+      .limit(100);
 
     const summaryPipeline = [
       { $match: baseQuery },

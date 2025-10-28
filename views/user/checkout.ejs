@@ -1133,13 +1133,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  // FIXED: Server-side applied coupon data
+  
   const serverAppliedCoupon = <%- JSON.stringify(appliedCoupon || null) %>;
   document.addEventListener('DOMContentLoaded', function() {
     initializeValidation();
     calculateAndDisplaySubtotal();
 
-    // FIXED: Restore applied coupon UI after page refresh
+   
     if (serverAppliedCoupon) {
         appliedCouponData = serverAppliedCoupon;
 
@@ -1178,7 +1178,7 @@
         applyBtn.textContent = 'Applied';
     }
 
-    // Auto-retry for online payment
+   
     const params = new URLSearchParams(window.location.search);
     if (params.get('retry') === '1') {
         const onlineRadio = document.querySelector('input[name="payment"][value="online"]');
@@ -1201,12 +1201,12 @@
   document.addEventListener('DOMContentLoaded', function() {
     initializeValidation();
     calculateAndDisplaySubtotal();
-    // Auto-retry: if redirected with ?retry=1, switch to online and trigger flow
+    
     const params = new URLSearchParams(window.location.search);
     if (params.get('retry') === '1') {
       const onlineRadio = document.querySelector('input[name="payment"][value="online"]');
       if (onlineRadio) onlineRadio.checked = true;
-      // Trigger after a short delay to ensure DOM  ready ayo nn
+      
       setTimeout(() => {
         const btn = document.getElementById('placeOrderBtn');
         if (btn && !btn.disabled) {
@@ -1224,7 +1224,7 @@
       const fieldName = field.name;
       validationState[fieldName] = false;
       
-      // Add event listeners for real-time validation
+      
       field.addEventListener('input', function() {
         updateCharacterCount(field);
         debounceValidation(field);
@@ -1234,11 +1234,11 @@
         validateField(field, true);
       });
       
-      // Initialize character counters
+      
       updateCharacterCount(field);
     });
     
-    // Special handling for select fields
+    
     const selectFields = form.querySelectorAll('select[required]');
     selectFields.forEach(field => {
       const fieldName = field.name;
@@ -1261,7 +1261,7 @@
       clearTimeout(validationTimeouts[fieldName]);
     }
     
-    // Show checking state immediately for important fields
+    
     if (['phone', 'email'].includes(fieldName)) {
       setFieldState(field, 'checking', 'Checking...');
     }
@@ -1572,7 +1572,7 @@
     });
   }
 
-  // ===== AVAILABLE COUPONS FUNCTIONALITY =====
+  //  COUPONS 
 
   function toggleCouponsSection() {
     const couponsListElement = document.getElementById('available-coupons-list');
@@ -1597,7 +1597,7 @@
     navigator.clipboard.writeText(code).then(() => {
       showNotification(`Coupon code "${code}" copied to clipboard!`, 'success');
     }).catch(() => {
-      // Fallback for older browsers
+      
       const textArea = document.createElement('textarea');
       textArea.value = code;
       document.body.appendChild(textArea);
@@ -1609,10 +1609,10 @@
   }
 
   function applyCouponFromList(code) {
-    // Set the code in the input field
+    
     document.getElementById('couponCode').value = code;
     
-    // Apply the coupon
+    
     applyCoupon();
   }
 
@@ -1710,17 +1710,17 @@
           }
         }
 
-        // Update UI
+      
         couponDiscountElement.textContent = `(-) ₹${couponDiscount.toFixed(2)}`;
         shippingChargeElement.textContent = `₹${shippingCharge.toFixed(2)}`;
         const grandTotal = subtotal - couponDiscount + shippingCharge;
         grandTotalElement.textContent = `₹${grandTotal.toFixed(2)}`;
 
-        // Show applied coupon info
+        // Show applied coupon 
         appliedCouponText.textContent = `Applied: ${couponCode} (-₹${couponDiscount.toFixed(2)})`;
         appliedCouponInfo.style.display = 'block';
         
-        // Hide coupon input
+        // Hide coupon 
         document.getElementById('couponCode').value = '';
         document.getElementById('couponCode').disabled = true;
         applyBtn.disabled = true;
@@ -1774,15 +1774,15 @@
         shippingChargeElement.textContent = `₹${shippingCharge.toFixed(2)}`;
         grandTotalElement.textContent = `₹${(subtotal + shippingCharge).toFixed(2)}`;
 
-        // Hide applied coupon info
+        // Hide applied coupon 
         appliedCouponInfo.style.display = 'none';
         
-        // Enable coupon input
+        
         document.getElementById('couponCode').disabled = false;
         applyBtn.disabled = false;
         applyBtn.textContent = 'Apply';
         
-        // Clear global variable
+        
         appliedCouponData = null;
 
         Swal.fire({
@@ -1815,7 +1815,7 @@
       return;
     }
 
-    // Add loading state
+    // 
     placeOrderBtn.classList.add('loading');
     placeOrderBtn.disabled = true;
     placeOrderBtn.textContent = 'Processing...';
@@ -1873,7 +1873,7 @@
                   timer: 2000,
                   timerProgressBar: true
                 });
-                // Redirect to order-success page with the first orderId
+                
                 window.location.href = `/order-success/${verifyData.orders[0].orderId}`;
               } else {
                 throw new Error(verifyData.message || 'Payment verification failed');
@@ -1907,7 +1907,7 @@
 
         const rzp = new Razorpay(options);
         
-        // Handle payment failure - create order with failed payment
+        // payment failure - create order with failed payment
         rzp.on('payment.failed', async function (response) {
           console.log('Payment failed:', response.error);
           
@@ -1944,7 +1944,7 @@
                 timerProgressBar: true
               });
               
-              // Redirect to orders page
+              
               window.location.href = '/orders';
             } else {
               throw new Error(failureData.message || 'Failed to save order after payment failure');
@@ -1958,7 +1958,7 @@
               confirmButtonText: 'OK'
             });
           } finally {
-            // Remove loading state
+            // Remove loading 
             placeOrderBtn.classList.remove('loading');
             placeOrderBtn.disabled = false;
             placeOrderBtn.textContent = 'Place Order';
@@ -1968,7 +1968,7 @@
         rzp.open();
 
       } else {
-        // Handle COD and Wallet payments
+        //  COD and Wallet payments
         const orderData = {
           addressId: selectedAddress,
           paymentMethod: paymentMethod,
@@ -1993,7 +1993,7 @@
             timer: 2000,
             timerProgressBar: true
           });
-          // Redirect to order-success page with the first orderId
+          
           window.location.href = `/order-success/${data.orders[0].orderId}`;
         } else {
           throw new Error(data.message || 'Failed to place order');
@@ -2008,7 +2008,7 @@
         confirmButtonText: 'OK'
       });
     } finally {
-      // Remove loading state
+      
       placeOrderBtn.classList.remove('loading');
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = 'Place Order';
@@ -2017,13 +2017,13 @@
 
   document.getElementById('placeOrderBtn').onclick = placeOrder;
 
-  // Handle address form submission with enhanced validation
+  
   document.getElementById('addressFormCheckout').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const submitBtn = document.getElementById('submitAddressBtn');
     
-    // Validate all fields one more time before submission
+    // Validate all fields one more time before submit
     const form = this;
     const fields = form.querySelectorAll('input, select');
     let isFormValid = true;
@@ -2081,7 +2081,7 @@
       
       let errorMessage = error.message || 'Failed to add address';
       
-      // Handle validation errors from server
+      // Handle validation errors 
       if (error.response && error.response.errors) {
         errorMessage = error.response.errors.join(', ');
       }
@@ -2093,9 +2093,9 @@
         confirmButtonText: 'OK'
       });
     } finally {
-      // Remove loading state
+      
       submitBtn.classList.remove('loading');
-      updateSubmitButton(); // This will set the proper state
+      updateSubmitButton(); 
     }
   });
 </script>

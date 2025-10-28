@@ -160,7 +160,7 @@ const getSalesDataHelper = async (period = "yearly") => {
       for (let i = 6; i >= 0; i--) {
         const date = new Date(now)
         date.setDate(date.getDate() - i)
-        date.setHours(0, 0, 0, 0) // Normalize to start of day for label
+        date.setHours(0, 0, 0, 0) 
 
         const dayStart = new Date(date)
         dayStart.setHours(0, 0, 0, 0)
@@ -283,7 +283,7 @@ const getTopSelling = async (req, res) => {
           },
         },
         { $unwind: "$productDetails" },
-        { $match: { "productDetails.category": { $ne: null } } }, // Fix: Skip products without category to avoid lookup errors
+        { $match: { "productDetails.category": { $ne: null } } }, 
         {
           $lookup: {
             from: "categories",

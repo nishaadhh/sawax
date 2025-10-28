@@ -49,7 +49,7 @@ const customerBlocked = async (req, res) => {
       const id = req.query.id
       await User.updateOne({ _id: id }, { $set: { isBlocked: true } })
   
-      // Emit an event when a user is blocked
+      
       userBlockedEmitter.emit("userBlocked", id)
   
       res.redirect("/admin/users")

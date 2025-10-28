@@ -6,7 +6,7 @@ const addCategory = async (req, res) => {
     console.log("Received request to add category:", req.body)
     const { name, description } = req.body
 
-    // Improved name validation
+    
     const trimmedName = name.trim()
     if (!trimmedName || trimmedName.length === 0) {
       console.log("Invalid input: name is empty or contains only whitespace")
@@ -39,7 +39,7 @@ const addCategoryOffer = async (req, res) => {
   try {
     const { categoryId, percentage } = req.body
     
-    // Validate percentage
+    
     if (isNaN(percentage) || percentage < 1 || percentage > 99) {
       return res.json({ status: false, message: "Offer percentage must be between 1% and 99%" })
     }
@@ -88,7 +88,7 @@ const categoryInfo = async (req, res) => {
     const totalPages = Math.ceil(totalCategories / limit)
 
     if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-      // If it's an AJAX request, send JSON response
+      
       res.json({
         categories: categories,
         currentPage: page,
@@ -96,7 +96,7 @@ const categoryInfo = async (req, res) => {
         totalCategories: totalCategories,
       })
     } else {
-      // If it's a regular request, render the page
+      
       res.render("category", {
         categories: categories,
         currentPage: page,
@@ -125,7 +125,7 @@ const removeCategoryOffer = async (req, res) => {
     // Remove category offer
     await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: 0 } })
 
-    // Recalculate prices for all products in this category (will use product offer only)
+    // Recalculate prices for all products in this category 
     const products = await Product.find({ category: categoryId })
     for (const product of products) {
       product.calculateSalePrice(0) // No category offer

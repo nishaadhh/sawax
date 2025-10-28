@@ -133,7 +133,7 @@ const editCoupon = async (req, res) => {
             return res.status(400).json({ success: false, message: "Required fields missing" });
         }
 
-        // Parse safely
+        
         const parsedDiscountValue = Number(discountValue);
         const parsedUsageLimit = Number(usageLimit);
         const parsedMinOrder = minOrder === null || minOrder === undefined || minOrder === '' ? null : Number(minOrder);
@@ -144,12 +144,12 @@ const editCoupon = async (req, res) => {
             return res.status(400).json({ success: false, message: "Discount value must be a positive number and not exceed 100% for percentage discounts" });
         }
 
-        // Optional Min Order
+        
         if (parsedMinOrder !== null && (isNaN(parsedMinOrder) || parsedMinOrder < 0)) {
             return res.status(400).json({ success: false, message: "Minimum order must be a non-negative number" });
         }
 
-        // Optional Max Discount
+        
         if (parsedMaxDiscount !== null && (isNaN(parsedMaxDiscount) || parsedMaxDiscount < 0)) {
             return res.status(400).json({ success: false, message: "Maximum discount must be a non-negative number" });
         }
@@ -165,30 +165,30 @@ const editCoupon = async (req, res) => {
             return res.status(400).json({ success: false, message: "Expiration date must be a valid future date" });
         }
 
-        // Find coupon
+        
         const coupon = await Coupon.findById(couponId);
         if (!coupon) {
             return res.status(404).json({ success: false, message: "Coupon not found" });
         }
 
-        // Check duplicate code (exclude self)
+        
         const existingCoupon = await Coupon.findOne({ code: code.toUpperCase(), _id: { $ne: couponId } });
         if (existingCoupon) {
             return res.status(400).json({ success: false, message: "Coupon code already exists" });
         }
 
-        // Special validation: 100% discount
+        //  validation 100% discount
         if (type === 'percentage' && parsedDiscountValue === 100) {
             if (parsedMaxDiscount !== null && parsedMinOrder !== null && parsedMaxDiscount !== parsedMinOrder) {
                 return res.status(400).json({ success: false, message: "For 100% discount, Max Discount should equal Min Order to cap the discount properly" });
             }
         } 
-        // General: maxDiscount < discountValue
+        // maxDiscount < discountValue
         else if (parsedMaxDiscount !== null && parsedMaxDiscount < parsedDiscountValue) {
             return res.status(400).json({ success: false, message: "Max Discount cannot be less than Discount Value" });
         }
 
-        // Update fields
+        
         coupon.title = title.trim();
         coupon.description = description || '';
         coupon.type = type;
@@ -227,7 +227,7 @@ const deleteCoupon = async (req, res) => {
 const toggleCouponStatus = async (req, res) => {
     try {
         const couponId = req.params.id;
-        const { newStatus } = req.body; // boolean (desired state) OR undefined
+        const { newStatus } = req.body; 
 
         if (!mongoose.Types.ObjectId.isValid(couponId)) {
             return res.status(400).json({ success: false, message: 'Invalid coupon id' });
@@ -238,7 +238,7 @@ const toggleCouponStatus = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Coupon not found' });
         }
 
-        // If client passed newStatus, use it; otherwise toggle current value
+        
         if (typeof newStatus === 'boolean') {
             coupon.isList = newStatus;
         } else {

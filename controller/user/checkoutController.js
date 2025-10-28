@@ -1,36 +1,36 @@
 const User = require("../../models/userSchema");
 const Address = require("../../models/addressSchema");
 const Cart = require("../../models/cartSchema");
-const Coupon = require("../../models/couponSchema"); // Added Coupon import
+const Coupon = require("../../models/couponSchema"); 
 
-// Enhanced validation utilities
+
 const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
 };
 
 const validatePhone = (phone) => {
-    const phoneRegex = /^[6-9]\d{9}$/; // Indian mobile number format
+    const phoneRegex = /^[6-9]\d{9}$/; 
     return phoneRegex.test(phone);
 };
 
 const validatePincode = (pincode) => {
-    const pincodeRegex = /^\d{6}$/; //  6 digits
+    const pincodeRegex = /^\d{6}$/;
     return pincodeRegex.test(pincode);
 };
 
 const validateName = (name) => {
-    const nameRegex = /^[a-zA-Z\s]+$/; // Only letters and spaces
+    const nameRegex = /^[a-zA-Z\s]+$/; 
     return nameRegex.test(name.trim());
 };
 
 const validateAddressType = (addressType) => {
-    const addressTypeRegex = /^[a-zA-Z\s]+$/; // Only letters and spaces
+    const addressTypeRegex = /^[a-zA-Z\s]+$/; 
     return addressTypeRegex.test(addressType.trim());
 };
 
 const validateCity = (city) => {
-    const cityRegex = /^[a-zA-Z\s]+$/; // Only alphabets and spaces
+    const cityRegex = /^[a-zA-Z\s]+$/; 
     return cityRegex.test(city.trim());
 };
 
@@ -45,7 +45,7 @@ const validateStreetAddress = (address) => {
 };
 
 const validateLandmark = (landmark) => {
-    if (!landmark || landmark.trim() === '') return true; // Optional field
+    if (!landmark || landmark.trim() === '') return true; 
     const trimmedLandmark = landmark.trim();
     // Must contain at least one letter, can have numbers but not only numbers
     const hasLetters = /[a-zA-Z]/.test(trimmedLandmark);
@@ -86,7 +86,7 @@ const loadCheckoutPage = async (req, res) => {
                 grandTotal: 50,
                 message: 'Your cart is empty',
                 availableCoupons: [],
-                appliedCoupon: null // Explicit
+                appliedCoupon: null
             });
         }
 
@@ -169,7 +169,7 @@ const loadCheckoutPage = async (req, res) => {
         const shippingCharge = req.session.appliedCoupon && req.session.appliedCoupon.type === 'shipping' ? 0 : 50;
         const grandTotal = subtotal - couponDiscount + shippingCharge;
 
-        // FIXED: Pass applied coupon to view
+        // applied coupon to view
         res.render('checkout', {
             userData: user,
             user,
@@ -181,7 +181,7 @@ const loadCheckoutPage = async (req, res) => {
             grandTotal,
             message: null,
             availableCoupons: validCoupons,
-            appliedCoupon: req.session.appliedCoupon || null  //  CRITICAL FIX
+            appliedCoupon: req.session.appliedCoupon || null  
         });
     } catch (error) {
         console.error('Error loading checkout page:', error);
@@ -212,10 +212,10 @@ const addAddressCheckout = async (req, res) => {
 
         const { addressType, name, country, state, city, landMark, streetAddress, pincode, phone, email, altPhone } = req.body;
 
-        // Comprehensive server-side validation
+        
         const validationErrors = [];
 
-        // Required field validation
+        // Require field validation
         if (!addressType?.trim()) validationErrors.push('Address type is required');
         if (!name?.trim()) validationErrors.push('Name is required');
         if (!country?.trim()) validationErrors.push('Country is required');
@@ -226,7 +226,7 @@ const addAddressCheckout = async (req, res) => {
         if (!phone?.trim()) validationErrors.push('Phone number is required');
         if (!email?.trim()) validationErrors.push('Email is required');
 
-        // Format validation
+        
         if (addressType && !validateAddressType(addressType)) {
             validationErrors.push('Address type should contain only letters and spaces');
         }
@@ -255,7 +255,7 @@ const addAddressCheckout = async (req, res) => {
             validationErrors.push('Please enter a valid email address');
         }
 
-        // Country and state validation (for Indian addresses)
+        
         if (country && country.toLowerCase() !== 'india') {
             validationErrors.push('Currently, we only support Indian addresses');
         }
@@ -275,7 +275,7 @@ const addAddressCheckout = async (req, res) => {
             }
         }
 
-        // Return all validation errors
+        // Return all validation error
         if (validationErrors.length > 0) {
             return res.status(400).json({ 
                 success: false, 
@@ -284,7 +284,7 @@ const addAddressCheckout = async (req, res) => {
             });
         }
 
-        // Check address limit (max 5 addresses per user)
+       
         let addressDoc = await Address.findOne({ userId });
         if (!addressDoc) {
             addressDoc = new Address({ userId, address: [] });

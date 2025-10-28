@@ -118,7 +118,7 @@ const getAllProducts = async (req, res) => {
         { brand: { $regex: new RegExp(".*" + search + ".*", "i") } }
       ]
     })
-      .sort({ _id: -1 }) // Sort by newest first (using _id which contains timestamp)
+      .sort({ _id: -1 }) 
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate("category")
@@ -269,7 +269,7 @@ const editProduct = async (req, res) => {
       product.productImage.push(null);
     }
 
-    // Handle image updates - maintain exact positioning
+    // image updates - maintain exact positioning
     for (let i = 1; i <= 4; i++) {
       if (req.files[`image${i}`]) {
         const file = req.files[`image${i}`][0];
@@ -347,7 +347,7 @@ const deleteSingleImage = async (req, res) => {
       product.productImage = product.productImage.filter(img => img !== imageNameToServer);
       await product.save();
 
-      // Delete physical file
+      // Delete  file
       const imagePath = path.join(__dirname, "../../public", imageNameToServer);
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);

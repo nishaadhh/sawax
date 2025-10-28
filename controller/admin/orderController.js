@@ -338,7 +338,6 @@ const handleReturn = async (req, res) => {
       order.rejectionReason = message;
       order.adminNote = `Return request rejected: ${category} - ${message}`;
       order.updatedOn = new Date();
-      // Keep status as delivered since return was rejected
       order.status = 'delivered';
 
       await order.save();
