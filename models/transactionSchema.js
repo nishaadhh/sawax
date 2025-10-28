@@ -77,7 +77,7 @@ const transactionSchema = new Schema({
     }
 }, { timestamps: true });
 
-// Indexes for faster queries
+
 transactionSchema.index({ userId: 1, createdAt: -1 });
 
 transactionSchema.index({ 'orders.orderId': 1 });

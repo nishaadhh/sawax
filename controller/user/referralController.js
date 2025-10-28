@@ -2,7 +2,7 @@ const User = require('../../models/userSchema');
 const Referral = require('../../models/referralSchema');
 const Wallet = require('../../models/walletSchema');
 
-// Load referral page
+
 const loadReferralPage = async (req, res) => {
     try {
         const userId = req.session.user;
@@ -39,7 +39,7 @@ const loadReferralPage = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(10);
 
-        // Get wallet balance
+        
         const wallet = await Wallet.findOne({ userId: userId });
         const walletBalance = wallet ? wallet.balance : 0;
 

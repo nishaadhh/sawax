@@ -6,7 +6,7 @@ const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
-// Middleware for user authentication (HTML responses)
+// Middleware for user authentication
 const userAuth = (req, res, next) => {
   if (!req.session.user) {
     return res.redirect("/login");
@@ -23,7 +23,7 @@ const userAuth = (req, res, next) => {
   User.findById(req.session.user)
     .then((user) => {
       if (user && !user.isBlocked) {
-        req.user = user; // Attach user to request for downstream use
+        req.user = user; 
         next();
       } else {
         req.session.destroy((err) => {
@@ -38,7 +38,7 @@ const userAuth = (req, res, next) => {
     });
 };
 
-// Middleware for admin authentication (HTML responses)
+// Middleware for admin authentication
 const adminAuth = (req, res, next) => {
   if (!req.session.admin) {
     return res.redirect("/admin/login");
@@ -55,7 +55,7 @@ const adminAuth = (req, res, next) => {
   User.findById(req.session.admin)
     .then((admin) => {
       if (admin && admin.isAdmin) {
-        req.admin = admin; // Attach admin to request
+        req.admin = admin; 
         next();
       } else {
         req.session.destroy((err) => {
@@ -99,7 +99,7 @@ const ajaxAuth = (req, res, next) => {
   User.findById(req.session.user)
     .then((user) => {
       if (user && !user.isBlocked) {
-        req.user = user; // Attach user to request
+        req.user = user; 
         next();
       } else {
         req.session.destroy((err) => {

@@ -10,10 +10,10 @@ const userSchema = new Schema({
         type: String,
         required: false,
         unique: true,
-        sparse: true, // Allows null values but enforces uniqueness when present
+        sparse: true, 
         minlength: 3,
         maxlength: 30,
-        match: /^[a-zA-Z0-9_]+$/ // Only alphanumeric and underscore
+        match: /^[a-zA-Z0-9_]+$/ 
     },
     email: {
         type: String,
@@ -117,7 +117,7 @@ userSchema.pre('save', function(next) {
     next();
 });
 
-// Method to generate unique referral code
+// generate unique referral code
 userSchema.methods.generateReferralCode = function() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = 'SAW';

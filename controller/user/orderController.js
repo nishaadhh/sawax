@@ -172,7 +172,6 @@ const createCheckoutOrder = async (req, res) => {
 
     console.log('CreateCheckoutOrder request:', { userId, addressId, couponCode });
 
-    // Fetch user and cart
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -189,7 +188,7 @@ const createCheckoutOrder = async (req, res) => {
       });
     }
 
-    // Fetch address
+    
     const address = await Address.findOne({ userId, 'address._id': addressId });
     if (!address) {
       return res.status(400).json({
@@ -233,7 +232,7 @@ const createCheckoutOrder = async (req, res) => {
         couponApplied = true;
         console.log('Applied coupon from session:', { couponCode, discount, shippingCharge });
       } else {
-        // Validate coupon from database
+        // Validate coupon from db
         const coupon = await Coupon.findOne({ 
           code: { $regex: new RegExp("^" + couponCode + "$", "i") }, 
           isList: true, 
@@ -255,7 +254,7 @@ const createCheckoutOrder = async (req, res) => {
           });
         }
 
-        // Check usage limit
+        // coupon usage checking
         if (coupon.usedCount >= coupon.usageLimit) {
           return res.status(400).json({
             success: false,
@@ -301,19 +300,19 @@ const createCheckoutOrder = async (req, res) => {
     // Create Razorpay order with short receipt
     const receiptId = generateReceiptId('order');
     const options = {
-      amount: Math.round(finalAmount * 100), // Razorpay expects amount in paise
+      amount: Math.round(finalAmount * 100), 
       currency: "INR",
       receipt: receiptId,
       notes: {
-        user_id: userId.toString().slice(-12), // Shortened user ID
-        address_id: addressId.toString().slice(-12), // Shortened address ID
-        coupon_code: couponCode ? couponCode.substring(0, 10) : '', // Limit coupon code
+        user_id: userId.toString().slice(-12),
+        address_id: addressId.toString().slice(-12), 
+        coupon_code: couponCode ? couponCode.substring(0, 10) : '', 
         purpose: 'order_payment'
       }
     };
 
     console.log('Creating Razorpay order with options:', {
-      // amount: options.amount,
+      
       receipt: options.receipt,
       receipt_length: options.receipt.length
     });
@@ -358,7 +357,7 @@ const createCheckoutOrder = async (req, res) => {
   }
 };
 
-// NEW: Handle payment failure - create order with pending payment
+//  payment failure - create order with pending payment
 const handlePaymentFailure = async (req, res) => {
   try {
     const { razorpay_order_id, error_description } = req.body;
@@ -366,7 +365,7 @@ const handlePaymentFailure = async (req, res) => {
 
     console.log('HandlePaymentFailure request:', { razorpay_order_id, error_description });
 
-    // Get pending order details from session
+    // Get pending order details 
     const pendingOrder = req.session.pendingOrder;
     if (!pendingOrder || pendingOrder.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({
@@ -413,7 +412,7 @@ const handlePaymentFailure = async (req, res) => {
   }
 };
 
-// NEW: Retry payment for existing order
+// Retry payment for existing order
 const retryPayment = async (req, res) => {
   try {
     const { orderId } = req.body;
@@ -421,7 +420,7 @@ const retryPayment = async (req, res) => {
 
     console.log('RetryPayment request:', { orderId, userId });
 
-    // Find the order
+    
     const order = await Order.findOne({ 
       $or: [{ orderId: orderId }, { _id: orderId }],
       userId: userId,
@@ -436,7 +435,7 @@ const retryPayment = async (req, res) => {
       });
     }
 
-    // Get user details
+    
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -492,7 +491,7 @@ const retryPayment = async (req, res) => {
   }
 };
 
-// NEW: Verify retry payment
+// Verify retry payment
 const verifyRetryPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -595,7 +594,7 @@ const verifyCheckoutPayment = async (req, res) => {
 
     console.log('VerifyCheckoutPayment request:', { razorpay_order_id, razorpay_payment_id });
 
-    // Verify signature
+    // Verify sign
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -691,7 +690,7 @@ const placeOrder = async (req, res) => {
       });
     }
 
-    // Fetch user and cart
+   
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -708,7 +707,7 @@ const placeOrder = async (req, res) => {
       });
     }
 
-    // Fetch address
+    
     const address = await Address.findOne({ userId, 'address._id': addressId });
     if (!address) {
       return res.status(400).json({
@@ -769,7 +768,7 @@ const placeOrder = async (req, res) => {
       couponApplied
     });
 
-    // Handle wallet payment
+    //  wallet payment
     if (paymentMethod === 'wallet') {
       let wallet = await Wallet.findOne({ userId });
       if (!wallet || wallet.balance < finalAmount) {
@@ -779,7 +778,7 @@ const placeOrder = async (req, res) => {
         });
       }
 
-      // Deduct from wallet
+      // select from wallet
       wallet.balance -= finalAmount;
       wallet.totalDebited += finalAmount;
       wallet.transactions.push({
@@ -798,11 +797,14 @@ const placeOrder = async (req, res) => {
       console.log('Coupon marked as used:', appliedCoupon.code);
     }
 
-    // Distribute discount across items
+   
     const discountedItems = distributeDiscount(cartItems, discount);
 
     // Generate order group ID for multiple orders
     const orderGroupId = discountedItems.length > 1 ? generateOrderGroupId() : null;
+
+
+
 
     // Create separate orders for each product (COD and Wallet)
     const createdOrders = [];
@@ -901,7 +903,7 @@ const getOrders = async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    // Get all orders for the user
+    
     const allOrders = await Order.find({ userId })
       .sort({ createdOn: -1 })
       .populate({
@@ -917,7 +919,7 @@ const getOrders = async (req, res) => {
     allOrders.forEach(order => {
       if (order.isGrouped && order.orderGroupId) {
         if (!processedGroups.has(order.orderGroupId)) {
-          // Find all orders in this group
+          
           const groupOrders = allOrders.filter(o => o.orderGroupId === order.orderGroupId);
           
           // Calculate group totals
@@ -925,11 +927,11 @@ const getOrders = async (req, res) => {
           const groupTotalItems = groupOrders.reduce((sum, o) => sum + o.orderedItems.length, 0);
           const groupTotalDiscount = groupOrders.reduce((sum, o) => sum + (o.discount || 0), 0);
           
-          // Determine group status (all same status or mixed)
+          // group status : (all same status or mixed)
           const statuses = [...new Set(groupOrders.map(o => o.status))];
           const groupStatus = statuses.length === 1 ? statuses[0] : 'mixed';
           
-          // Determine group payment status
+          // group payment status
           const paymentStatuses = [...new Set(groupOrders.map(o => o.paymentStatus))];
           const groupPaymentStatus = paymentStatuses.length === 1 ? paymentStatuses[0] : 'mixed';
 
@@ -957,7 +959,7 @@ const getOrders = async (req, res) => {
       }
     });
 
-    // Combine grouped and ungrouped orders, sort by creation date
+    // checking grouped and ungrouped orders, sort by creation date
     const combinedOrders = [...groupedOrders, ...ungroupedOrders]
       .sort((a, b) => {
         const dateA = a.type === 'group' ? a.createdOn : a.order.createdOn;
@@ -1235,9 +1237,9 @@ const renderSuccessPage = async (req, res) => {
     });
   }
 };
-// Add this to orderController.js
 
-// NEW: Retry payment for entire order group
+
+//  Retry payment for entire order group
 const retryGroupPayment = async (req, res) => {
   try {
     const { groupId } = req.body;
@@ -1245,7 +1247,7 @@ const retryGroupPayment = async (req, res) => {
 
     console.log('RetryGroupPayment request:', { groupId, userId });
 
-    // Find all orders in the group that need payment
+    // checking all orders in the group that need payment
     const orders = await Order.find({ 
       orderGroupId: groupId,
       userId: userId,
@@ -1263,7 +1265,7 @@ const retryGroupPayment = async (req, res) => {
     // Calculate total amount for all pending orders
     const totalAmount = orders.reduce((sum, order) => sum + order.finalAmount, 0);
 
-    // Get user details
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -1322,7 +1324,7 @@ const retryGroupPayment = async (req, res) => {
   }
 };
 
-// NEW: Verify group payment
+// Verify group payment
 const verifyGroupPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -1345,7 +1347,7 @@ const verifyGroupPayment = async (req, res) => {
       });
     }
 
-    // Get retry payment details from session
+    // Get retry payment details
     const retryGroupPayment = req.session.retryGroupPayment;
     if (!retryGroupPayment || retryGroupPayment.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({

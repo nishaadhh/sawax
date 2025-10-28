@@ -330,13 +330,12 @@ const addAddressCheckout = async (req, res) => {
     }
 };
 
-// Rename to avoid confusion, as this is likely the endpoint for AJAX form submission
+
 const postAddAddressCheckout = async (req, res) => {
-    // This function is identical to addAddressCheckout for backward compatibility
     return addAddressCheckout(req, res);
 };
 
-// New endpoint for real-time field validation
+
 const validateAddressField = async (req, res) => {
     try {
         const { field, value, userId } = req.body;

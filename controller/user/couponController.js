@@ -18,7 +18,7 @@ const loadCoupons = async (req, res) => {
       ]
     }).sort({ createdOn: -1 });
 
-    // Enhance coupons with usage status
+   
     const couponsWithStatus = coupons.map(coupon => {
       const isUsed = coupon.userId.includes(userId);
       return {
@@ -46,7 +46,6 @@ const applyCoupon = async (req, res) => {
     console.log("Applying coupon with code:", code);
     console.log("User ID:", userId);
 
-    // Find coupon with case-insensitive search
     const coupon = await Coupon.findOne({ 
       code: { $regex: new RegExp("^" + code + "$", "i") }, 
       isList: true, 
@@ -62,7 +61,7 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Check if user has already used the coupon
+    // Check if user has already use the coupon
     if (coupon.userId.includes(userId)) {
       return res.status(400).json({ 
         success: false, 
@@ -70,7 +69,7 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Check usage limit
+    // Checkingb the  usage limit
     if (coupon.usedCount >= coupon.usageLimit) {
       return res.status(400).json({ 
         success: false, 
@@ -87,12 +86,7 @@ const applyCoupon = async (req, res) => {
 
 
 
-
-
-
-
-
-    // Store coupon in session for later use
+    // Store coupon in session 
     req.session.appliedCoupon = {
       _id: coupon._id,
       code: coupon.code,

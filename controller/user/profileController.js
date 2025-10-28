@@ -8,7 +8,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Default profile image path - updated to use your provided image
+// Default profile image path 
 const DEFAULT_PROFILE_IMAGE = '/images/default-avatar.png';
 
 // Configure multer for profile image uploads
@@ -42,7 +42,7 @@ const upload = multer({
   }
 });
 
-// Utility function to get profile image with fallback
+//  profile image or Default image
 const getProfileImagePath = (user) => {
   if (!user.profileImage || user.profileImage === DEFAULT_PROFILE_IMAGE) {
     return DEFAULT_PROFILE_IMAGE;
@@ -54,12 +54,12 @@ const getProfileImagePath = (user) => {
     return user.profileImage;
   }
   
-  // If file doesn't exist, reset to default and update database
+  // If image doesn't exist, reset to default and update database
   User.findByIdAndUpdate(user._id, { profileImage: DEFAULT_PROFILE_IMAGE }).catch(console.error);
   return DEFAULT_PROFILE_IMAGE;
 };
 
-// Utility function to check if user has custom profile image
+// check if user has custom profile image
 const hasCustomProfileImage = (user) => {
   return user.profileImage && 
          user.profileImage !== DEFAULT_PROFILE_IMAGE && 
@@ -67,7 +67,7 @@ const hasCustomProfileImage = (user) => {
          user.profileImage !== null;
 };
 
-// Utility function to safely delete profile image file
+//  delete profile image file
 const deleteProfileImageFile = (imagePath) => {
   if (!imagePath || imagePath === DEFAULT_PROFILE_IMAGE) {
     return false;
@@ -85,12 +85,12 @@ const deleteProfileImageFile = (imagePath) => {
   return false;
 };
 
-// Utility function for OTP generation
+// OTP generation
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Shared utility for sending verification email
+// sending verification email
 const sendVerificationEmail = async (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -128,7 +128,7 @@ const userProfile = async (req, res) => {
       return res.redirect("/errorpage?message=user-not-found");
     }
     
-    // Ensure user has a profile image path
+    //get profile image path
     const profileImagePath = getProfileImagePath(userData);
     const hasCustomImage = hasCustomProfileImage(userData);
     
@@ -280,6 +280,9 @@ const removeProfileImage = async (req, res) => {
     // Delete the custom profile image file
     deleteProfileImageFile(user.profileImage);
     
+
+
+
     // Update user to use default profile image
     await User.findByIdAndUpdate(userId, { profileImage: DEFAULT_PROFILE_IMAGE });
     
@@ -355,7 +358,7 @@ const changeEmail = async (req, res) => {
       return res.redirect("/errorpage?message=user-not-found");
     }
     
-    // Check if user is a Google Sign-In user
+    // Check if user is Google Sign-In user
     if (!userData.password) {
       return res.redirect("/profile?error=Email changes for Google accounts must be managed through Google account settings");
     }
@@ -376,7 +379,7 @@ const sendCurrentEmailOtp = async (req, res) => {
     const { currentEmail, password } = req.body;
     const userId = req.session.user;
 
-    // Sanitize inputs
+    
     const sanitizedEmail = currentEmail?.trim() || "";
     const sanitizedPassword = password?.trim() || "";
 
@@ -423,7 +426,7 @@ const sendCurrentEmailOtp = async (req, res) => {
       });
     }
 
-    // Password regex: min 8 chars, uppercase, lowercase, number (special char optional)
+    // Password must be : min 8 chars, uppercase, lowercase, number 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(sanitizedPassword)) {
       return res.render("change-email", { 
@@ -450,7 +453,7 @@ const sendCurrentEmailOtp = async (req, res) => {
     }
 
     // Generate OTP
-    const otp = generateOtp().toString().padStart(6, "0"); // ensure 6 digits
+    const otp = generateOtp().toString().padStart(6, "0"); // 6 digits
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
     req.session.pendingEmailVerification = {
@@ -661,10 +664,6 @@ const changePassword = async (req, res) => {
       return res.redirect("/profile?error=Password changes for Google accounts must be managed through Google account settings");
     }
     
-      
-           
-           
-
 
     res.render("change-password", { message: null });
   } catch (error) {
@@ -949,7 +948,6 @@ module.exports = {
   deleteAddress,
   upload,
   logout,
-  // Export utility functions for use in other controllers
   getProfileImagePath,
   hasCustomProfileImage,
   DEFAULT_PROFILE_IMAGE

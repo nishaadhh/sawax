@@ -169,14 +169,14 @@ const orderSchema = new mongoose.Schema({
   orderNotes: {
     type: String,
   },
-  // Razorpay specific fields
+  // Razorpay 
   razorpayOrderId: {
     type: String,
   },
   razorpayPaymentId: {
     type: String,
   },
-  // Order grouping fields
+  // Order grouping 
   orderGroupId: {
     type: String,
     index: true,
@@ -189,7 +189,7 @@ const orderSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for better performance
+
 orderSchema.index({ userId: 1, createdOn: -1 });
 orderSchema.index({ orderId: 1 });
 orderSchema.index({ status: 1 });
@@ -233,12 +233,12 @@ orderSchema.pre('save', function(next) {
   next();
 });
 
-// Virtual for calculating days since order
+// calculating days order
 orderSchema.virtual('daysSinceOrder').get(function() {
   return Math.floor((new Date() - this.createdOn) / (1000 * 60 * 60 * 24));
 });
 
-// Virtual for checking if return is eligible
+// checking if return is eligible
 orderSchema.virtual('isReturnEligible').get(function() {
   if (this.status !== 'delivered' || this.requestStatus) return false;
   if (!this.deliveredOn) return false;
@@ -247,14 +247,14 @@ orderSchema.virtual('isReturnEligible').get(function() {
   return daysSinceDelivery <= 7;
 });
 
-// Virtual for checking if payment retry is needed
+// checking if payment retry is needed
 orderSchema.virtual('needsPaymentRetry').get(function() {
   return this.paymentMethod === 'online' && 
          (this.paymentStatus === 'failed' || this.paymentStatus === 'pending') &&
          this.status === 'payment_pending';
 });
 
-// Virtual for formatted order amount
+
 orderSchema.virtual('formattedAmount').get(function() {
   return `₹${this.finalAmount.toFixed(2)}`;
 });

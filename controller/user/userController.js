@@ -146,8 +146,7 @@ const renderResetPassword = async (req, res) => {
     }
 };
 
-// Handle resetting the password (POST /reset-password)
-// Handle resetting the password (POST /reset-password)
+
 const resetPassword = async (req, res) => {
   try {
     const { password } = req.body;
@@ -157,7 +156,7 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ status: false, message: 'Session expired. Please start over.' });
     }
 
-    // Backend password validation
+    // password validation
     const minLength = password.length >= 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
@@ -234,7 +233,7 @@ async function sendVerificationEmail(email, otp) {
   }
 }
 
-// Helper function to process referral bonuses
+// process referral bonuses
 const processReferralBonus = async (newUser, referrerCode) => {
     try {
         if (!referrerCode) return;
@@ -264,7 +263,7 @@ const processReferralBonus = async (newUser, referrerCode) => {
             });
         }
 
-        // Create or update new user's wallet
+        // Create or update new user wallet
         let newUserWallet = await Wallet.findOne({ userId: newUser._id });
         if (!newUserWallet) {
             newUserWallet = new Wallet({
@@ -276,7 +275,7 @@ const processReferralBonus = async (newUser, referrerCode) => {
             });
         }
 
-        // Add referral bonus to referrer (₹100)
+        // Add referral bonus to referrer ₹100
         const referralBonus = 100;
         referrerWallet.balance += referralBonus;
         referrerWallet.transactions.push({
@@ -289,7 +288,7 @@ const processReferralBonus = async (newUser, referrerCode) => {
             date: new Date()
         });
 
-        // Add joining bonus to new user (₹50)
+        // Add joining bonus to new user ₹50
         const joiningBonus = 50;
         newUserWallet.balance += joiningBonus;
         newUserWallet.transactions.push({
@@ -315,7 +314,7 @@ const processReferralBonus = async (newUser, referrerCode) => {
         newUser.referredBy = referrerCode;
         newUser.joiningBonus = joiningBonus;
 
-        // Save all documents
+        
         await referrerWallet.save();
         await newUserWallet.save();
         await referrer.save();
@@ -391,7 +390,7 @@ const verifyOtp = async (req, res) => {
 
             await saveUserData.save();
 
-            // Process referral bonus if referral code was provided
+            // referral bonus if referral code was provided
             if (user.referralCode) {
                 await processReferralBonus(saveUserData, user.referralCode);
             }
@@ -450,7 +449,7 @@ const login = async (req, res) => {
     try {
         const {email, password} = req.body;
         
-        // Check if password is provided in the request
+        
         if (!password) {
             return res.render('login', {message: 'Password is required'});
         }
@@ -465,7 +464,7 @@ const login = async (req, res) => {
             return res.render('login', {message: 'User is Blocked by Admin'});
         }
 
-        // Check if user has a password (important for Google OAuth users)
+        
         if (!findUser.password) {
             return res.render('login', {message: 'This account was created with Google. Please use Google Sign-In.'});
         }
@@ -535,7 +534,7 @@ const loadShoppingPage = async (req, res) => {
         const queryObj = {
             isBlocked: false,
             category: { $in: categoryIDs },
-            // quantity: { $gt: 0 }
+            
         };
 
 
@@ -591,7 +590,7 @@ const filterProduct = async (req, res) => {
         const { category, query, minPrice, maxPrice, alpha, sort, page = 1 } = req.query;
         const isAjax = req.xhr || req.headers.accept.includes('json');
 
-        // Fetch all listed categories
+        
         const categories = await Category.find({ isListed: true });
         const categoryIDs = categories.map(cat => cat._id);
 
@@ -608,7 +607,7 @@ const filterProduct = async (req, res) => {
                 queryObj.category = findCategory._id;
             } else {
                 console.warn('Invalid category ID:', category);
-                // Keep default category filter instead of leaving it undefined
+                
             }
         }
 
@@ -629,7 +628,7 @@ const filterProduct = async (req, res) => {
             if (max < Infinity) queryObj.salePrice.$lte = max;
         }
 
-        // Alphabetical filter
+        // Alphabet filter
         if (alpha) {
             let regex;
             switch (alpha) {
@@ -672,7 +671,7 @@ const filterProduct = async (req, res) => {
                     sortObj.createdAt = -1;
                     break;
                 case 'bestselling':
-                    sortObj.salesCount = -1; // Assume salesCount exists, or remove if not used
+                    sortObj.salesCount = -1; 
                     break;
                 default:
                     sortObj.createdAt = -1;
@@ -681,7 +680,7 @@ const filterProduct = async (req, res) => {
             sortObj.createdAt = -1;
         }
 
-        // Fetch products
+        
         const products = await Product.find(queryObj)
             .sort(sortObj)
             .skip(skip)
@@ -722,7 +721,7 @@ const filterProduct = async (req, res) => {
             }
         }
 
-        // Handle AJAX request
+        
         if (isAjax) {
             return res.json({
                 products,
@@ -732,7 +731,7 @@ const filterProduct = async (req, res) => {
             });
         }
 
-        // Render shop page for non-AJAX
+        
         res.render('shop', {
             user: userData,
             products,
@@ -760,8 +759,7 @@ const profile =async(req,res)=>{
     try {
         res.render("profile")
     } catch (error) {
-        // error('Profile Page Not Found')
-        // res.redirect('/pagenotfound')
+        
     }
 }
 
@@ -785,14 +783,14 @@ const loadProductDetails = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // Fetch product only if it's not blocked and status is 'available'
+    
     const product = await Product.findOne({
       _id: productId,
       isBlocked: false,
       status: 'available'
     }).populate('category');
 
-    // If no product found, render a 404 or redirect
+    
     if (!product) {
          const user = req.session.user;
         let userData = null;
@@ -827,12 +825,12 @@ const cart = async (req, res) => {
     const { productId, quantity = 1 } = req.body;
     const userId = req.session.user;
 
-    // Check if user is logged in
+    
     if (!userId) {
       return res.status(401).json({ success: false, message: "Please log in to add items to cart" });
     }
 
-    // Validate inputs
+    
     if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ success: false, message: "Invalid product ID" });
     }
@@ -840,7 +838,7 @@ const cart = async (req, res) => {
       return res.status(400).json({ success: false, message: "Quantity must be a positive integer" });
     }
 
-    // Check product existence and stock
+    // Check product exist and stock
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
@@ -862,7 +860,7 @@ const cart = async (req, res) => {
       cart = new Cart({ userId, items: [] });
     }
 
-    // Check if product is in cart and enforce quantity limit
+    // Check if product is in cart and quantity limit
     const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
     let newQuantity = quantity;
     if (itemIndex > -1) {
@@ -893,7 +891,7 @@ const cart = async (req, res) => {
       return res.status(400).json({ success: false, message: `Only ${product.quantity} items in stock` });
     }
 
-    // Savee cart
+    
     await cart.save();
 
     res.status(200).json({ success: true, message: "Product added to cart" });
@@ -912,13 +910,13 @@ const removeFromCart = async (req, res) => {
       return res.status(401).json({ status: false, message: "Please log in first" });
     }
 
-    // Find the cart
+    // checking the cart
     const cart = await Cart.findOne({ userId });
     if (!cart) {
       return res.status(404).json({ status: false, message: "Cart not found" });
     }
 
-    // Find item index in the cart
+    // checking item index in the cart
     const cartItemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
     if (cartItemIndex === -1) {
       return res.status(404).json({ status: false, message: "Product not found in cart" });
@@ -939,7 +937,7 @@ const loadCart = async (req, res) => {
   try {
     const userId = req.session.user;
 
-    // Check if user is logged in
+    
     if (!userId) {
       if (req.xhr || req.headers.accept.includes('json')) {
         return res.status(401).json({ success: false, message: 'Please log in to view cart', redirect: '/login' });
@@ -947,7 +945,7 @@ const loadCart = async (req, res) => {
       return res.redirect('/login');
     }
 
-    // Fetch user and cart data
+    
     const userData = await User.findOne({ _id: userId });
     const cart = await Cart.findOne({ userId }).populate('items.productId');
 
@@ -965,7 +963,7 @@ const loadCart = async (req, res) => {
         // Use salePrice directly - it already has the discount applied
         const effectivePrice = item.productId.salePrice;
 
-        // Check for price changes
+        // Checking for price changes
         if (item.price !== effectivePrice) {
           item.price = effectivePrice;
           item.totalPrice = item.quantity * effectivePrice;
@@ -973,7 +971,7 @@ const loadCart = async (req, res) => {
           isUpdated = true;
         }
 
-        // Sync quantity if product stock is less than cart quantity
+        // checking if product stock is less than cart quantity
         if (item.productId.quantity < item.quantity) {
           item.quantity = item.productId.quantity;
           item.totalPrice = item.quantity * item.price;
@@ -994,13 +992,13 @@ const loadCart = async (req, res) => {
         };
       }).filter(item => item !== null);
 
-      // Save only if updates were made
+      //  if updates were made in cart then save
       if (isUpdated) {
         await cart.save();
       }
     }
 
-    // Optional: Display message from query
+    // Display message from query
     const message = req.query.message ? decodeURIComponent(req.query.message) : null;
 
     // Render cart
@@ -1033,13 +1031,13 @@ const updateCart = async (req, res) => {
     }
     const item = cart.items.find(item => item.productId._id.toString() === productId);
     if (item) {
-      // Update price to reflect current product price
+      
       const product = await Product.findById(productId);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
       
-      // Use salePrice directly - it already has the discount applied
+      
       const effectivePrice = product.salePrice;
       
       item.quantity = quantity;
@@ -1061,12 +1059,12 @@ const updateCart = async (req, res) => {
 const addAddress = async (req, res) => {
     try {
         // Check if user is authenticated
-        const userId = req.session.user; // Assuming user ID is stored in session
+        const userId = req.session.user; 
         if (!userId) {
             return res.status(401).json({ message: 'Please log in to add an address.' });
         }
 
-        // Extract data from request body
+        
         const {
             fullName,
             streetAddress,
@@ -1074,29 +1072,29 @@ const addAddress = async (req, res) => {
             state,
             zipCode,
             phone,
-            addressType = 'Home', // Default to 'Home' if not provided
-            altPhone = '', // Default to empty string if not provided
+            addressType = 'Home', 
+            altPhone = '', 
         } = req.body;
 
-        // Backend validation
+        
         const errors = [];
 
-        // Validate fullName (name)
+        
         if (!fullName || typeof fullName !== 'string' || !/^[A-Za-z\s]{2,}$/.test(fullName)) {
             errors.push('Full Name must be at least 2 characters, letters and spaces only.');
         }
 
-        // Validate streetAddress (landMark)
+        
         if (!streetAddress || typeof streetAddress !== 'string' || streetAddress.length < 5) {
             errors.push('Street Address must be at least 5 characters.');
         }
 
-        // Validate city
+        
         if (!city || typeof city !== 'string' || !/^[A-Za-z\s]{2,}$/.test(city)) {
             errors.push('City must be at least 2 characters, letters and spaces only.');
         }
 
-        // Validate state
+        
         const validStates = [
             'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar',
             'Chandigarh', 'Chhattisgarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Goa',
@@ -1109,39 +1107,34 @@ const addAddress = async (req, res) => {
             errors.push('Please select a valid state.');
         }
 
-        // const country = "India"
+        
 
-        //  if (country && country.toLowerCase() !== 'india') {
-        //     validationErrors.push('Currently, we only support Indian addresses');
-        // }
-
-        // Validate zipCode (pincode)
         const pincode = parseInt(zipCode, 10);
         if (!zipCode || !/^\d{5,6}$/.test(zipCode) || isNaN(pincode)) {
             errors.push('Pin Code must be 5 or 6 digits.');
         }
 
-        // Validate phone
+       
         if (!phone || !/^\d{10}$/.test(phone)) {
             errors.push('Phone Number must be exactly 10 digits.');
         }
 
-        // Validate altPhone (optional, but must be 10 digits if provided)
+        
         if (altPhone && !/^\d{10}$/.test(altPhone)) {
             errors.push('Alternate Phone Number must be exactly 10 digits if provided.');
         }
 
-        // Validate addressType
+        
         if (!addressType || typeof addressType !== 'string') {
             errors.push('Address Type must be a valid string.');
         }
 
-        // If there are validation errors, return them
+        
         if (errors.length > 0) {
             return res.status(400).json({ message: errors.join(' ') });
         }
 
-        // Prepare the new address object
+        
         const newAddress = {
             addressType,
             name: fullName,
@@ -1153,15 +1146,15 @@ const addAddress = async (req, res) => {
             altPhone,
         };
 
-        // Check if the user already has an Address document
+        
         let userAddress = await Address.findOne({ userId });
 
         if (userAddress) {
-            // If exists, push the new address to the address array
+            
             userAddress.address.push(newAddress);
             await userAddress.save();
         } else {
-            // If not, create a new Address document
+           
             userAddress = new Address({
                 userId,
                 address: [newAddress],
@@ -1169,7 +1162,7 @@ const addAddress = async (req, res) => {
             await userAddress.save();
         }
 
-        // Return the newly added address
+        // Return the new added address
         res.status(200).json(newAddress);
     } catch (error) {
         console.error('Error adding address:', error);
@@ -1229,7 +1222,7 @@ const addToWishlist = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Product already in wishlist.' });
         }
 
-        // Use salePrice directly - it already has the discount applied
+        // discount applied
         const effectivePrice = product.salePrice;
         
         user.wishlist.push({
@@ -1272,8 +1265,8 @@ const removeFromWishlist = async (req, res) => {
 
 const wallet = async (req, res) => {
     try {
-        // Mock data; replace with actual database queries
-        const walletBalance = 1500.50; // Fetch from user wallet in DB
+        
+        const walletBalance = 1500.50; 
         const transactions = [
             { date: new Date(), type: 'Deposit', amount: 1000, description: 'Added funds via UPI' },
             { date: new Date(), type: 'Purchase', amount: 499.50, description: 'Order #1234' }
@@ -1298,17 +1291,7 @@ const addFunds = async (req, res) => {
             return res.status(500).json({ status: false, message: 'Invalid amount' });
         }
 
-        // Update wallet balance in DB (pseudo-code)
-        // await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: amountNum } });
-
-        // Add transaction to history (pseudo-code)
-        // await Transaction.create({
-        //     userId: req.user.id,
-        //     date: new Date(),
-        //     type: 'Deposit',
-        //     amount: amountNum,
-        //     description: 'Added funds via form'
-        // });
+        
 
         res.json({ status: true, message: 'Funds added successfully' });
     } catch (error) {
@@ -1330,7 +1313,7 @@ const loadReferralPage = async (req, res) => {
             return res.status(404).send('User not found');
         }
 
-        // Get wallet information for referral earnings display
+        // Get wallet information for referral
         const wallet = await Wallet.findOne({ userId });
 
         res.render('referral', {
@@ -1347,7 +1330,7 @@ const loadReferralPage = async (req, res) => {
     }
 };
 
-// Validate referral code (AJAX endpoint)
+// Validate referral code 
 const validateReferralCode = async (req, res) => {
     try {
         const { referralCode } = req.body;

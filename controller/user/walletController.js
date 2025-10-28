@@ -13,11 +13,11 @@ const razorpay = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
-// Helper function to generate short receipt ID (max 40 chars)
+
 const generateReceiptId = (prefix = 'wallet') => {
-  const timestamp = Date.now().toString().slice(-8); // Last 8 digits
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 chars
-  return `${prefix}_${timestamp}_${random}`; // Total: ~20 chars
+  const timestamp = Date.now().toString().slice(-8); 
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase(); 
+  return `${prefix}_${timestamp}_${random}`; 
 };
 
 const loadWallet = async (req, res) => {
@@ -38,7 +38,7 @@ const loadWallet = async (req, res) => {
             await wallet.save();
         }
 
-        // Pagination for transactions
+        
         const page = parseInt(req.query.page) || 1;
         const limit = 10; 
         const skip = (page - 1) * limit;
@@ -47,7 +47,7 @@ const loadWallet = async (req, res) => {
         let totalTransactions = 0;
 
         if (wallet && wallet.transactions) {
-            // Sort transactions by date (newest first)
+            
             const sortedTransactions = wallet.transactions.sort((a, b) => {
                 return new Date(b.date) - new Date(a.date);
             });
@@ -96,15 +96,15 @@ const createRazorpayOrder = async (req, res) => {
             });
         }
 
-        // Generate short receipt ID
+        
         const receiptId = generateReceiptId('wallet');
         
         const options = {
-            amount: Math.round(amount * 100), // Razorpay expects amount in paise
+            amount: Math.round(amount * 100), 
             currency: "INR",
             receipt: receiptId,
             notes: {
-                user_id: userId.toString().slice(-12), // Shortened user ID
+                user_id: userId.toString().slice(-12), 
                 purpose: 'wallet_recharge'
             }
         };

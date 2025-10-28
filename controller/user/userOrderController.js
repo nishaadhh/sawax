@@ -2,7 +2,7 @@ const Order = require("../../models/orderSchema");
 
 const getUserOrders = async (req, res) => {
     try {
-        // Assuming userId is stored in the session after login
+        
         const userId = req.session.user?._id;
         if (!userId) {
             return res.status(401).send("Unauthorized: Please log in");
