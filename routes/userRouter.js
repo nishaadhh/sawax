@@ -150,7 +150,7 @@ router.get("/checkout", userAuth, checkoutController.loadCheckoutPage);
 router.get("/addAddressCheckout", userAuth, checkoutController.addAddressCheckout);
 router.post("/addAddressCheckout", userAuth, checkoutController.postAddAddressCheckout);
 
-// Order Management - Enhanced Routes with Razorpay Integration
+// Order Management -  with Razorpay 
 router.post("/placeOrder", userAuth, orderController.placeOrder);
 router.post("/createCheckoutOrder", userAuth, orderController.createCheckoutOrder);
 router.post("/verifyCheckoutPayment", userAuth, orderController.verifyCheckoutPayment);
