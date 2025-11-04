@@ -200,11 +200,10 @@ orderSchema.index({ razorpayPaymentId: 1 });
 orderSchema.index({ orderGroupId: 1 });
 orderSchema.index({ userId: 1, orderGroupId: 1 });
 
-// Middleware to update 'updatedOn' field
 orderSchema.pre('save', function(next) {
   this.updatedOn = new Date();
   
-  // Set specific date fields based on status changes
+  
   if (this.isModified('status')) {
     const now = new Date();
     switch (this.status) {
@@ -233,12 +232,12 @@ orderSchema.pre('save', function(next) {
   next();
 });
 
-// calculating days order
+// calculate days order
 orderSchema.virtual('daysSinceOrder').get(function() {
   return Math.floor((new Date() - this.createdOn) / (1000 * 60 * 60 * 24));
 });
 
-// checking if return is eligible
+//  return  eligible ano nn nokal
 orderSchema.virtual('isReturnEligible').get(function() {
   if (this.status !== 'delivered' || this.requestStatus) return false;
   if (!this.deliveredOn) return false;
@@ -247,7 +246,7 @@ orderSchema.virtual('isReturnEligible').get(function() {
   return daysSinceDelivery <= 7;
 });
 
-// checking if payment retry is needed
+// payment retry 
 orderSchema.virtual('needsPaymentRetry').get(function() {
   return this.paymentMethod === 'online' && 
          (this.paymentStatus === 'failed' || this.paymentStatus === 'pending') &&

@@ -39,7 +39,6 @@ const referralSchema = new Schema({
     }
 }, { timestamps: true });
 
-// Index for faster queries
 referralSchema.index({ referrerId: 1, createdAt: -1 });
 referralSchema.index({ refereeId: 1 });
 referralSchema.index({ referralCode: 1 });

@@ -17,10 +17,6 @@ const addressSchema = new Schema({
             required: true
         },
 
-
-// --------------------------------------------
-
-
         country:{
             type: String,
             required: true

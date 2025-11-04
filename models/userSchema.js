@@ -25,7 +25,7 @@ const userSchema = new Schema({
    password: {
     type: String,
     required: function() {
-        return !this.googleId; // Only required if not a Google user
+        return !this.googleId; 
     }
 }
 ,
@@ -109,7 +109,7 @@ const userSchema = new Schema({
     }]
 });
 
-// Generate unique referral code before saving
+// Generate referral code
 userSchema.pre('save', function(next) {
     if (!this.referId) {
         this.referId = this.generateReferralCode();
@@ -117,7 +117,7 @@ userSchema.pre('save', function(next) {
     next();
 });
 
-// generate unique referral code
+
 userSchema.methods.generateReferralCode = function() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = 'SAW';

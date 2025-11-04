@@ -17,6 +17,7 @@ const userAuth = (req, res, next) => {
       if (err) console.error("Session destroy error:", err);
       return res.redirect("/login");
     });
+    
     return;
   }
 
