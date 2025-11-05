@@ -1159,7 +1159,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <!-- Header -->
+    
     <%- include("../../views/partials/user/header") %>
     
     <!-- Profile Section -->
@@ -1200,15 +1200,7 @@
                         </div>
                     <% } %>
 
-                    <!-- Google Sign-In User Notice -->
-                    <!-- <% if (!user.password) { %>
-                        <div class="google-user-notice">
-                            <i class="fab fa-google"></i>
-                            <div class="notice-text">
-                                <strong>Google Account:</strong> Email and password changes are managed through your Google account settings.
-                            </div>
-                        </div>
-                    <% } %> -->
+                    
 
                     <div class="profile-header">
                         <div class="profile-image-container">
@@ -1228,13 +1220,13 @@
                                 <% } %>
                             </div>
                             
-                            <!-- Upload Overlay -->
+                            
                             <div class="image-upload-overlay tooltip" onclick="document.getElementById('image-upload').click()">
                                 <i class="fa-solid fa-camera"></i>
                                 <span class="tooltiptext">Change profile picture</span>
                             </div>
                             
-                            <!-- Remove Overlay (only show if user has custom image) -->
+                            
                             <% if (user.hasCustomProfileImage) { %>
                             <div class="image-remove-overlay tooltip" onclick="removeProfileImage()">
                                 <i class="fa-solid fa-trash"></i>
@@ -1265,20 +1257,7 @@
                                         <label for="name">Full Name</label>
                                         <input type="text" id="name" name="name" value="<%= user.name %>" required placeholder="Enter your full name">
                                     </div>
-                                    <!-- <div class="form-group username-group">
-                                        <label for="username">Username</label>
-                                        <input type="text" 
-                                               id="username" 
-                                               name="username" 
-                                               value="<%= user.username || '' %>" 
-                                               placeholder="Enter a unique username"
-                                               pattern="^[a-zA-Z0-9_]{3,30}$"
-                                               title="Username can only contain letters, numbers, and underscores (3-30 characters)">
-                                        <div class="username-feedback" id="username-feedback">
-                                            <i class="fas fa-spinner"></i>
-                                        </div>
-                                        <div class="username-message" id="username-message"></div>
-                                    </div> -->
+                                   
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
@@ -1297,7 +1276,7 @@
                                         Update Profile
                                     </button>
                                     
-                                    <!-- Email Change Button - Disabled for Google users -->
+                                    <!-- Email Disabled for Google user -->
                                     <% if (!user.password) { %>
                                         <button type="button" class="btn btn-secondary btn-disabled tooltip" onclick="showGoogleRestrictionMessage('email')">
                                             <i class="fas fa-envelope"></i>
@@ -1311,7 +1290,7 @@
                                         </a>
                                     <% } %>
                                     
-                                    <!-- Password Change Button - Disabled for Google users -->
+                                    <!-- Password disabled for Google user -->
                                     <% if (!user.password) { %>
                                         <button type="button" class="btn btn-secondary btn-disabled tooltip" onclick="showGoogleRestrictionMessage('password')">
                                             <i class="fas fa-lock"></i>
@@ -1335,7 +1314,7 @@
 
    
 
-    <!-- JavaScript -->
+    
     <script>
         let usernameTimeout;
         let currentUsername = '<%= user.username || "" %>';
@@ -1380,7 +1359,7 @@
         document.getElementById('image-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // Validate file size (max 5MB)
+                // file size (max 5MB)
                 if (file.size > 5 * 1024 * 1024) {
                     showAlert('File size must be less than 5MB', 'error');
                     return;
@@ -1465,7 +1444,7 @@
             const progressText = document.getElementById('progress-text');
 
             try {
-                // Show progress
+                
                 progressElement.classList.add('show');
                 progressFill.style.width = '20%';
                 progressText.textContent = 'Preparing upload...';
@@ -1591,7 +1570,7 @@
             message.className = 'username-message show';
             message.textContent = 'Checking availability...';
 
-            // Debounce API call
+            
             usernameTimeout = setTimeout(async () => {
                 try {
                     const response = await fetch(`/check-username?username=${encodeURIComponent(username)}`);
@@ -1652,7 +1631,7 @@
                 setTimeout(() => alert.remove(), 300);
             });
 
-            // Create new alert
+            
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.innerHTML = `
@@ -1672,7 +1651,7 @@
             }, 5000);
         }
 
-        // Smooth scrolling for sidebar links
+        // sidebar link
         document.querySelectorAll('.sidebar-menu a[href^="#"]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1761,7 +1740,7 @@
             });
         });
 
-        // Add CSS animation keyframes for slide out
+        // JavaScript automatic aayi style tag create cheynu, CSS apply cheyyum — file-il manual aayi style add cheyndathila.
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideOutUp {

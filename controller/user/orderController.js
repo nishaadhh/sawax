@@ -357,7 +357,7 @@ const createCheckoutOrder = async (req, res) => {
   }
 };
 
-//  payment failure - create order with pending payment
+//  order pending payment
 const handlePaymentFailure = async (req, res) => {
   try {
     const { razorpay_order_id, error_description } = req.body;
@@ -365,7 +365,7 @@ const handlePaymentFailure = async (req, res) => {
 
     console.log('HandlePaymentFailure request:', { razorpay_order_id, error_description });
 
-    // Get pending order details 
+    
     const pendingOrder = req.session.pendingOrder;
     if (!pendingOrder || pendingOrder.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({
@@ -374,7 +374,7 @@ const handlePaymentFailure = async (req, res) => {
       });
     }
 
-    // Create orders with failed payment status
+    // orders failed payment status
     const createdOrders = await createOrdersFromPendingData(
       pendingOrder,
       userId,
@@ -412,7 +412,7 @@ const handlePaymentFailure = async (req, res) => {
   }
 };
 
-// Retry payment for existing order
+// Retry payment 
 const retryPayment = async (req, res) => {
   try {
     const { orderId } = req.body;
@@ -444,7 +444,7 @@ const retryPayment = async (req, res) => {
       });
     }
 
-    // Create new Razorpay order for retry
+    // Razorpay order  retry
     const receiptId = generateReceiptId('retry');
     const options = {
       amount: Math.round(order.finalAmount * 100),
@@ -459,7 +459,7 @@ const retryPayment = async (req, res) => {
 
     const razorpayOrder = await razorpay.orders.create(options);
 
-    // Store retry details in session
+    // retry details  session
     req.session.retryPayment = {
       originalOrderId: order._id,
       razorpayOrderId: razorpayOrder.id
@@ -514,7 +514,7 @@ const verifyRetryPayment = async (req, res) => {
       });
     }
 
-    // Get retry payment details from session
+    //retry payment not match ano nokal
     const retryPayment = req.session.retryPayment;
     if (!retryPayment || retryPayment.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({
@@ -523,7 +523,7 @@ const verifyRetryPayment = async (req, res) => {
       });
     }
 
-    // Get payment details from Razorpay
+    //payment details from Razorpay
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
     console.log('Retry payment details:', { status: payment.status, amount: payment.amount });
 
@@ -560,7 +560,7 @@ const verifyRetryPayment = async (req, res) => {
       });
     }
 
-    // Clear session
+    // cls aakal
     delete req.session.retryPayment;
 
     console.log('Retry payment successful for order:', updatedOrder.orderId);
@@ -609,7 +609,7 @@ const verifyCheckoutPayment = async (req, res) => {
       });
     }
 
-    // Get pending order details from session
+    // pending order details 
     const pendingOrder = req.session.pendingOrder;
     if (!pendingOrder || pendingOrder.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({
@@ -618,7 +618,7 @@ const verifyCheckoutPayment = async (req, res) => {
       });
     }
 
-    // Get payment details from Razorpay
+    // payment details from Razorpay
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
     console.log('Payment details:', { status: payment.status, amount: payment.amount });
 
@@ -742,7 +742,7 @@ const placeOrder = async (req, res) => {
 
     // Apply coupon discount if provided
     if (couponCode) {
-      // Check if coupon is in session (already validated)
+     
       if (req.session.appliedCoupon && req.session.appliedCoupon.code === couponCode) {
         appliedCoupon = req.session.appliedCoupon;
         const discountResult = calculateCouponDiscount(appliedCoupon, subtotal, cartItems, shippingCharge);
@@ -927,7 +927,7 @@ const getOrders = async (req, res) => {
           const groupTotalItems = groupOrders.reduce((sum, o) => sum + o.orderedItems.length, 0);
           const groupTotalDiscount = groupOrders.reduce((sum, o) => sum + (o.discount || 0), 0);
           
-          // group status : (all same status or mixed)
+          // group status - (all same status or mixed)
           const statuses = [...new Set(groupOrders.map(o => o.status))];
           const groupStatus = statuses.length === 1 ? statuses[0] : 'mixed';
           
@@ -959,7 +959,7 @@ const getOrders = async (req, res) => {
       }
     });
 
-    // checking grouped and ungrouped orders, sort by creation date
+    // grouped and ungrouped orders sort with nokal date 
     const combinedOrders = [...groupedOrders, ...ungroupedOrders]
       .sort((a, b) => {
         const dateA = a.type === 'group' ? a.createdOn : a.order.createdOn;
@@ -1166,7 +1166,7 @@ const requestReturn = async (req, res) => {
       });
     }
 
-    // Check if return period is valid (7 days after delivery)
+    // if return period valid (7 days after delivery)
     if (order.deliveredOn) {
       const deliveryDate = new Date(order.deliveredOn);
       const currentDate = new Date();
