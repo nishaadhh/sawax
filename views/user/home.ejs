@@ -115,6 +115,38 @@
     color: red !important; 
 }
 
+/* Enhanced Shiny Text Styles */
+.shiny-text {
+  color: #d4af37; /* Base color with transparency for depth */
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 3s linear infinite; /* Faster animation for more noticeable shine */
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Added glow for extra shine */
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.shiny-text.disabled {
+  animation: none;
+  text-shadow: none;
+}
 </style>
 
 <%- include("../../views/partials/user/header") %>
@@ -131,7 +163,7 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-content">
-        <h1 style="color: #ffffff; font-family:'Times New Roman', Times, serif" ><strong>CHOOSE THE BEST</strong></h1>
+        <h1 style="color: #ffffff;"><div class="shiny-text">CHOOSE THE BEST</div></h1>
         <p style="color: #ffffff; font-family: Arial, Verdana, Tahoma, Trebuchet MS, Helvetica ">Discover our collection of premium timepieces crafted with precision and designed for distinction.</p>
         <div class="hero-buttons">
             <a href="/shop" class="btn-explore">Shop Now</a>

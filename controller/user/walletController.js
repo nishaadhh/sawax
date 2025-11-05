@@ -157,7 +157,7 @@ const verifyPayment = async (req, res) => {
             });
         }
 
-        // Get payment details from Razorpay
+        // fetching payment details from Razorpay
         const payment = await razorpay.payments.fetch(razorpay_payment_id);
         console.log('Payment details:', { status: payment.status, amount: payment.amount });
 
@@ -168,7 +168,7 @@ const verifyPayment = async (req, res) => {
             });
         }
 
-        const amount = payment.amount / 100; // Convert paise to rupees
+        const amount = payment.amount / 100; // Convert paisa to rupees
 
         // Update wallet
         let wallet = await Wallet.findOne({ userId: userId });
