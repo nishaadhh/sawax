@@ -115,23 +115,20 @@
     color: red !important; 
 }
 
-/* Enhanced Shiny Text Styles */
+
 .shiny-text {
-  color: #d4af37; /* Base color with transparency for depth */
+  color: #b5b5b5a4; 
   background: linear-gradient(
     120deg,
-    rgba(255, 255, 255, 0) 30%,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 0) 70%
+    rgba(255, 255, 255, 0) 40%,
+    #ffc400 50%,
+    rgba(255, 255, 255, 0) 60%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   display: inline-block;
-  animation: shine 3s linear infinite; /* Faster animation for more noticeable shine */
-  font-family: 'Times New Roman', Times, serif;
-  font-weight: bold;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Added glow for extra shine */
+  animation: shine 5s linear infinite;
 }
 
 @keyframes shine {
@@ -145,8 +142,41 @@
 
 .shiny-text.disabled {
   animation: none;
-  text-shadow: none;
 }
+
+
+
+
+
+
+.sub-text {
+  color: #b5b5b5a4; 
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.sub-text.disabled {
+  animation: none;
+}
+
 </style>
 
 <%- include("../../views/partials/user/header") %>
@@ -160,11 +190,11 @@
     <div class="loading-spinner"></div>
 </div>
 
-<!-- Hero Section -->
+
 <section class="hero">
     <div class="hero-content">
         <h1 style="color: #ffffff;"><div class="shiny-text">CHOOSE THE BEST</div></h1>
-        <p style="color: #ffffff; font-family: Arial, Verdana, Tahoma, Trebuchet MS, Helvetica ">Discover our collection of premium timepieces crafted with precision and designed for distinction.</p>
+        <p  class="sub-text">Discover our collection of premium timepieces crafted with precision and designed for distinction.</p>
         <div class="hero-buttons">
             <a href="/shop" class="btn-explore">Shop Now</a>
             <a href="/about" class="btn-explore">Explore</a>
