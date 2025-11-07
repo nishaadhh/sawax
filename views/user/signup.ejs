@@ -3,20 +3,565 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/usersignup.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <title>Sign Up | SAWAX Premium Timepieces</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f8f8;
+            --accent: #DF8A00;
+            --text: #333;
+            --light-text: #777;
+            --border: #e0e0e0;
+            --error: #dc3545;
+            --success: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            color: black;
+            overflow-x: hidden;
+            background-color: black;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            opacity: 0.15;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .particle::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+            25% { transform: translateY(-100px) translateX(50px) scale(1.2); opacity: 0.8; }
+            50% { transform: translateY(-200px) translateX(-30px) scale(0.8); opacity: 0.4; }
+            75% { transform: translateY(-150px) translateX(80px) scale(1.1); opacity: 0.7; }
+        }
+
+        .wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 300px;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .wave path {
+            animation: wave 8s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+            fill: var(--accent);
+        }
+
+        .wave:nth-child(2) path {
+            animation-delay: -2s;
+            animation-duration: 10s;
+            opacity: 0.5;
+        }
+
+        .wave:nth-child(3) path {
+            animation-delay: -4s;
+            animation-duration: 12s;
+            opacity: 0.3;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #DF8A00, transparent);
+            top: -100px;
+            left: -100px;
+            animation-duration: 15s;
+        }
+
+        .orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #ffa500, transparent);
+            bottom: -100px;
+            right: -100px;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .orb:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #ffb347, transparent);
+            top: 50%;
+            left: 50%;
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+
+        header, .signup-section, footer {
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.242);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: inline-block;
+            font-family: "Poppins", sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffc400;
+            cursor: pointer;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .logo span {
+            color: #ffc400;
+        }
+
+        .logo:hover {
+            transform: scale(1.08);
+            text-shadow: 0 0 12px rgba(255, 196, 0, 0.6),
+                         0 0 24px rgba(255, 196, 0, 0.3);
+        }
+
+        .signup-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 520px;
+            background-color: rgba(0, 0, 0, 0.201);
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .signup-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .signup-header h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .signup-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .signup-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        .signup-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(223, 138, 0, 0.2);
+        }
+
+        .form-error {
+            display: none;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .referral-info {
+            margin-top: 5px;
+        }
+
+        .referral-info small {
+            color: var(--light-text);
+        }
+
+        .referral-validation {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .referral-validation.valid {
+            color: var(--success);
+        }
+
+        .referral-validation.invalid {
+            color: var(--error);
+        }
+
+        .terms-agreement {
+            font-size: 13px;
+            color: var(--light-text);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .terms-agreement a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .terms-agreement a:hover {
+            color: #c17800;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent);
+            color: white;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            text-align: center;
+            position: relative;
+        }
+
+        .btn:hover {
+            background-color: #c17800;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: var(--accent);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .signup-divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+
+        .signup-divider::before,
+        .signup-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border);
+        }
+
+        .signup-divider span {
+            padding: 0 15px;
+        }
+
+        .social-signup {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 14px;
+            background-color: #f5f5f5;
+            transition: background-color 0.3s;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background-color: #e5e5e5;
+        }
+
+        .social-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .signup-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .signin-link {
+            color: var(--accent);
+            font-weight: 600;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .signin-link:hover {
+            color: #c17800;
+        }
+
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 20px 0;
+            font-size: 14px;
+        }
+
+        .footer-simplified {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.7;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-link {
+            transition: color 0.3s;
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .signup-container {
+                max-width: 100%;
+                margin: 0 20px;
+            }
+            
+            .signup-section {
+                padding: 40px 0;
+            }
+            
+            .social-signup {
+                flex-direction: column;
+            }
+            
+            .footer-simplified {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .signup-header {
+                padding: 20px;
+            }
+            
+            .signup-form {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .header-content {
+                padding: 15px 0;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
 
- <header>
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">SA<span>WAX</span></div>
-                   
-</header>
+    <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,186.7C672,203,768,181,864,154.7C960,128,1056,96,1152,96C1248,96,1344,128,1392,144L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+    <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,133.3C672,139,768,181,864,197.3C960,213,1056,203,1152,181.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+    <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,197.3C672,192,768,160,864,149.3C960,139,1056,149,1152,165.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
 
-    <!-- Signup Section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">SA<span>WAX</span></div>
+            </div>
+        </div>
+    </header>
+
     <section class="signup-section">
         <div class="signup-container">
             <div class="signup-header">
@@ -87,7 +632,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-simplified">
@@ -102,7 +646,21 @@
     </footer>
 
     <script>
-        // DOM Elements
+        function createParticles() {
+            const particleCount = 30;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${8 + Math.random() * 10}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
         const nameid = document.getElementById("name");
         const emailid = document.getElementById("email");
         const passid = document.getElementById("password");
@@ -118,13 +676,11 @@
         const signupButton = document.querySelector(".btn");
         const spinner = document.querySelector(".spinner");
 
-        // Check if all elements are found
         if (!nameid || !emailid || !passid || !cpassid || !error1 || !error2 || !error3 || !error4 ||  !signupform || !signupButton || !spinner) {
             console.error("One or more DOM elements not found");
             throw new Error("Required DOM elements missing");
         }
 
-        // Name Validation (letters and spaces only)
         function nameValidateChecking() {
             const nameval = nameid.value.trim();
             const namepattern = /^[A-Za-z\s]+$/;
@@ -144,7 +700,6 @@
             }
         }
 
-        // Email Validation
         function emailValidateChecking() {
             const emailval = emailid.value;
             const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -164,7 +719,6 @@
             }
         }
 
-        // Password Validation
         function passValidateChecking() {
             const passval = passid.value;
             const cpassval = cpassid.value;
@@ -172,7 +726,6 @@
             const digit = /\d/;
             const capital = /[A-Z]/;
 
-            // Password requirements
             if (!passval) {
                 error3.style.display = "block";
                 error3.innerHTML = "Please enter a password";
@@ -190,7 +743,6 @@
                 error3.innerHTML = "";
             }
 
-            // Confirm password
             if (!cpassval) {
                 error4.style.display = "block";
                 error4.innerHTML = "Please confirm your password";
@@ -206,7 +758,6 @@
             }
         }
 
-        // Referral Code Validation
         function validateReferralCode() {
             const referralCode = referralCodeid.value.trim();
             
@@ -216,10 +767,8 @@
                 return true; // Optional field
             }
 
-            // Show loading state
             referralValidation.innerHTML = '<span style="color: #666;">Checking referral code...</span>';
             
-            // Make AJAX request to validate referral code
             fetch('/validate-referral', {
                 method: 'POST',
                 headers: {
@@ -244,26 +793,22 @@
             });
         }
 
-        // Real-time validation on input
         nameid.addEventListener("input", nameValidateChecking);
         emailid.addEventListener("input", emailValidateChecking);
         passid.addEventListener("input", passValidateChecking);
         cpassid.addEventListener("input", passValidateChecking);
         
-        // Debounced referral code validation
         let referralTimeout;
         referralCodeid.addEventListener("input", function() {
             clearTimeout(referralTimeout);
             referralTimeout = setTimeout(validateReferralCode, 500); // Wait 500ms after user stops typing
         });
 
-        // Form submission validation
         signupform.addEventListener("submit", function(e) {
             const isNameValid = nameValidateChecking();
             const isEmailValid = emailValidateChecking();
             const isPassValid = passValidateChecking();
             
-            // Check if referral code validation is in progress or invalid
             const referralValidationClass = referralValidation.className;
             if (referralCodeid.value.trim() && referralValidationClass.includes('invalid')) {
                 e.preventDefault();
@@ -278,104 +823,17 @@
             if (!isNameValid || !isEmailValid || !isPassValid) {
                 e.preventDefault();
             } else {
-                // Show spinner and disable button
                 signupButton.disabled = true;
                 signupButton.classList.add("loading");
 
-                // Handle form completion (fallback timeout)
                 const handleFormCompletion = () => {
                     signupButton.disabled = false;
                     signupButton.classList.remove("loading");
                 };
 
-                // Add a timeout as a fallback since we can't directly detect server response
                 setTimeout(handleFormCompletion, 3000); // Adjust timeout as needed
             }
         });
     </script>
-
-    <style>
-        .btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #DF8A00;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        .btn.loading .spinner {
-            display: inline-block;
-        }
-
-        .btn:disabled {
-            background-color: #DF8A00;
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .referral-info {
-            margin-top: 5px;
-        }
-
-        .referral-validation {
-            margin-top: 5px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .referral-validation.valid {
-            color: #28a745;
-        }
-
-        .referral-validation.invalid {
-            color: #dc3545;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        #referralCode {
-            border: 2px solid #e9ecef;
-            transition: border-color 0.3s ease;
-        }
-
-        #referralCode:focus {
-            border-color: #DF8A00;
-            box-shadow: 0 0 0 0.2rem rgba(223, 138, 0, 0.25);
-        }
-
-        .referral-validation.valid + #referralCode {
-            border-color: #28a745;
-        }
-
-        .referral-validation.invalid + #referralCode {
-            border-color: #dc3545;
-        }
-    </style>
 </body>
 </html>

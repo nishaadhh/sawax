@@ -1,64 +1,424 @@
-<footer>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAWAX Footer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            
+        }
+
         footer {
-    background-color: #000000;
-    color: white;
-    padding: 60px 0 30px;
-}
-</style>
-  <div class="container">
-      <div class="footer-content">
-          <div class="footer-about">
-              <div class="footer-logo">SA<span>WAX</span></div>
-              <p>SAWAX is dedicated to creating premium timepieces that blend elegance, functionality, and exceptional craftsmanship.</p>
-              <div class="social-icons">
-                  <a href="#" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
-                  <a href="#" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
-                  <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
-                  <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-              </div>
-          </div>
-          <div class="footer-links">
-              <h4>Shop</h4>
-              <ul>
-                  <li><a href="#">Men's Watches</a></li>
-                  <li><a href="#">Women's Watches</a></li>
-                  <li><a href="#">Limited Editions</a></li>
-                  <li><a href="#">New Arrivals</a></li>
-                  <li><a href="#">Special Offers</a></li>
-              </ul>
-          </div>
-          <div class="footer-links">
-              <h4>Support</h4>
-              <ul>
-                  <li><a href="#">FAQ</a></li>
-                  <li><a href="#">Shipping & Returns</a></li>
-                  <li><a href="#">Watch Care</a></li>
-                  <li><a href="#">Warranty</a></li>
-                  <li><a href="#">Contact Us</a></li>
-              </ul>
-          </div>
-          <div class="footer-links">
-              <h4>Contact Us</h4>
-              <div class="contact-item">
-                  <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
-                  <div> Time City, TC 12345</div>
-              </div>
-              <div class="contact-item">
-                  <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
-                  <div>sawaxwatches@gmail.com</div>
-              </div>
-              <div class="contact-item">
-                  <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
-                  <div>04931 783483</div>
-              </div>
-          </div>
-      </div>
-      <div class="footer-bottom">
-          <div>© 2025 SAWAX. All rights reserved.</div>
-          <div>Privacy Policy | Terms of Service | Sitemap</div>
-      </div>
-  </div>
-</footer>
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: white;
+            padding: 60px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer-about {
+            animation-delay: 0.1s;
+        }
+
+        .footer-links:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .footer-links:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .footer-links:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .footer-logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.8));
+            }
+        }
+
+        .footer-logo span {
+            color: #d4af37;
+        }
+
+        .footer-about p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #b0b0b0;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .social-icon:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .social-icon:hover {
+            background: #d4af37;
+            transform: translateY(-5px) rotate(360deg);
+        }
+
+        .social-icon i {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: #d4af37;
+            animation: expandWidth 0.6s ease forwards;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 50px; }
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+            transform: translateX(-10px);
+            opacity: 0;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .footer-links ul li:nth-child(1) { animation-delay: 0.1s; }
+        .footer-links ul li:nth-child(2) { animation-delay: 0.2s; }
+        .footer-links ul li:nth-child(3) { animation-delay: 0.3s; }
+        .footer-links ul li:nth-child(4) { animation-delay: 0.4s; }
+        .footer-links ul li:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            position: relative;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #d4af37;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #d4af37;
+            transform: translateX(5px);
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .contact-item:nth-child(1) { animation-delay: 0.2s; }
+        .contact-item:nth-child(2) { animation-delay: 0.3s; }
+        .contact-item:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .contact-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            background: rgba(212, 175, 55, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d4af37;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover .contact-icon {
+            background: #d4af37;
+            color: #000;
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        .contact-item div:last-child {
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: #808080;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 0.6s forwards;
+        }
+
+        .footer-bottom div:last-child a {
+            color: #808080;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom div:last-child a:hover {
+            color: #d4af37;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Floating particles effect */
+        .particle {
+            position: absolute;
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">SA<span>WAX</span></div>
+                    <p>Crafting timeless elegance through precision engineering and exquisite design. Every SAWAX timepiece represents our commitment to excellence.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Collections</h4>
+                    <ul>
+                        <li><a href="#">Men's Collection</a></li>
+                        <li><a href="#">Women's Collection</a></li>
+                        <li><a href="#">Limited Editions</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Watch Care Guide</a></li>
+                        <li><a href="#">Warranty Information</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Get in Touch</h4>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div>Kozikode, Kerala, India</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                        <div>info@sawax.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div>+91 4931 783483</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2025 SAWAX Watches. All rights reserved.</div>
+                <div><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Sitemap</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Create floating particles
+        function createParticle() {
+            const footer = document.querySelector('footer');
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 5 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = '0';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            
+            footer.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        // Generate particles periodically
+        setInterval(createParticle, 800);
+    </script>
 </body>
 </html>

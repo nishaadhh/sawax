@@ -28,10 +28,140 @@
         body {
             color: var(--text);
             overflow-x: hidden;
-            background-color: var(--secondary);
+            background-color: #000000;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+       
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            opacity: 0.15;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .particle::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+            25% { transform: translateY(-100px) translateX(50px) scale(1.2); opacity: 0.8; }
+            50% { transform: translateY(-200px) translateX(-30px) scale(0.8); opacity: 0.4; }
+            75% { transform: translateY(-150px) translateX(80px) scale(1.1); opacity: 0.7; }
+        }
+
+        .wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 300px;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .wave path {
+            animation: wave 8s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+            fill: var(--accent);
+        }
+
+        .wave:nth-child(2) path {
+            animation-delay: -2s;
+            animation-duration: 10s;
+            opacity: 0.5;
+        }
+
+        .wave:nth-child(3) path {
+            animation-delay: -4s;
+            animation-duration: 12s;
+            opacity: 0.3;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #d4af37, transparent);
+            top: -100px;
+            left: -100px;
+            animation-duration: 15s;
+        }
+
+        .orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #ffd700, transparent);
+            bottom: -100px;
+            right: -100px;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .orb:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #ffed4e, transparent);
+            top: 50%;
+            left: 50%;
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+
+        header, .login-section, footer {
+            position: relative;
+            z-index: 10;
         }
 
         a {
@@ -46,9 +176,8 @@
             padding: 0 20px;
         }
 
-        /* Header */
         header {
-            background-color: white;
+            background-color:transparent;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -62,16 +191,67 @@
             padding: 20px 0;
         }
 
-        .logo {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: #d4af37
-        }
+        .logo:hover .logo-shiny {
+  animation-play-state: paused;
+}
 
-        .logo span {
-            color: #000000
-        }
+.logo {
+  display: inline-block;
+  font-family: "Poppins", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffc400;
+  cursor: pointer;
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+
+.logo:hover {
+  transform: scale(1.08);
+  text-shadow: 0 0 12px rgba(255, 196, 0, 0.6),
+               0 0 24px rgba(255, 196, 0, 0.3);
+}
+
+
+.logo:hover .logo-shiny {
+  animation: none;
+  background: none;
+  -webkit-text-fill-color: #ffc400;
+  color: #ffc400;
+}
+
+
+.logo-shiny {
+  color: inherit;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    #ffc400 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  -webkit-text-fill-color: transparent;
+  animation: shine 5s linear infinite; 
+}
+
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
 
         nav ul {
             display: flex;
@@ -111,7 +291,6 @@
             cursor: pointer;
         }
 
-        /* Login Section */
         .login-section {
             flex: 1;
             display: flex;
@@ -123,10 +302,22 @@
         .login-container {
             width: 100%;
             max-width: 420px;
-            background-color: white;
+            background-color: #00000059;
             box-shadow: 0 5px 30px rgba(0,0,0,0.1);
             border-radius: 8px;
             overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-header {
@@ -360,7 +551,6 @@
             color: var(--accent);
         }
 
-        /* Footer */
         footer {
             background-color: #111;
             color: white;
@@ -388,7 +578,6 @@
             color: var(--accent);
         }
 
-        /* Responsive Design */
         @media (max-width: 992px) {
             .login-container {
                 max-width: 380px;
@@ -505,7 +694,6 @@
             border-radius: 4px;
         }
 
-        /* Mobile Menu */
         .mobile-nav {
             display: none;
             background-color: white;
@@ -550,7 +738,6 @@
             border-radius: 4px;
         }
 
-        /* Mobile Dropdown for User */
         .mobile-dropdown {
             position: relative;
         }
@@ -587,9 +774,22 @@
     </style>
 </head>
 <body>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+
+    <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,186.7C672,203,768,181,864,154.7C960,128,1056,96,1152,96C1248,96,1344,128,1392,144L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+    <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,133.3C672,139,768,181,864,197.3C960,213,1056,203,1152,181.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+    <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,197.3C672,192,768,160,864,149.3C960,139,1056,149,1152,165.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -600,7 +800,6 @@
         </div>
     </header>
 
-    <!-- Login Section -->
     <section class="login-section">
         <div class="login-container">
             <div class="login-header">
@@ -626,12 +825,10 @@
                     </div>
                     <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
                 </div>
-                <%if(locals.message && message.length>0){%>
-                  <div class="alert alert-danger text-center">
-                    <p style="color: red; margin-bottom: 20px;"><%= message %></p>
-                  </div>
-                <%}%>
-                <button type="submit" class="btn">
+                <div class="alert alert-danger text-center" style="display: none;">
+                    <p style="color: red; margin-bottom: 20px;"></p>
+                </div>
+                <button type="submit" class="btn" style="background-color: #ffc400;">
                     Login
                     <span class="spinner"></span>
                 </button>
@@ -649,7 +846,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-simplified">
@@ -664,7 +860,21 @@
     </footer>
 
     <script>
-        // Toggle mobile menu
+        function createParticles() {
+            const particleCount = 30;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${8 + Math.random() * 10}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
         const mobileMenu = document.querySelector('.mobile-menu');
         const mobileNav = document.querySelector('#mobile-nav');
 
@@ -674,21 +884,18 @@
             });
         }
 
-        // Toggle mobile dropdown for user profile
         function toggleMobileDropdown(event) {
             event.preventDefault();
             const dropdown = event.target.closest('.mobile-dropdown');
             dropdown.classList.toggle('active');
         }
 
-        // Close mobile menu when clicking outside
         document.addEventListener('click', (event) => {
             if (mobileNav && !mobileNav.contains(event.target) && mobileMenu && !mobileMenu.contains(event.target)) {
                 mobileNav.classList.remove('active');
             }
         });
 
-        // Logout confirmation
         function confirmLogout() {
             Swal.fire({
                 title: 'Are you sure?',
@@ -717,7 +924,6 @@
             });
         }
 
-        // Form validation and submission
         const emailid = document.getElementById("email");
         const passid = document.getElementById("password");
         const error1 = document.getElementById("email-error");
@@ -751,13 +957,11 @@
             }
         }
 
-        // Password toggle functionality - Fixed
         if (passwordToggle && passid) {
             passwordToggle.addEventListener('click', function() {
                 const type = passid.getAttribute('type') === 'password' ? 'text' : 'password';
                 passid.setAttribute('type', type);
                 
-                // Toggle the eye icon
                 if (type === 'password') {
                     passwordToggle.classList.remove('fa-eye-slash');
                     passwordToggle.classList.add('fa-eye');
