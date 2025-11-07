@@ -23,23 +23,30 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         const admin = await User.findOne({ isAdmin: true, email: email });
 
-        if (admin) {
-            const passwordMatch = await bcrypt.compare(password, admin.password);
-            if (passwordMatch) {
-                
-                req.session.admin = admin._id;
-                return res.redirect('/admin');
-            } else {
-                return res.redirect('/admin/login');
-            }
-        } else {
-            return res.redirect('/admin/login');
+        if (!admin) {
+            return res.render('admin-login', { 
+                message: 'Invalid email address. No admin account found.' 
+            });
         }
+
+        const passwordMatch = await bcrypt.compare(password, admin.password);
+        if (!passwordMatch) {
+            return res.render('admin-login', { 
+                message: 'Invalid password. Please try again.' 
+            });
+        }
+
+        req.session.admin = admin._id;
+        return res.redirect('/admin');
+
     } catch (error) {
         console.log("Login Error", error);
-        return res.redirect('/pageerror');
+        return res.render('admin-login', { 
+            message: 'An error occurred. Please try again later.' 
+        });
     }
 };
+
 
 
 const loadDashboard = async (req, res) => {
