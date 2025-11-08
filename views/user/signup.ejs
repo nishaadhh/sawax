@@ -498,7 +498,7 @@
         .btn {
             display: inline-block;
             width: 100%;
-            padding: 14px;
+            padding: 8px;
             background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
             background-size: 200% 100%;
             color: #ffffff;
@@ -526,9 +526,6 @@
             cursor: not-allowed;
         }
 
-
-
-        
         .spinner {
             display: none;
             width: 20px;
@@ -747,13 +744,27 @@
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+                        <div class="input-group">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary toggle-password" type="button" id="togglePassword">
+                                    <span class="eye-icon">👁</span>
+                                </button>
+                            </div>
+                        </div>
                         <div class="form-error">Password must be at least 8 characters</div>
                         <div id="error3" class="error-message"></div>
                     </div>
                     <div class="form-group">
                         <label for="confirm-password">Confirm Password</label>
-                        <input type="password" id="confirm-password" name="cPassword" class="form-control" placeholder="Confirm your password" required>
+                        <div class="input-group">
+                            <input type="password" id="confirm-password" name="cPassword" class="form-control" placeholder="Confirm your password" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary toggle-password" type="button" id="toggleConfirmPassword">
+                                    <span class="eye-icon">👁</span>
+                                </button>
+                            </div>
+                        </div>
                         <div class="form-error">Passwords do not match</div>
                         <div id="error4" class="error-message"></div>
                     </div>
@@ -984,6 +995,29 @@
             clearTimeout(referralTimeout);
             referralTimeout = setTimeout(validateReferralCode, 500); 
         });
+
+        // Password toggle functionality
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                const eyeIcon = this.querySelector('.eye-icon');
+                eyeIcon.textContent = type === 'password' ? '👁' : '👁';
+            });
+        }
+
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        if (toggleConfirmPassword && confirmPasswordInput) {
+            toggleConfirmPassword.addEventListener('click', function() {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
+                const eyeIcon = this.querySelector('.eye-icon');
+                eyeIcon.textContent = type === 'password' ? '👁' : '👁';
+            });
+        }
 
         signupform.addEventListener("submit", function(e) {
             const isNameValid = nameValidateChecking();
