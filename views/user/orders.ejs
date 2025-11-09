@@ -78,7 +78,7 @@
             margin: 0 auto;
         }
 
-        /* Advanced Search and Filter */
+       
         .search-filter-section {
             background: white;
             padding: 30px;
@@ -140,7 +140,7 @@
             outline: none;
         }
 
-        /* Orders Grid */
+        
         .orders-grid {
             display: grid;
             gap: 25px;
@@ -300,7 +300,7 @@
             border: 1px solid #adb5bd;
         }
 
-        /* Payment Pending Alert */
+        
         .payment-pending-alert {
             background: linear-gradient(135deg, #fff3cd, #ffeaa7);
             border: 2px solid var(--warning);
@@ -329,7 +329,7 @@
             color: #856404;
         }
 
-        /* Order Group Styles */
+        
         .order-group-card {
             background: white;
             border-radius: 15px;
@@ -560,7 +560,7 @@
             font-size: 12px;
         }
 
-        /* Action Buttons */
+        
         .order-actions {
             display: flex;
             gap: 12px;
@@ -656,7 +656,7 @@
             transform: none !important;
         }
 
-        /* Loading state */
+        
         .btn.loading {
             pointer-events: none;
             opacity: 0.7;
@@ -679,7 +679,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Empty State */
+        
         .empty-orders {
             text-align: center;
             padding: 80px 20px;
@@ -721,7 +721,7 @@
 }
 
 
-        /* Enhanced Pagination */
+        
         .pagination-wrapper {
             display: flex;
             justify-content: center;
@@ -767,7 +767,7 @@
             cursor: not-allowed;
         }
 
-        /* Back Button */
+        
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -787,7 +787,7 @@
             box-shadow: 0 10px 25px rgba(26, 26, 26, 0.3);
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .container {
                 padding: 0 15px;
@@ -845,7 +845,7 @@
             }
         }
 
-        /* Additional animations */
+        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -968,7 +968,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Group Summary -->
+                                <!-- Group order -->
                                 <div class="group-summary">
                                     <div class="group-amount">
                                         <div class="amount-label">Total Amount</div>
@@ -1015,7 +1015,7 @@
                                     <% } %>
                                 </div>
 
-                                <!-- Expandable Group Details -->
+                                <!--  Group Details -->
                                 <div class="group-details" id="group-details-<%= orderData.orderGroupId %>" style="display: none;">
                                     <div class="group-details-header">
                                         <h4><i class="fas fa-list"></i> Order Details</h4>
@@ -1324,7 +1324,7 @@
                 const itemStatus = (item.getAttribute('data-status') || '').toLowerCase();
                 const productNames = (item.getAttribute('data-product-names') || '').toLowerCase();
 
-                // Search filter logic
+                // Search filter 
                 let matchesSearch = true;
                 if (query) {
                     if (filter === 'all') {
@@ -1341,7 +1341,7 @@
                     }
                 }
 
-                // Status filter logic
+                // Status filter 
                 let matchesStatus = status === 'all' || itemStatus === status;
 
                 // Show/hide item
@@ -1353,7 +1353,7 @@
                 }
             });
 
-            // Show empty state if no items visible
+            // Showing empty state if no items visible
             const visibleItems = Array.from(orderItems).filter(item => item.style.display !== 'none');
             const container = document.getElementById('orders-container');
             let emptyState = container.querySelector('.empty-search-state');
@@ -1412,7 +1412,7 @@
             }
         }
 
-        // Retry Payment Functionality
+        // Retry Payment Function
         async function retryPayment(orderId, orderIdString, amount) {
             const result = await Swal.fire({
                 title: 'Complete Payment',
@@ -2006,7 +2006,7 @@
                     });
                     
                     if (hasPendingOrders) {
-                        // Silent refresh - update status without full page reload
+                        
                         fetch('/orders/status-update', { method: 'GET' })
                             .then(response => response.json())
                             .then(data => {

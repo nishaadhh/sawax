@@ -364,7 +364,7 @@
 }
 
 .btn:hover {
-  background: linear-gradient(135deg, #d4a017, #e7c156); /* ✅ fixed */
+  background: linear-gradient(135deg, #d4a017, #e7c156); 
   color: #fff;
   transform: translateY(-2px);
 }
@@ -871,7 +871,7 @@
         return;
       }
 
-      // Everything fine → proceed to checkout
+      // Everything fine . proceed to checkout
       window.location.href = "/checkout";
 
     } else {
@@ -958,13 +958,13 @@
 
           const data = await response.json();
           if (data.success) {
-            quantityDisplay.textContent = newQuantity; // Ensure UI matches server response
+            quantityDisplay.textContent = newQuantity; 
             const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
             cartItem.querySelector(".cart-item-price").dataset.price = data.price;
             cartItem.querySelector(".product-price").textContent = `₹${data.price.toFixed(2)}`;
             const newTotalPrice = data.price * newQuantity;
             cartItem.querySelector(".cart-item-price").textContent = `₹${newTotalPrice.toFixed(2)}`;
-            quantityDisplay.setAttribute("data-stock", stock - change); // Update stock locally (approximate)
+            quantityDisplay.setAttribute("data-stock", stock - change); 
             updateCartTotal();
             Swal.fire({
               icon: "success",
@@ -996,7 +996,7 @@
           }
         } catch (error) {
           console.error("Error updating quantity:", error);
-          // Revert UI on error
+          
           const quantityDisplay = document.querySelector(`.quantity-display[data-product-id="${productId}"]`);
           quantityDisplay.textContent = currentQuantity;
           const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
