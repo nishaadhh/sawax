@@ -53,14 +53,14 @@
             overflow-x: hidden;
         }
 
-        /* Enhanced Container */
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        /* Header Styling */
+        
         header {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(20px);
@@ -134,7 +134,7 @@
             transform: scale(1.05);
         }
 
-        /* Enhanced Profile Section */
+        
         .profile {
             padding: 40px 0 80px;
             min-height: calc(100vh - 200px);
@@ -166,7 +166,7 @@
             line-height: 1.7;
         }
 
-        /* Enhanced Profile Layout */
+        
         .profile-content {
             display: grid;
             grid-template-columns: 380px 1fr;
@@ -175,7 +175,7 @@
             animation: fadeIn 0.8s ease;
         }
 
-        /* Premium Sidebar */
+        
         .profile-sidebar {
             background: white;
             border-radius: var(--radius-xl);
@@ -244,7 +244,7 @@
             transform: scale(1.1);
         }
 
-        /* Premium Main Profile Area */
+        
         .profile-main {
             background: white;
             border-radius: var(--radius-xl);
@@ -254,7 +254,7 @@
             animation: slideInUp 0.6s ease;
         }
 
-        /* Enhanced Profile Header */
+        
         .profile-header {
             background: var(--gradient-primary);
             padding: 48px 40px;
@@ -319,7 +319,7 @@
             border-radius: 50%;
         }
 
-        /* Enhanced Upload Controls */
+        
         .image-upload-overlay {
             position: absolute;
             bottom: 4px;
@@ -402,7 +402,7 @@
             opacity: 0.9;
         }
 
-        /* Enhanced Form Section */
+        
         .profile-body {
             padding: 48px 40px;
         }
@@ -479,7 +479,7 @@
             cursor: not-allowed;
         }
 
-        /* Username Validation */
+        
         .username-group {
             position: relative;
         }
@@ -539,7 +539,7 @@
             background: var(--error-light);
         }
 
-        /* Premium Buttons */
+        
         .btn {
             display: inline-flex;
             align-items: center;
@@ -581,7 +581,7 @@
             color: white;
         }
 
-        /* Disabled button styles for Google Sign-In users */
+        
         .btn-disabled {
             background: var(--text-muted) !important;
             color: white !important;
@@ -605,7 +605,7 @@
             border-top: 2px solid var(--border-light);
         }
 
-        /* Enhanced Alerts */
+        
         .alert {
             padding: 16px 24px;
             border-radius:  var(--radius-md);
@@ -648,7 +648,7 @@
             }
         }
 
-        /* Upload Progress */
+        
         .upload-progress {
             margin-top: 16px;
             opacity: 0;
@@ -685,7 +685,7 @@
             font-weight: 500;
         }
 
-        /* Tooltip */
+        
         .tooltip {
             position: relative;
             display: inline-block;
@@ -728,7 +728,7 @@
             border-color: var(--primary) transparent transparent transparent;
         }
 
-        /* Dropdown Menu */
+        
         .dropdown {
             position: relative;
             display: inline-block;
@@ -779,7 +779,7 @@
             }
         }
 
-        /* Animations */
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -811,7 +811,7 @@
             }
         }
 
-        /* Footer Enhancement */
+        
         footer {
             background: var(--primary);
             color: white;
@@ -918,7 +918,7 @@
             font-size: 14px;
         }
 
-        /* Loading States */
+       
         .loading {
             opacity: 0.7;
             pointer-events: none;
@@ -929,7 +929,7 @@
             cursor: not-allowed;
         }
 
-        /* Mobile Menu */
+        
         .mobile-menu {
             display: none;
             font-size: 24px;
@@ -944,7 +944,7 @@
             background: rgba(59, 130, 246, 0.1);
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 1024px) {
             .profile-content {
                 grid-template-columns: 1fr;
@@ -1094,13 +1094,13 @@
             }
         }
 
-        /* Enhanced hover states for better UX */
+        
         .form-group input:hover:not(:focus) {
             border-color: var(--text-light);
             background: white;
         }
 
-        /* Enhanced focus states for accessibility */
+        
         .btn:focus {
             outline: 2px solid var(--accent);
             outline-offset: 2px;
@@ -1111,12 +1111,12 @@
             outline-offset: -2px;
         }
 
-        /* File input styling */
+        
         #image-upload {
             display: none;
         }
 
-        /* Custom scrollbar */
+        
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -1134,7 +1134,7 @@
             background: var(--accent);
         }
 
-        /* Google Sign-In user notice */
+        
         .google-user-notice {
             background: linear-gradient(135deg, #000000 50%, #000000 75%);
             padding: 16px 24px;
@@ -1372,7 +1372,7 @@
                     return;
                 }
 
-                // Show preview immediately
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     updateProfileImageDisplay(e.target.result, true);
@@ -1384,7 +1384,7 @@
             }
         });
 
-        // Update profile image display
+        // Update profile image area
         function updateProfileImageDisplay(imageSrc, hasCustomImage) {
             const profileImageContainer = document.querySelector('.profile-image');
             const removeOverlay = document.querySelector('.image-remove-overlay');
@@ -1597,7 +1597,7 @@
             }, 500);
         });
 
-        // Form submission with enhanced validation
+        // Form validation
         document.getElementById('profile-form').addEventListener('submit', function(e) {
             const username = document.getElementById('username')?.value.trim();
             const feedback = document.getElementById('username-feedback');
@@ -1622,7 +1622,7 @@
             }, 5000);
         });
 
-        // Alert system
+        
         function showAlert(message, type) {
             // Remove existing alerts
             const existingAlerts = document.querySelectorAll('.alert');
@@ -1694,7 +1694,7 @@
             });
         }
 
-        // Add keyboard navigation for accessibility
+        
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 // Close any open dropdowns or modals
@@ -1703,7 +1703,7 @@
             }
         });
 
-        // Enhanced file input interaction
+        
         document.querySelector('.image-upload-overlay').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -1731,7 +1731,7 @@
                 
                 document.body.appendChild(spinner);
                 
-                // Remove spinner after 3 seconds as fallback
+                // Remove spinner after 3 seconds 
                 setTimeout(() => {
                     if (spinner.parentNode) {
                         spinner.remove();
@@ -1740,7 +1740,8 @@
             });
         });
 
-        // JavaScript automatic aayi style tag create cheynu, CSS apply cheyyum — file-il manual aayi style add cheyndathila.
+        // createElement - Js automatic aayi style tag create cheynu, CSS apply cheyyum — file-il manual aayi style add cheyndathila.
+        
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideOutUp {

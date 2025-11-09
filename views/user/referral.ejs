@@ -273,13 +273,13 @@
         </a>
         </div>
     <div class="referral-container">
-        <!-- Header -->
+        
         <div class="referral-header">
             <h1 style="color: #d4a017;"><i class="fas fa-gift"></i> Referral Program</h1>
             <p style="color: black;">Invite friends and earn rewards together!</p>
         </div>
         
-        <!-- Stats Cards -->
+        
         <div class="stats-cards">
             <div class="stat-card">
                 <div class="icon">
@@ -344,7 +344,7 @@
             </div>
         </div>
         
-        <!-- How It Works -->
+        
         <div class="how-it-works">
             <h2 class="text-center mb-4">How It Works</h2>
             <div class="steps">
@@ -424,7 +424,7 @@
                 }, 2000);
             }).catch(err => {
                 console.error('Could not copy text: ', err);
-                // Fallback for older browsers
+                // Fallback for older browser
                 const textArea = document.createElement('textarea');
                 textArea.value = code;
                 document.body.appendChild(textArea);
@@ -450,7 +450,7 @@
             window.open(twitterUrl, '_blank');
         }
         
-        // Add some entrance animations
+        
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.stat-card, .referral-code-section, .how-it-works, .referred-users');
             cards.forEach((card, index) => {

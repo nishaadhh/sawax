@@ -1,7 +1,7 @@
 <%- include("../../views/partials/user/header") %>
 
 <link rel="stylesheet" href="/css/shop.css">
-<title>SAWAX | Shop Premium Watches</title>
+<title>SAWAX | Shop </title>
 
 <style>
     :root {
@@ -320,7 +320,7 @@
         gap: 30px;
     }
 
-    /* ========== ULTIMATE PAGE TITLE ANIMATIONS ========== */
+   
     .page-title {
         position: relative;
         padding: 120px 20px 80px;
@@ -660,7 +660,7 @@
 </section>
 
 <script>
-// ========== PAGE TITLE ANIMATION SCRIPT ==========
+// TITLE ANIMATION SCRIPT
 document.addEventListener('DOMContentLoaded', function() {
     function splitTextToSpans(element) {
         const text = element.textContent;
@@ -746,12 +746,12 @@ function showLoading() {
 }
 
 function updateActiveCategory() {
-    // Remove active class from all category links
+    
     document.querySelectorAll('.category-link').forEach(link => {
         link.classList.remove('active');
     });
     
-    // Add active class to current category
+    
     const activeLink = document.querySelector(`[data-category="${currentFilters.category}"]`);
     if (activeLink) {
         activeLink.classList.add('active');
@@ -816,7 +816,7 @@ function updateProductGrid(data) {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
 
-            // Conditional price display
+            //  price display
             const priceHTML = product.regularPrice !== product.salePrice
                 ? `<span style="display: flex; gap: 10px; align-items: center;">
                      <del><p class="product-price">₹ ${product.regularPrice}</p></del>
@@ -1008,7 +1008,7 @@ function resetAllFilters() {
     performSearch();
 }
 
-// Event listeners
+
 document.addEventListener('DOMContentLoaded', function() {
     // Search input with debounce
     const searchInput = document.getElementById('search-input');
@@ -1062,7 +1062,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateActiveCategory();
 });
 
-// Handle browser back/forward buttons
 window.addEventListener('popstate', function(event) {
     if (event.state) {
         currentFilters = event.state;

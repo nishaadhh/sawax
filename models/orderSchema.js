@@ -232,7 +232,7 @@ orderSchema.pre('save', function(next) {
   next();
 });
 
-// calculate days order
+//  days order
 orderSchema.virtual('daysSinceOrder').get(function() {
   return Math.floor((new Date() - this.createdOn) / (1000 * 60 * 60 * 24));
 });

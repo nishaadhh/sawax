@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
   status: { type: String, enum: ['available', 'out of stock', 'Discontinued'], required: true, default: 'available' },
 }, { timestamps: true });
 
-// calculate final price based on product and category offers
+//  final price product and category 
 productSchema.methods.calculateSalePrice = function(categoryOffer = 0) {
   const maxOffer = Math.max(this.productOffer || 0, categoryOffer || 0);
   this.salePrice = Math.round(this.regularPrice * (1 - maxOffer / 100));

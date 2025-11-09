@@ -208,7 +208,7 @@
             box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
         }
 
-        /* Transactions Section */
+     
         .transactions-section {
             background: white;
             border-radius: 20px;
@@ -311,7 +311,7 @@
             color: var(--light-text);
         }
 
-        /* Empty State */
+        
         .empty-transactions {
             text-align: center;
             padding: 60px 20px;
@@ -330,7 +330,7 @@
             color: var(--primary);
         }
 
-        /* Pagination */
+        
         .pagination-wrapper {
             display: flex;
             justify-content: center;
@@ -376,7 +376,7 @@
             cursor: not-allowed;
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .container {
                 padding: 0 15px;
@@ -418,7 +418,7 @@
             }
         }
 
-        /* Modal Styles */
+        
         .modal {
             display: none;
             position: fixed;
@@ -501,7 +501,7 @@
             box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
         }
 
-        /* Loading state */
+        
         .loading {
             pointer-events: none;
             opacity: 0.7;
@@ -533,13 +533,13 @@
 
     <section class="wallet-section">
         <div class="container">
-            <!-- Section Header -->
+            
             <div class="section-header">
                 <h1><i class="fas fa-wallet"></i> My Wallet</h1>
                 <p>Manage your wallet balance and view transaction history</p>
             </div>
 
-            <!-- Wallet Card -->
+            
             <div class="wallet-card">
                 <div class="wallet-label">Current Balance</div>
                 <div class="wallet-balance">₹<%= wallet.balance.toFixed(2) %></div>
@@ -560,7 +560,7 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            
             <div class="wallet-actions">
                 <button class="btn btn-primary" onclick="openAddMoneyModal()">
                     <i class="fas fa-plus"></i> Add Money
@@ -662,7 +662,7 @@
         </div>
     </section>
 
-    <!-- Add Money Modal -->
+    <!-- Add Money -->
     <div id="addMoneyModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('addMoneyModal')">&times;</span>
@@ -680,7 +680,7 @@
         </div>
     </div>
 
-    <!-- Withdraw Money Modal -->
+    <!-- Withdraw Money -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
@@ -699,6 +699,15 @@
             </form>
         </div>
     </div>
+
+
+
+
+
+
+
+
+
 
     <!-- Scripts -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -851,7 +860,7 @@
             }
         });
 
-        // Withdraw Money Form Handler
+        // Withdraw Money Form 
         document.getElementById('withdrawForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -959,6 +968,6 @@
         });
     </script>
 
-    <!-- <%- include("../../views/partials/user/footer") %> -->
+    
 </body>
 </html>

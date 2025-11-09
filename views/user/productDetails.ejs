@@ -1,11 +1,9 @@
 <%- include("../../views/partials/user/header") %>
-<!-- <link rel="stylesheet" href="/css/productDetails.css"> -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-  /* Reset and General Styles */
   * {
     margin: 0;
     padding: 0;
@@ -30,7 +28,6 @@
     gap: clamp(1rem, 2vw, 2rem);
   }
 
-  /* Product Images with Zoom */
   .product-images {
     flex: 1;
     position: relative;
@@ -48,21 +45,21 @@
   .main-image {
     position: relative;
     width: 100%;
-    height: 400px; /* Fixed height for consistency */
-    max-width: 500px; /* Maximum width to prevent oversized images */
+    height: 400px;
+    max-width: 500px;
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #fff; /* White background for better image contrast */
+    background-color: #fff;
   }
 
   .main-image img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Ensures images are fully visible without cropping */
+    object-fit: contain;
     transition: transform 0.3s ease;
     display: block;
   }
@@ -84,7 +81,7 @@
     left: 105%;
     width: 300px;
     height: 300px;
-    background-size: cover; /* Changed to cover for better zoom clarity */
+    background-size: cover;
     background-repeat: no-repeat;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -115,7 +112,6 @@
     border: 2px solid #d4af37;
   }
 
-  /* Product Info */
   .product-info {
     flex: 1;
     padding: 1rem;
@@ -266,7 +262,6 @@
    
    }
 
-  /* Footer Styles */
   footer {
     background-color: #1a1a1a;
     color: #fff;
@@ -368,7 +363,6 @@
     font-size: clamp(0.8rem, 1.5vw, 0.95rem);
   }
 
-  /* Footer contact icon */
   .contact-icon {
     color: #d4af37;
     font-size: clamp(0.9rem, 1.5vw, 1rem);
@@ -398,7 +392,6 @@
     color: #d4af37;
   }
 
-  /* SweetAlert2 Custom Styles */
   .swal2-popup {
     background: rgba(255, 255, 255, 0.9) !important;
     backdrop-filter: blur(10px) !important;
@@ -432,7 +425,6 @@
     transform: scale(1.05) !important;
   }
 
-  /* Responsive Design */
   @media (max-width: 1024px) {
     .product-details-container {
       padding: clamp(1rem, 1.5vw, 1.5rem);
@@ -528,9 +520,7 @@
   }
 </style>
 
-<!-- Product Details Container -->
 <div class="product-details-container">
-  <!-- Images Column -->
   <div class="product-images">
     <% if (product.productImage?.length) { %>
       <div class="zoom-container">
@@ -550,11 +540,9 @@
     <% } %>
   </div>
 
-  <!-- Product Info Column -->
   <div class="product-info">
     <h1 class="product-title"><%= product.productName %></h1>
     <div class="brand">Brand: <%= product.brand %></div>
-    <!-- <div class="product-price">₹<%= product.salePrice.toFixed(2) %></div> -->
 
     <span style="display: flex; gap: 10px; align-items: center;">
   <% if (product.regularPrice !== product.salePrice) { %>
@@ -579,10 +567,8 @@
 </div>
 
 <script>
-  // Pass server-side product object to script
   const product = <%- JSON.stringify(product) %>;
 
-  // Obtain DOM elements
   const mainImage = document.getElementById('mainImage');
   const zoomLens = document.getElementById('zoomLens');
   const zoomResult = document.getElementById('zoomResult');
@@ -590,7 +576,6 @@
   function changeMainImage(src) {
     mainImage.src = src;
     zoomResult.style.backgroundImage = `url('${src}')`;
-    // Update zoom background size when image changes
     updateZoomBackgroundSize();
   }
 
@@ -617,7 +602,6 @@
     const lensH = zoomLens.offsetHeight;
     const imgRect = mainImage.getBoundingClientRect();
 
-    // Ensure lens stays within image boundaries
     let x = Math.max(0, Math.min(pos.x - lensW / 2, imgRect.width - lensW));
     let y = Math.max(0, Math.min(pos.y - lensH / 2, imgRect.height - lensH));
 
@@ -644,7 +628,6 @@
     zoomResult.style.display = 'none';
   });
 
-  // Ensure initial zoom setup
   window.addEventListener('load', () => {
     updateZoomBackgroundSize();
   });
@@ -711,7 +694,6 @@
     const data = await response.json();
 
     if (data.success) {
-      // Toggle heart color instantly
       wishlistIcon.classList.toggle('wishlist-active');
 
       const isActive = wishlistIcon.classList.contains('wishlist-active');
@@ -783,4 +765,3 @@
     }
   }
 </script>
-

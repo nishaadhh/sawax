@@ -109,7 +109,7 @@ const userSchema = new Schema({
     }]
 });
 
-// Generate referral code
+
 userSchema.pre('save', function(next) {
     if (!this.referId) {
         this.referId = this.generateReferralCode();
