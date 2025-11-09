@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAWAX Chrono Elite | OTP Verification</title>
+  <title>SAWAX | OTP Verification</title>
   <link rel="stylesheet" href="/css/verify-otp.css">
  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
@@ -34,7 +34,7 @@
     </div>
   </div>
   
-  <!-- JavaScript Libraries -->
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
   
@@ -96,7 +96,7 @@
     function checkAllInputsFilled() {
       const allFilled = Array.from(inputs).every(input => input.value.length === 1);
       if (allFilled) {
-        // Optional: Auto-submit when all fields are filled
+        // Auto-submit when all fields are filled
         // document.getElementById('verifyBtn').click();
       }
     }
@@ -107,7 +107,7 @@
       submitOTP();
     });
     
-    // Form submission with validation
+    
     function submitOTP() {
       // Collect OTP values
       const otp1 = document.getElementById("otp1").value;
@@ -117,7 +117,7 @@
       const otp5 = document.getElementById("otp5").value;
       const otp6 = document.getElementById("otp6").value;
       
-      // Validate  
+       
       if (!otp1 || !otp2 || !otp3 || !otp4 || !otp5 || !otp6) {
         Swal.fire({
           title: 'Incomplete OTP',

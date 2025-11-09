@@ -326,18 +326,18 @@
     <h3>Update User Address</h3>
     
     <form id="addressForm">
-        <!-- Form Progress -->
+        
         <div class="form-progress">
             <div class="form-progress-bar" id="formProgressBar"></div>
         </div>
         
-        <!-- Validation Summary -->
+        
         <div class="validation-summary" id="validationSummary">
             <h5>Please fix the following errors:</h5>
             <ul id="validationSummaryList"></ul>
         </div>
 
-        <!-- Row 1: Address Type, Name, Country -->
+        
         <div class="row mb-3">
             <div class="form-group col-md-4">
                 <label for="addressType" class="required">Address Type:</label>
@@ -393,7 +393,7 @@
             </div>
         </div>
 
-        <!-- Row 2: City, Landmark, State -->
+        <!--  City, Landmark, State -->
         <div class="row mb-3">
             <div class="form-group col-md-4">
                 <label for="city" class="required">City:</label>
@@ -445,7 +445,7 @@
             </div>
         </div>
 
-        <!-- Row 3: Pincode, Phone, Email -->
+        <!--  Pincode, Phone, Email -->
         <div class="row mb-3">
             <div class="form-group col-md-4">
                 <label for="pincode" class="required">Pincode:</label>
@@ -483,8 +483,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 // === CONFIGURATION ===
-const GEOCODE_MAPS_CO_API_KEY = 'YOUR_GEOCODE_MAPS_CO_API_KEY'; // Replace with your actual key
-const USE_PROXY = true; // Set to false for production HTTPS only
+const GEOCODE_MAPS_CO_API_KEY = 'YOUR_GEOCODE_MAPS_CO_API_KEY'; 
+const USE_PROXY = true; 
 const API_BASE = USE_PROXY ? '/api/geocode' : 'https://geocode.maps.co';
 
 let autocompleteXHR = null;
@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(' All components initialized');
 });
 
-// FIXED: Character Counters
+
 function initializeCharacterCounters() {
     const fields = ['name', 'city', 'landMark', 'streetAddress'];
     fields.forEach(id => {
@@ -527,7 +527,7 @@ function initializeCharacterCounters() {
     console.log(' Character counters initialized');
 }
 
-// FIXED: Geolocation Button Setup
+// Geolocation Button 
 function setupGeolocationButton() {
     const button = document.getElementById('getCurrentLocation');
     if (!button) {
@@ -537,7 +537,7 @@ function setupGeolocationButton() {
     
     console.log(' Geolocation button found and setting up...');
     
-    // Clear any existing listeners
+    
     button.onclick = null;
     
     button.addEventListener('click', function(e) {
@@ -550,7 +550,7 @@ function setupGeolocationButton() {
     console.log(' Geolocation button event listener attached');
 }
 
-// COMPLETE Geolocation Handler
+// Geolocation Handler
 async function handleGeolocationClick() {
     console.log('Starting location api flow...');
     const button = this;
@@ -707,25 +707,25 @@ function selectPlace(place) {
     };
     
     const addr = place.address || place;
-    console.log(' Full address data:', addr); // Debug log
+    console.log(' Full address data:', addr); 
     
-    // Helper function to extract value from multiple possible field names
+   
     function getAddressComponent(components, possibleNames) {
         for (const name of possibleNames) {
-            // Try exact match first
+            
             let value = components[name];
             if (value) return value;
             
-            // Try lowercase
+            
             value = components[name.toLowerCase()];
             if (value) return value;
             
-            // Try camelCase to snake_case conversion
+           
             const snakeCase = name.replace(/([A-Z])/g, '_$1').toLowerCase();
             value = components[snakeCase];
             if (value) return value;
             
-            // Try removing spaces and underscores
+            
             const cleanName = name.replace(/[\s_]/g, '');
             value = components[cleanName];
             if (value) return value;
@@ -733,7 +733,7 @@ function selectPlace(place) {
         return '';
     }
     
-    // Street Address - combine multiple components
+    // Street Address - multiple components
     const road = getAddressComponent(addr, ['road', 'street', 'avenue', 'lane', 'drive', 'path', 'way']);
     const house = getAddressComponent(addr, ['house_number', 'housenumber', 'building', 'flat']);
     const neighbourhood = getAddressComponent(addr, ['neighbourhood', 'neighborhood', 'suburb', 'village']);
@@ -743,14 +743,14 @@ function selectPlace(place) {
     if (road) streetValue += road + ', ';
     if (neighbourhood) streetValue += neighbourhood;
     
-    // Fallback to display_name or formatted_address
+    
     if (!streetValue.trim()) {
         streetValue = addr.display_name || addr.formatted_address || addr.address_line_1 || '';
     }
     
     fields.streetAddress.value = streetValue.trim();
     
-    // CITY - Try extensive list of possible city/district fields
+    
     const cityCandidates = [
         'city', 'city_district', 'district', 'town', 'municipality', 
         'administrative', 'hamlet', 'suburb', 'county', 'region',
@@ -760,7 +760,7 @@ function selectPlace(place) {
     const cityValue = getAddressComponent(addr, cityCandidates);
     fields.city.value = cityValue || '';
     
-    // LANDMARK - Try even more fields for landmarks/local details
+    
     const landmarkCandidates = [
         'landmark', 'poi', 'point_of_interest', 'amenity', 'leisure',
         'shop', 'office', 'restaurant', 'cafe', 'bar', 'pub',
@@ -771,7 +771,7 @@ function selectPlace(place) {
     ];
     let landmarkValue = getAddressComponent(addr, landmarkCandidates);
     
-    // If no specific landmark, try combining smaller location components
+    // If no specific landmark, it try smaller location 
     if (!landmarkValue) {
         const subComponents = [];
         const smallComponents = ['house_number', 'flat', 'unit', 'door', 'gate', 'block', 'wing'];
@@ -947,7 +947,7 @@ document.getElementById('addressForm').addEventListener('submit', async (e) => {
     }
 });
 
-// Country/State Sync
+// Country/State S
 document.getElementById('country').addEventListener('change', function() {
     const stateSelect = document.getElementById('state');
     if (this.value !== 'India') {

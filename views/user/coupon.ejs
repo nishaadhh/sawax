@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>SAWAX | Exclusive Coupons & Offers</title>
     <style>
-        /* Existing styles remain unchanged */
+        
         :root {
             --primary: #1a1a1a;
             --secondary: #f8f8f8;
@@ -47,7 +47,7 @@
             padding: 0 20px;
         }
 
-        /* Hero Section */
+        
         .hero-section {
             padding: 80px 0 60px;
             text-align: center;
@@ -128,7 +128,7 @@
             margin-top: 5px;
         }
 
-        /* Filter Section */
+        
         .filter-section {
             background: transparent;
             padding: 30px;
@@ -194,7 +194,7 @@
             box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
         }
 
-        /* Coupons Grid */
+        
         .coupons-section {
             padding: 40px 0 80px;
         }
@@ -206,7 +206,7 @@
             margin-top: 40px;
         }
 
-        /* Coupon Card Styles */
+       
         .coupon-card {
             background: white;
             border-radius: 20px;
@@ -442,7 +442,7 @@
             transform: none !important;
         }
 
-        /* Expiry Badge */
+        
         .expiry-badge {
             position: absolute;
             top: 20px;
@@ -464,7 +464,7 @@
             background: var(--success);
         }
 
-        /* Empty State */
+        
         .empty-state {
             text-align: center;
             padding: 80px 20px;
@@ -495,7 +495,7 @@
             line-height: 1.6;
         }
 
-        /* Loading Animation */
+        
         .loading {
             display: flex;
             justify-content: center;
@@ -517,7 +517,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Responsive Design */
+       
         @media (max-width: 1200px) {
             .coupons-grid {
                 grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -623,7 +623,7 @@
             }
         }
 
-        /* Animation Classes */
+        
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -663,7 +663,7 @@
             }
         }
 
-        /* Notification Styles */
+        
         .notification {
             position: fixed;
             top: 20px;
@@ -726,7 +726,7 @@
                              <i class="fa-solid fa-arrow-left"></i> Go Profile
         </a>
         </div>
-    <!-- Hero Section -->
+    
     <section class="hero-section">
         
 
@@ -760,11 +760,11 @@
         </div>
     </section>
 
-    <!-- Coupons Section -->
+   
     <section class="coupons-section">
         <div class="container">
             <div id="couponsContainer" class="coupons-grid">
-                <!-- Loading State -->
+                
                 <div class="loading" id="loadingState">
                     <div class="spinner"></div>
                 </div>
@@ -772,18 +772,18 @@
         </div>
     </section>
 
-    <!-- Notification Container -->
+  
     <div id="notificationContainer"></div>
 
-    <!-- Scripts -->
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Initialize coupon data from server
+    
     let allCoupons = <%- JSON.stringify(coupons) %>;
     let filteredCoupons = [...allCoupons];
 
-    // Initialize page
+    
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             loadCoupons();
@@ -792,7 +792,7 @@
         }, 1000);
     });
 
-    // Load and display coupons
+    
     function loadCoupons() {
         const container = document.getElementById('couponsContainer');
         const loadingState = document.getElementById('loadingState');
@@ -910,10 +910,10 @@
         const totalCoupons = allCoupons.length;
         const activeCoupons = allCoupons.filter(c => !c.isUsed && new Date(c.expireOn) > new Date()).length;
         
-        // Fixed: Robust calculation for maxDiscount to handle empty array, invalid/non-numeric values
+        
         const discounts = allCoupons
             .map(c => parseFloat(c.discountValue) || 0)
-            .filter(isFinite);  // Remove NaN, Infinity, -Infinity
+            .filter(isFinite);  
         const maxDiscount = discounts.length > 0 ? Math.max(...discounts) : 0;
         
         animateCounter('totalCoupons', totalCoupons);
@@ -1063,7 +1063,7 @@
         });
     }
 
-    // Search functionality
+    // Search 
     function searchCoupons(query) {
         if (!query) {
             filteredCoupons = [...allCoupons];
@@ -1094,7 +1094,5 @@
         filterControls.insertBefore(searchGroup, filterControls.lastElementChild);
     });
 </script>
-<!--  -->
-
 
 </body>
