@@ -490,6 +490,7 @@ const logout = async (req, res) => {
                 console.log("Session destruction error:", err.message);
                 return res.redirect('/pageNotFound');
             }
+            console.log('\n\n user logged out')
             return res.redirect('/login?refresh=true');
         });
     } catch (error) {
@@ -1408,7 +1409,7 @@ module.exports = {
     renderForgotPassword, 
     forgotPassword,
     renderForgotPasswordOtp,
-    verifyForgotPasswordOtp,
+    verifyForgotPasswordOtp,  
     resendForgotPasswordOtp,
     renderResetPassword,
     couponload,

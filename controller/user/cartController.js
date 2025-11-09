@@ -245,7 +245,7 @@ const refreshCart = async (req, res) => {
         continue;
       }
 
-      const product = item.productId; // Already populated
+      const product = item.productId; 
 
       // Use salePrice directly - it already has the discount applied
       const effectivePrice = product.salePrice;
@@ -259,7 +259,7 @@ const refreshCart = async (req, res) => {
 
     await cart.save();
 
-    // Safely map only valid cart items
+    
     const cartItems = cart.items
       .filter(item => item.productId)
       .map(item => ({
