@@ -528,12 +528,42 @@
             font-size: 1rem;
         }
     }
+
+.sub-text {
+  color: #797979a4; 
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 5s linear infinite;
+  font-size: 18px;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.sub-text.disabled {
+  animation: none;
+}
+    
 </style>
 
 <section class="page-title">
     <div class="container">
         <h2 >Our Collection</h2>
-        <p>Discover exceptional timepieces crafted for distinction</p>
+        <span class="sub-text ">Experience timeless elegance with watches designed to inspire excellence.</span>
     </div>
 </section>
 
