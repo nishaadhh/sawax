@@ -17,6 +17,7 @@
         
         body {
             color: var(--text);
+            background-color: #000000;
             overflow-x: hidden;
         }
         
@@ -320,7 +321,7 @@
         /* Collection Section */
         .collections {
             padding: 80px 0;
-            background-color: var(--secondary);
+            background-color: black;
         }
         
         .collection-grid {
