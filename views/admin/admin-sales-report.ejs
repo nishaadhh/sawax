@@ -482,7 +482,7 @@
         </form>
     </div>
 
-    <!-- Summary Cards -->
+   
     <div class="summary-section">
         <div class="summary-grid">
             <div class="summary-card orders">
@@ -800,7 +800,7 @@
         const filterBtn = document.querySelector('.btn-filter');
         const today = new Date().toISOString().split('T')[0];
         
-        // Remove existing error styles
+        // Remove existing error 
         startDate.style.borderColor = '';
         endDate.style.borderColor = '';
         
@@ -882,7 +882,7 @@
                 return false;
             }
             
-            // Run validation
+            
             if (!validateDateRange()) {
                 e.preventDefault();
                 alert('Please fix the date range errors before applying the filter');
@@ -891,7 +891,7 @@
         }
     });
     
-    // Set max date to today for both inputs
+    //  max date to today 
     document.addEventListener('DOMContentLoaded', function() {
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('startDate').setAttribute('max', today);
