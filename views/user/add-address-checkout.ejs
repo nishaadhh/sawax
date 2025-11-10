@@ -1,575 +1,632 @@
 <%- include("../../views/partials/user/header") %>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-  :root {
-    --primary: #0a0e27;
-    --primary-light: #1a1f3a;
-    --secondary: #f8fafc;
-    --accent: #d4af37;
-    --accent-light: #e8c547;
-    --accent-dark: #b8941f;
-    --teal: #046963;
-    --teal-light: #0891b2;
-    --text: #1e293b;
-    --text-light: #64748b;
-    --text-muted: #94a3b8;
-    --border: #e2e8f0;
-    --border-focus: #cbd5e1;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --error: #ef4444;
-    --glass: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+:root {
+  --primary: #0a0e27;
+  --primary-light: #1a1f3a;
+  --secondary: #f8fafc;
+  --accent: #d4af37;
+  --accent-light: #e8c547;
+  --accent-dark: #b8941f;
+  --teal: #046963;
+  --teal-light: #0891b2;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-focus: #cbd5e1;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --glass: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: white;
+  min-height: 100vh;
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><circle cx="30" cy="30" r="1"/></g></svg>');
+  animation: backgroundFloat 20s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes backgroundFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.banner-area {
+  background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
+  padding: 4rem 0 3rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-area::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><polygon points="20,0 40,20 20,40 0,20"/></g></svg>');
+  animation: patternMove 30s linear infinite;
+}
+
+@keyframes patternMove {
+  0% { transform: translateX(-40px) translateY(-40px); }
+  100% { transform: translateX(0px) translateY(0px); }
+}
+
+.breadcrumb-banner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.breadcrumb-banner h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.breadcrumb-banner nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.breadcrumb-banner nav a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.breadcrumb-banner nav a:hover {
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.lnr-arrow-right {
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0.25rem;
+}
+
+.form-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.form-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.form-title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
+  border-radius: 2px;
+}
+
+#addressForm {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  overflow: hidden;
+  animation: formSlideIn 0.8s ease-out;
+}
+
+#addressForm::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
+}
+
+@keyframes formSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  body {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      sans-serif;
-    background: white;
-    min-height: 100vh;
-    color: var(--text);
-    line-height: 1.6;
-    overflow-x: hidden;
-    position: relative;
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.form-row.mb-50 {
+  margin-bottom: 3rem;
+}
+
+.geolocation-section {
+  grid-column: 1 / -1;
+  margin: 2rem 0;
+}
+
+.geolocation-btn {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+  border: none;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  font-size: 1rem;
+}
+
+.geolocation-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.geolocation-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.location-status {
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  display: none;
+  text-align: center;
+  font-weight: 500;
+}
+
+.location-status.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
+  display: block;
+}
+
+.location-status.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  border: 1px solid var(--error);
+  display: block;
+}
+
+.location-status.loading {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+  display: block;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 0;
+  opacity: 0;
+  animation: formGroupFadeIn 0.6s ease forwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes formGroupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><circle cx="30" cy="30" r="1"/></g></svg>');
-    animation: backgroundFloat 20s ease-in-out infinite;
-    z-index: -1;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  @keyframes backgroundFloat {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-20px);
-    }
+.form-label {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  font-size: 1rem;
+  color: var(--text-light);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  padding: 0 0.5rem;
+  font-weight: 500;
+  z-index: 2;
+  font-family: "Inter", sans-serif;
+  letter-spacing: 0.025em;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem 1rem 0.5rem;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.75rem;
+  background: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  appearance: none;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.form-control::placeholder {
+  color: transparent;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label,
+.form-control.has-value + .form-label {
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+  transform: translateY(-50%);
+}
+
+.form-control:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+}
+
+select.form-control {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgOUwxMiAxNUwxOCA5IiBzdHJva2U9IiM2NDc0OEIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.25rem;
+  padding-right: 3rem;
+  height: calc(2.25rem + 2px) !important;
+  padding-top: 0.7rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.form-control.error {
+  border-color: var(--error);
+  animation: shake 0.5s ease-in-out;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.text-danger {
+  color: var(--error);
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--error);
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: slideIn 0.3s ease forwards;
+  display: block !important;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  .banner-area {
-    background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
-    padding: 4rem 0 3rem;
-    color: white;
-    position: relative;
-    overflow: hidden;
-  }
+.pac-container {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1051;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+}
 
-  .banner-area::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><polygon points="20,0 40,20 20,40 0,20"/></g></svg>');
-    animation: patternMove 30s linear infinite;
-  }
+.pac-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
 
-  @keyframes patternMove {
-    0% {
-      transform: translateX(-40px) translateY(-40px);
-    }
-    100% {
-      transform: translateX(0px) translateY(0px);
-    }
-  }
+.pac-item:hover {
+  background-color: #f8f9fa;
+}
 
-  .breadcrumb-banner {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-  }
+.pac-item:last-child {
+  border-bottom: none;
+}
 
-  .breadcrumb-banner h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+#suggestions {
+  list-style: none;
+  padding: 0;
+  border: 1px solid var(--border);
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: -5px;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  right: -1px;
+  width: calc(100% + 2px);
+  display: none;
+}
 
-  .breadcrumb-banner nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    opacity: 0.9;
-  }
+#suggestions li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+}
 
-  .breadcrumb-banner nav a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    transition: all 0.3s ease;
-  }
+#suggestions li:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
 
-  .breadcrumb-banner nav a:hover {
-    color: var(--accent);
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
-  }
+#suggestions li:last-child {
+  border-bottom: none;
+}
 
-  .lnr-arrow-right {
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0 0.25rem;
-  }
+.form-section-divider {
+  margin: 2.5rem 0;
+  position: relative;
+  text-align: center;
+  grid-column: 1 / -1;
+}
 
-  .form-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
-  }
+.form-section-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
 
-  .form-title {
-    font-size: 2rem;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 3rem;
-    background: linear-gradient(135deg, #d4af37 0%, rgb(43, 42, 42) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    position: relative;
-  }
+.form-section-divider span {
+  background: white;
+  color: var(--text-light);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
+}
 
-  .form-title::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
-    border-radius: 2px;
-  }
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, var(--accent) 0%, rgb(18, 14, 14) 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 1rem 2.5rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin: 2rem auto 0;
+  display: block;
+  min-width: 200px;
+}
 
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+  background: linear-gradient(135deg, var(--accent-light) 0%, black 100%);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem;
+  z-index: 10;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 1024px) {
   #addressForm {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 1.5rem;
-    padding: 3rem;
-    box-shadow: var(--shadow-xl);
-    position: relative;
-    overflow: hidden;
-    animation: formSlideIn 0.8s ease-out;
+    margin: 0 1rem;
+    padding: 2.5rem;
   }
-
-  #addressForm::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
-  }
-
-  @keyframes formSlideIn {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
+  
   .form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
   }
+}
 
-  .form-row.mb-50 {
-    margin-bottom: 3rem;
+@media (max-width: 768px) {
+  .banner-area {
+    padding: 3rem 0 2rem;
   }
-
-  .geolocation-section {
-    grid-column: 1 / -1;
-    margin: 2rem 0;
+  
+  .breadcrumb-banner h1 {
+    font-size: 2rem;
   }
-
-  .geolocation-btn {
-    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
-    border: none;
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-md);
-    width: 100%;
-    font-size: 1rem;
+  
+  #addressForm {
+    padding: 2rem;
+    margin: 0 1rem;
+    border-radius: 1rem;
   }
-
-  .geolocation-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-
-  .geolocation-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  
+  .form-container {
+    padding: 2rem 1rem;
   }
-
-  .location-status {
-    font-size: 0.875rem;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    margin-top: 0.5rem;
-    display: none;
-    text-align: center;
-    font-weight: 500;
+  
+  .form-title {
+    font-size: 1.75rem;
   }
+}
 
-  .location-status.success {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--success);
-    border: 1px solid var(--success);
-    display: block;
+@media (max-width: 480px) {
+  .form-container {
+    padding: 1rem 0.5rem;
   }
-
-  .location-status.error {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--error);
-    border: 1px solid var(--error);
-    display: block;
+  
+  .breadcrumb-banner h1 {
+    font-size: 1.75rem;
   }
-
-  .location-status.loading {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--warning);
-    border: 1px solid var(--warning);
-    display: block;
+  
+  #addressForm {
+    padding: 1.5rem;
+    margin: 0 0.5rem;
   }
-
-  .form-group {
-    position: relative;
-    margin-bottom: 0;
-    opacity: 0;
-    animation: formGroupFadeIn 0.6s ease forwards;
-  }
-
-  .form-group:nth-child(1) { animation-delay: 0.1s; }
-  .form-group:nth-child(2) { animation-delay: 0.2s; }
-  .form-group:nth-child(3) { animation-delay: 0.3s; }
-
-  @keyframes formGroupFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .form-label {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    font-size: 1rem;
-    color: var(--text-light);
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: white;
-    padding: 0 0.5rem;
-    font-weight: 500;
-    z-index: 2;
-    font-family: "Inter", sans-serif;
-    letter-spacing: 0.025em;
-  }
-
+  
   .form-control {
-    width: 100%;
-    padding: 1rem 1rem 0.5rem;
-    font-size: 1rem;
-    border: 2px solid var(--border);
-    border-radius: 0.75rem;
-    background: #ffffff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: inherit;
-    appearance: none;
-    position: relative;
-    z-index: 1;
-    box-sizing: border-box;
+    padding: 0.875rem 0.75rem 0.375rem;
   }
-
-  .form-control::placeholder {
-    color: transparent;
+  
+  .form-label {
+    left: 0.75rem;
   }
-
-  .form-control:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1), var(--shadow-md);
-    transform: translateY(-2px);
-  }
-
-  .form-control:focus + .form-label,
-  .form-control:not(:placeholder-shown) + .form-label,
-  .form-control.has-value + .form-label {
-    top: 0;
-    font-size: 0.75rem;
-    color: var(--accent);
-    font-weight: 600;
-    transform: translateY(-50%);
-  }
-
-  .form-control:hover {
-    border-color: var(--border-focus);
-    transform: translateY(-1px);
-  }
-
-  select.form-control {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTYgOUwxMiAxNUwxOCA5IiBzdHJva2U9IiM2NDc0OEIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.25rem;
-    padding-right: 3rem;
-    height: calc(2.25rem + 2px) !important;
-    padding-top: 0.7rem !important;
-    padding-bottom: 0.5rem !important;
-  }
-
-  .form-control.error {
-    border-color: var(--error);
-    animation: shake 0.5s ease-in-out;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-  }
-
-  .text-danger {
-    color: var(--error);
-    font-size: 0.75rem;
-    margin-top: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: rgba(239, 68, 68, 0.1);
-    border-radius: 0.5rem;
-    border-left: 3px solid var(--error);
-    opacity: 0;
-    transform: translateY(-10px);
-    animation: slideIn 0.3s ease forwards;
-    display: block !important;
-  }
-
-  @keyframes slideIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  #suggestions {
-    list-style: none;
-    padding: 0;
-    border: 1px solid var(--border);
-    max-height: 150px;
-    overflow-y: auto;
-    margin-top: -5px;
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-md);
-    z-index: 1000;
-    position: absolute;
-    top: 100%;
-    left: -1px;
-    right: -1px;
-    width: calc(100% + 2px);
-  }
-
-  #suggestions li {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    transition: background-color 0.2s ease;
-  }
-
-  #suggestions li:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-  }
-
-  #suggestions li:last-child {
-    border-bottom: none;
-  }
-
-  .form-section-divider {
-    margin: 2.5rem 0;
-    position: relative;
-    text-align: center;
-    grid-column: 1 / -1;
-  }
-
-  .form-section-divider::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-  }
-
-  .form-section-divider span {
-    background: white;
-    color: var(--text-light);
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0 1.5rem;
-    position: relative;
-    z-index: 1;
-  }
-
+  
   .btn-primary {
-    position: relative;
-    background: linear-gradient(135deg, var(--accent) 0%, rgb(18, 14, 14) 100%);
-    border: none;
-    color: white;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 1rem 2.5rem;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-    margin: 2rem auto 0;
-    display: block;
-    min-width: 200px;
+    padding: 0.875rem 2rem;
+    font-size: 0.9rem;
+    min-width: 180px;
   }
-
-  .btn-primary::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent
-    );
-    transition: left 0.6s ease;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-xl);
-    background: linear-gradient(135deg, var(--accent-light) 0%, black 100%);
-  }
-
-  .btn-primary:hover::before {
-    left: 100%;
-  }
-
-  .btn-primary:active {
-    transform: translateY(-1px);
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.9);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    border-radius: 1.5rem;
-    z-index: 10;
-  }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--border);
-    border-top: 3px solid var(--accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  @media (max-width: 1024px) {
-    #addressForm { margin: 0 1rem; padding: 2.5rem; }
-    .form-row { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-  }
-
-  @media (max-width: 768px) {
-    .banner-area { padding: 3rem 0 2rem; }
-    .breadcrumb-banner h1 { font-size: 2rem; }
-    #addressForm { padding: 2rem; margin: 0 1rem; border-radius: 1rem; }
-    .form-row { grid-template-columns: 1fr; gap: 1rem; }
-    .form-container { padding: 2rem 1rem; }
-    .form-title { font-size: 1.75rem; }
-  }
-
-  @media (max-width: 480px) {
-    .form-container { padding: 1rem 0.5rem; }
-    .breadcrumb-banner h1 { font-size: 1.75rem; }
-    #addressForm { padding: 1.5rem; margin: 0 0.5rem; }
-    .form-control { padding: 0.875rem 0.75rem 0.375rem; }
-    .form-label { left: 0.75rem; }
-    .btn-primary { padding: 0.875rem 2rem; font-size: 0.9rem; min-width: 180px; }
-  }
+}
 </style>
 
 <section class="banner-area organic-breadcrumb">
@@ -597,10 +654,11 @@
 
     <div class="form-row mb-50">
       <div class="form-group">
-        <!-- <input type="text" class="form-control" id="addressType" name="addressType" placeholder=" " required /> -->
         <select class="form-control" id="addressType" name="addressType" required>
+          <option value="">Select Address Type</option>
           <option value="Home">Home</option>
           <option value="Work">Work</option>
+          <option value="Other">Other</option>
         </select>
         <label for="addressType" class="form-label">Address Type</label>
       </div>
@@ -611,7 +669,7 @@
       <div class="form-group">
         <select class="form-control" id="country" name="country" required>
           <option value="India">India</option>
-          <!-- <option value="Saudi Arabia">Saudi Arabia</option> -->
+          <option value="Saudi Arabia">Saudi Arabia</option>
         </select>
         <label for="country" class="form-label">Country</label>
       </div>
@@ -624,7 +682,7 @@
     <div class="form-row">
       <div class="form-group geolocation-section">
         <button type="button" id="getCurrentLocation" class="geolocation-btn">
-          <i class="fa-solid fa-location-dot"></i>  Use Current Location 
+          <i class="fa-solid fa-location-dot"></i> Use Current Location
         </button>
         <div id="locationStatus" class="location-status"></div>
       </div>
@@ -657,7 +715,7 @@
           <option value="Himachal Pradesh">Himachal Pradesh</option>
           <option value="Jharkhand">Jharkhand</option>
           <option value="Karnataka">Karnataka</option>
-          <option value="Kerala" selected>Kerala</option>
+          <option value="Kerala">Kerala</option>
           <option value="Madhya Pradesh">Madhya Pradesh</option>
           <option value="Maharashtra">Maharashtra</option>
           <option value="Manipur">Manipur</option>
@@ -684,10 +742,10 @@
       <div class="form-group" style="position: relative;">
         <input type="text" class="form-control" id="streetAddress" name="streetAddress" placeholder=" " required />
         <label for="streetAddress" class="form-label">Street Address</label>
-        <ul id="suggestions"></ul>
+        <div id="suggestions-dropdown" class="pac-container"></div>
       </div>
       <div class="form-group">
-        <input type="number" class="form-control" id="pincode" name="pincode" placeholder=" " required />
+        <input type="text" class="form-control" id="pincode" name="pincode" placeholder=" " required />
         <label for="pincode" class="form-label">Pincode</label>
       </div>
       <div class="form-group">
@@ -709,7 +767,7 @@
         <label for="email" class="form-label">Email Address</label>
       </div>
       <div class="form-group">
-        <input type="text" class="form-control" id="altPhone" name="altPhone" placeholder=" " required />
+        <input type="text" class="form-control" id="altPhone" name="altPhone" placeholder=" " />
         <label for="altPhone" class="form-label">Alternate Phone</label>
       </div>
     </div>
@@ -720,300 +778,497 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  const API_BASE = 'https://geocode.maps.co';
-  let autocompleteTimeout;
 
-  // Geolocation functionality
-  document.getElementById('getCurrentLocation').addEventListener('click', handleGeolocationClick);
+const GEOCODE_MAPS_CO_API_KEY = '68eb69ab749ab618160266qij4cc435';
+const USE_PROXY = true;
+const API_BASE = USE_PROXY ? '/api/geocode' : 'https://geocode.maps.co';
+let autocompleteXHR = null;
 
-  async function handleGeolocationClick(e) {
-    e.preventDefault();
-    const button = e.target.closest('.geolocation-btn');
-    const originalText = button.innerHTML;
+// Complete Initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log(' DOM loaded - Initializing Add Address Form');
+    console.log(' Using proxy:', USE_PROXY);
+    console.log(' API Base:', API_BASE);
+    
+    
+    initAutocomplete();
+    setupGeolocationButton();
+    
+    console.log(' All components initialized');
+});
+
+
+function setupGeolocationButton() {
+    const button = document.getElementById('getCurrentLocation');
+    if (!button) {
+        console.error(' Geolocation button not found! Check ID="getCurrentLocation"');
+        return;
+    }
+    
+    console.log(' Geolocation button found and setting up...');
+    button.onclick = null;
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(' GEOLOCATION BUTTON CLICKED!');
+        handleGeolocationClick.call(this);
+    });
+    
+    console.log(' Geolocation button event listener attached');
+}
+
+// Enhanced Geolocation Handler
+async function handleGeolocationClick() {
+    console.log(' Starting location API flow...');
+    const button = this;
+    const originalHTML = button.innerHTML;
     
     try {
-      button.disabled = true;
-      button.innerHTML = `<i class="fa-solid fa-location-dot"></i> Detecting...`;
-      showLocationStatus(' Fetching your location...', 'loading');
-      
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 30000
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+        showLocationStatus(' Getting your location...', 'loading');
+        
+        if (!navigator.geolocation) {
+            throw new Error('Geolocation not supported by this browser');
+        }
+        
+        console.log(' Requesting location...');
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 30000
+            });
         });
-      });
-      
-      const address = await reverseGeocode(position.coords.latitude, position.coords.longitude);
-      selectPlace(address);
-      showLocationStatus(' Location detected successfully!', 'success');
-      
+        
+        const { latitude, longitude } = position.coords;
+        console.log(' Location obtained:', latitude, longitude);
+        
+        const address = await reverseGeocode(latitude, longitude);
+        console.log(' Address geocoded:', address);
+        
+        if (address) {
+            selectPlace(address);
+            showLocationStatus(' Address filled from your location!', 'success');
+        } else {
+            throw new Error('No address returned from geocoding service');
+        }
     } catch (error) {
-      console.error('Geolocation error:', error);
-      showLocationStatus(getErrorMessage(error), 'error');
+        console.error(' Geolocation failed:', error);
+        let message = ' Location Error: ';
+        switch (error.code || 0) {
+            case 1:
+                message += 'Access denied - Please enable location permissions';
+                break;
+            case 2:
+                message += 'Location unavailable';
+                break;
+            case 3:
+                message += 'Request timed out - Please try again';
+                break;
+            default:
+                message += error.message || 'Unknown error occurred';
+        }
+        showLocationStatus(message, 'error');
     } finally {
-      button.disabled = false;
-      button.innerHTML = originalText;
+        button.disabled = false;
+        button.innerHTML = originalHTML;
     }
-  }
+}
 
-  function getErrorMessage(error) {
-    switch (error.code) {
-      case 1: return 'Please allow location access to auto-fill your address';
-      case 2: return 'Location information unavailable';
-      case 3: return 'Location request timed out';
-      default: return 'Unable to detect location. Please enter manually.';
+// Enhanced Reverse Geocoding
+async function reverseGeocode(lat, lon) {
+    const url = USE_PROXY 
+        ? `${API_BASE}/reverse?lat=${lat}&lon=${lon}` 
+        : `${API_BASE}/reverse?lat=${lat}&lon=${lon}&api_key=${GEOCODE_MAPS_CO_API_KEY}`;
+    
+    console.log('Reverse geocode URL:', url);
+    
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'AddressApp/1.0'
+            },
+            timeout: 10000
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Raw geocode response:', data);
+        
+        
+        if (data.address) {
+            return data; // geocode.maps.co structure
+        } else if (data.results && data.results[0]) {
+            return data.results[0]; // Google Maps style
+        } else if (Array.isArray(data) && data[0]) {
+            return data[0]; // Array response
+        }
+        
+        return data;
+    } catch (error) {
+        console.error('Reverse geocode error:', error);
+        throw error;
     }
-  }
+}
 
-  async function reverseGeocode(lat, lon) {
-    const response = await fetch(`${API_BASE}/reverse?lat=${lat}&lon=${lon}`);
-    if (!response.ok) throw new Error('Reverse geocoding failed');
-    return await response.json();
-  }
-
-  function showLocationStatus(message, type) {
-    const el = document.getElementById('locationStatus');
-    el.textContent = message;
-    el.className = `location-status ${type}`;
-    el.style.display = 'block';
-    if (type === 'success') {
-      setTimeout(() => el.style.display = 'none', 5000);
+// === ENHANCED AUTOCOMPLETE FUNCTIONALITY ===
+function initAutocomplete() {
+    const input = document.getElementById('streetAddress');
+    if (!input) {
+        console.warn('Street address input not found');
+        return;
     }
-  }
+    
+    input.addEventListener('input', debounceAutocomplete);
+    input.addEventListener('focus', function() {
+        if (this.value.length >= 3) {
+            debounceAutocomplete.call(this);
+        }
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#streetAddress')) {
+            hideSuggestions();
+        }
+    });
+    
+    console.log('Autocomplete initialized');
+}
 
-  function selectPlace(place) {
+let autocompleteTimeout;
+function debounceAutocomplete() {
+    clearTimeout(autocompleteTimeout);
+    autocompleteTimeout = setTimeout(() => performAutocomplete.call(this), 300);
+}
+
+function performAutocomplete() {
+    const query = this.value.trim();
+    if (query.length < 3) {
+        return hideSuggestions();
+    }
+    
+    const url = USE_PROXY 
+        ? `${API_BASE}/search?q=${encodeURIComponent(query)}` 
+        : `${API_BASE}/search?q=${encodeURIComponent(query)}&limit=5&api_key=${GEOCODE_MAPS_CO_API_KEY}`;
+    
+    if (autocompleteXHR?.readyState !== 4) {
+        autocompleteXHR?.abort();
+    }
+    
+    autocompleteXHR = new XMLHttpRequest();
+    autocompleteXHR.open('GET', url);
+    autocompleteXHR.onload = () => {
+        if (autocompleteXHR.status === 200) {
+            const places = JSON.parse(autocompleteXHR.responseText);
+            showSuggestions(places);
+        }
+    };
+    autocompleteXHR.onerror = () => console.error(' Autocomplete failed');
+    autocompleteXHR.send();
+}
+
+function showSuggestions(places) {
+    const dropdown = document.getElementById('suggestions-dropdown');
+    dropdown.innerHTML = '';
+    
+    if (!Array.isArray(places) || !places.length) {
+        return hideSuggestions();
+    }
+    
+    places.slice(0, 5).forEach(place => {
+        const item = document.createElement('div');
+        item.className = 'pac-item';
+        item.textContent = place.address?.display_name || place.display_name || 'Address';
+        item.onclick = () => selectPlace(place);
+        dropdown.appendChild(item);
+    });
+    
+    dropdown.style.display = 'block';
+}
+
+// === ENHANCED ADDRESS PARSING ===
+function selectPlace(place) {
     const fields = {
-      streetAddress: document.getElementById('streetAddress'),
-      city: document.getElementById('city'),
-      landMark: document.getElementById('landMark'),
-      state: document.getElementById('state'),
-      country: document.getElementById('country'),
-      pincode: document.getElementById('pincode'),
-      lat: document.getElementById('lat'),
-      lng: document.getElementById('lng')
+        streetAddress: document.getElementById('streetAddress'),
+        city: document.getElementById('city'),
+        state: document.getElementById('state'),
+        country: document.getElementById('country'),
+        pincode: document.getElementById('pincode'),
+        landMark: document.getElementById('landMark'),
+        lat: document.getElementById('lat'),
+        lng: document.getElementById('lng')
     };
     
     const addr = place.address || place;
-    console.log('📍 Address data:', addr);
+    console.log('🏠 Full address data:', addr);
     
-    function getField(components, priorities) {
-      for (const priority of priorities) {
-        let value = components[priority] || components[priority.toLowerCase()];
-        if (value && value.trim()) return value.trim();
-      }
-      return '';
+    function getAddressComponent(components, possibleNames) {
+        for (const name of possibleNames) {
+            let value = components[name];
+            if (value) return value;
+            
+            value = components[name.toLowerCase()];
+            if (value) return value;
+            
+            const snakeCase = name.replace(/([A-Z])/g, '_$1').toLowerCase();
+            value = components[snakeCase];
+            if (value) return value;
+            
+            const cleanName = name.replace(/[\s_]/g, '');
+            value = components[cleanName];
+            if (value) return value;
+        }
+        return '';
     }
     
-    // Street - comprehensive with multiple fallbacks
-    let street = [
-      getField(addr, ['house_number', 'building', 'housenumber']),
-      getField(addr, ['road', 'street', 'avenue', 'lane', 'highway']),
-      getField(addr, ['neighbourhood', 'suburb', 'suburb_name'])
-    ].filter(Boolean).join(', ');
+    // Enhanced Street Address - multiple components
+    const road = getAddressComponent(addr, ['road', 'street', 'avenue', 'lane', 'drive', 'path', 'way']);
+    const house = getAddressComponent(addr, ['house_number', 'housenumber', 'building', 'flat']);
+    const neighbourhood = getAddressComponent(addr, ['neighbourhood', 'neighborhood', 'suburb', 'village']);
     
-    fields.streetAddress.value = street || addr.display_name || '';
+    let streetValue = '';
+    if (house) streetValue += house + ', ';
+    if (road) streetValue += road + ', ';
+    if (neighbourhood) streetValue += neighbourhood;
     
-    // CITY - Multiple comprehensive fallbacks
-    const cityPriorities = [
-      'city_district', 'district', 'city', 'town', 'municipality', 
-      'county', 'place', 'village', 'hamlet', 'suburb', 'locality',
-      'city_name', 'municipality_name'
-    ];
-    fields.city.value = getField(addr, cityPriorities) || fields.streetAddress.value.split(',')[0] || '';
-    
-    // LANDMARK - Multiple random useful fields with fallbacks
-    const landmarkPriorities = [
-      'neighbourhood', 'suburb', 'sublocality', 'quarter', 'colony',
-      'block', 'sector', 'area', 'poi', 'amenity', 'landmark',
-      'residential', 'commercial', 'industrial'
-    ];
-    let landmark = getField(addr, landmarkPriorities);
-    if (!landmark) {
-      // Fallback to road or other location info
-      landmark = getField(addr, ['road', 'street', 'avenue']) || 
-                 getField(addr, ['suburb', 'neighbourhood']) ||
-                 fields.city.value;
+    if (!streetValue.trim()) {
+        streetValue = addr.display_name || addr.formatted_address || addr.address_line_1 || '';
     }
-    fields.landMark.value = landmark;
     
-    // State with better fallback
-    fields.state.value = getField(addr, ['state', 'state_district', 'province']) || '';
+    fields.streetAddress.value = streetValue.trim();
+    
+    // Enhanced City with multiple fallbacks
+    const cityCandidates = [
+        'city', 'city_district', 'district', 'town', 'municipality', 'administrative', 
+        'hamlet', 'suburb', 'county', 'region', 'local_administrity', 'place', 
+        'village', 'borough', 'ward', 'locality', 'sublocality', 'sublocality_level_1', 'sublocality_level_2'
+    ];
+    const cityValue = getAddressComponent(addr, cityCandidates);
+    fields.city.value = cityValue || '';
+    
+    // Enhanced Landmark with multiple fallbacks
+    const landmarkCandidates = [
+        'landmark', 'poi', 'point_of_interest', 'amenity', 'leisure', 'shop', 'office', 
+        'restaurant', 'cafe', 'bar', 'pub', 'neighbourhood', 'neighborhood', 'suburb', 
+        'village', 'sublocality', 'sublocality_level_1', 'residential', 'commercial', 
+        'industrial', 'building', 'house_name', 'destination', 'attraction', 'tourist_attraction'
+    ];
+    
+    let landmarkValue = getAddressComponent(addr, landmarkCandidates);
+    
+    // If no specific landmark, try smaller location components
+    if (!landmarkValue) {
+        const subComponents = [];
+        const smallComponents = ['house_number', 'flat', 'unit', 'door', 'gate', 'block', 'wing'];
+        smallComponents.forEach(comp => {
+            const val = getAddressComponent(addr, [comp]);
+            if (val) subComponents.push(val);
+        });
+        landmarkValue = subComponents.join(', ') || '';
+    }
+    
+    if (fields.landMark) {
+        fields.landMark.value = landmarkValue || '';
+    }
+    
+    // Enhanced State
+    const stateValue = getAddressComponent(addr, ['state', 'state_district', 'province', 'region']);
+    fields.state.value = stateValue || '';
     
     // Country
-    fields.country.value = addr.country || 'India';
+    fields.country.value = (addr.country || addr.country_code === 'IN') ? 'India' : 'India';
     
-    // Pincode
-    fields.pincode.value = addr.postcode || '';
+    // Pincode/Postal Code
+    const pincodeValue = getAddressComponent(addr, ['postcode', 'pincode', 'postalcode', 'zipcode']);
+    fields.pincode.value = pincodeValue || '';
     
     // Coordinates
     fields.lat.value = place.lat || '';
     fields.lng.value = place.lon || '';
     
-    // Trigger label animations and validation
+    // Trigger animations and validation
     Object.values(fields).forEach(field => {
-      if (field && field.tagName !== 'SELECT') {
-        field.classList.add('has-value');
-        field.dispatchEvent(new Event('input', { bubbles: true }));
-      } else if (field && field.tagName === 'SELECT' && field.value) {
-        field.dispatchEvent(new Event('change', { bubbles: true }));
-      }
+        if (field && field.tagName !== 'SELECT') {
+            field.classList.add('has-value');
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (field && field.tagName === 'SELECT' && field.value) {
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
     });
     
     // Auto-select state if found
     if (fields.state.value) {
-      const stateOption = Array.from(fields.state.options).find(option => 
-        option.text.includes(fields.state.value) || option.value.includes(fields.state.value)
-      );
-      if (stateOption) {
-        fields.state.value = stateOption.value;
-        fields.state.dispatchEvent(new Event('change', { bubbles: true }));
-      }
+        const stateOption = Array.from(fields.state.options).find(option => 
+            option.text.includes(fields.state.value) || option.value.includes(fields.state.value)
+        );
+        if (stateOption) {
+            fields.state.value = stateOption.value;
+            fields.state.dispatchEvent(new Event('change', { bubbles: true }));
+        }
     }
-  }
-
-  // Autocomplete for street address
-  const addressInput = document.getElementById('streetAddress');
-  const suggestionsList = document.getElementById('suggestions');
-
-  addressInput.addEventListener('input', function() {
-    clearTimeout(autocompleteTimeout);
-    autocompleteTimeout = setTimeout(() => performAutocomplete(this.value), 300);
-  });
-
-  async function performAutocomplete(query) {
-    if (query.length < 3) {
-      suggestionsList.innerHTML = '';
-      suggestionsList.style.display = 'none';
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}&limit=5`);
-      const places = await response.json();
-      showSuggestions(places);
-    } catch (error) {
-      console.error('Autocomplete failed:', error);
-      suggestionsList.innerHTML = '';
-      suggestionsList.style.display = 'none';
-    }
-  }
-
-  function showSuggestions(places) {
-    suggestionsList.innerHTML = '';
-    suggestionsList.style.display = places.length ? 'block' : 'none';
     
-    (places.slice(0, 5) || []).forEach(place => {
-      const li = document.createElement('li');
-      li.textContent = place.address?.display_name || 'Address not found';
-      li.addEventListener('click', () => {
-        selectPlace(place);
-        suggestionsList.style.display = 'none';
-      });
-      suggestionsList.appendChild(li);
+    hideSuggestions();
+    
+    console.log(' Fields populated:', {
+        street: fields.streetAddress.value,
+        city: fields.city.value,
+        state: fields.state.value,
+        landmark: fields.landMark?.value || 'N/A',
+        pincode: fields.pincode.value
     });
-  }
+}
 
-  // Hide suggestions when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!addressInput.contains(e.target) && !suggestionsList.contains(e.target)) {
-      suggestionsList.style.display = 'none';
+function hideSuggestions() {
+    const dropdown = document.getElementById('suggestions-dropdown');
+    if (dropdown) {
+        dropdown.style.display = 'none';
     }
-  });
+}
 
-  // Original form validation and submission
-  document.getElementById("addressForm").addEventListener("submit", function (event) {
+function showLocationStatus(message, type) {
+    const el = document.getElementById('locationStatus');
+    if (!el) return;
+    
+    el.textContent = message;
+    el.className = `location-status ${type}`;
+    el.style.display = type ? 'block' : 'none';
+    
+    if (type === 'success') {
+        setTimeout(() => el.style.display = 'none', 5000);
+    }
+}
+
+// === FORM VALIDATION ===
+document.getElementById("addressForm").addEventListener("submit", function (event) {
     if (!validateForm()) {
-      event.preventDefault();
+        event.preventDefault();
     } else {
-      // Show loading
-      document.getElementById('loadingOverlay').style.display = 'flex';
-      document.getElementById('submitButton').disabled = true;
+        // Show loading
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        document.getElementById('submitButton').disabled = true;
     }
-  });
+});
 
-  function validateForm() {
+function validateForm() {
     let isValid = true;
+    
+    // Clear previous errors
     document.querySelectorAll(".text-danger").forEach((error) => error.remove());
-
+    
     const requiredFields = [
-      "addressType", "name", "country", "city", "landMark", "state",
-      "streetAddress", "pincode", "phone", "email", "altPhone"
+        "addressType", "name", "country", "city", "landMark", "state", 
+        "streetAddress", "pincode", "phone", "email"
     ];
-
+    
     requiredFields.forEach(function (field) {
-      const input = document.getElementById(field);
-      const inputValue = input.value.trim();
-
-      if (inputValue === "") {
-        showFieldError(input, "This field is required.");
-        isValid = false;
-      }
+        const input = document.getElementById(field);
+        const inputValue = input.value.trim();
+        
+        if (inputValue === "") {
+            showFieldError(input, "This field is required.");
+            isValid = false;
+        }
     });
-
+    
     if (!isValid) return false;
-
+    
+    // Pattern validations
     const namePattern = /^[A-Za-z\s]+$/;
     const pincodePattern = /^\d{6}$/;
     const phonePattern = /^\d{10}$/;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    
     const validations = [
-      { field: "name", pattern: namePattern, message: "Name should contain alphabets only." },
-      { field: "city", pattern: namePattern, message: "City should contain alphabets only." },
-      { field: "landMark", pattern: namePattern, message: "Landmark should contain alphabets only." },
-      { field: "pincode", pattern: pincodePattern, message: "Pincode should be a 6-digit number." },
-      { field: "phone", pattern: phonePattern, message: "Phone number should be a 10-digit number." },
-      { field: "altPhone", pattern: phonePattern, message: "Alternate phone number should be a 10-digit number." },
-      { field: "email", pattern: emailPattern, message: "Please enter a valid email address." },
+        { field: "name", pattern: namePattern, message: "Name should contain alphabets only." },
+        { field: "city", pattern: namePattern, message: "City should contain alphabets only." },
+        { field: "landMark", pattern: namePattern, message: "Landmark should contain alphabets only." },
+        { field: "pincode", pattern: pincodePattern, message: "Pincode should be a 6-digit number." },
+        { field: "phone", pattern: phonePattern, message: "Phone number should be a 10-digit number." },
+        { field: "email", pattern: emailPattern, message: "Please enter a valid email address." },
     ];
-
+    
     for (let validation of validations) {
-      const input = document.getElementById(validation.field);
-      if (input.value && !validation.pattern.test(input.value)) {
-        showFieldError(input, validation.message);
-        isValid = false;
-        break;
-      }
+        const input = document.getElementById(validation.field);
+        if (input.value && !validation.pattern.test(input.value)) {
+            showFieldError(input, validation.message);
+            isValid = false;
+            break;
+        }
     }
-
-    const phone = document.getElementById("phone").value;
+    
+    // Check alternate phone if provided
     const altPhone = document.getElementById("altPhone").value;
-    if (phone && altPhone && phone === altPhone) {
-      showFieldError(document.getElementById("altPhone"), "Phone numbers should be different.");
-      isValid = false;
+    if (altPhone && !phonePattern.test(altPhone)) {
+        showFieldError(document.getElementById("altPhone"), "Alternate phone number should be a 10-digit number.");
+        isValid = false;
     }
-
+    
+    // Check if phone numbers are different
+    const phone = document.getElementById("phone").value;
+    if (phone && altPhone && phone === altPhone) {
+        showFieldError(document.getElementById("altPhone"), "Phone numbers should be different.");
+        isValid = false;
+    }
+    
     return isValid;
-  }
+}
 
-  function showFieldError(input, message) {
+function showFieldError(input, message) {
     const errorDiv = document.createElement("div");
     errorDiv.className = "text-danger";
     errorDiv.textContent = message;
     input.parentNode.appendChild(errorDiv);
-  }
+}
 
-  // Real-time validation - clear errors when user starts typing
-  document.querySelectorAll(".form-control").forEach((input) => {
+// Real-time validation - clear errors when user starts typing
+document.querySelectorAll(".form-control").forEach((input) => {
     input.addEventListener("input", function () {
-      const existingError = this.parentNode.querySelector(".text-danger");
-      if (existingError) existingError.remove();
+        const existingError = this.parentNode.querySelector(".text-danger");
+        if (existingError) existingError.remove();
     });
-  });
+});
 
-  // Initialize has-value class for pre-populated fields
-  ['streetAddress', 'city', 'landMark'].forEach(id => {
+// Initialize has-value class for pre-populated fields
+['streetAddress', 'city', 'landMark', 'name', 'email', 'phone', 'altPhone', 'pincode'].forEach(id => {
     const field = document.getElementById(id);
-    if (field && field.value.trim()) {
-      field.classList.add('has-value');
+    if (field) {
+        if (field.value.trim()) {
+            field.classList.add('has-value');
+        }
+        field.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.add('has-value');
+            } else {
+                this.classList.remove('has-value');
+            }
+        });
     }
-    field?.addEventListener('input', function() {
-      if (this.value.trim()) {
-        this.classList.add('has-value');
-      } else {
-        this.classList.remove('has-value');
-      }
-    });
-  });
+});
+
+// Select field handling
+['addressType', 'country', 'state'].forEach(id => {
+    const field = document.getElementById(id);
+    if (field) {
+        field.addEventListener('change', function() {
+            if (this.value) {
+                this.classList.add('has-value');
+            } else {
+                this.classList.remove('has-value');
+            }
+        });
+        
+        // Initialize if already selected
+        if (field.value) {
+            field.classList.add('has-value');
+        }
+    }
+});
+
+console.log(' Add Address form fully initialized with enhanced geolocation');
 </script>

@@ -212,10 +212,10 @@ const addAddressCheckout = async (req, res) => {
 
         const { addressType, name, country, state, city, landMark, streetAddress, pincode, phone, email, altPhone } = req.body;
 
-        
+        // Comprehensive server-side validation
         const validationErrors = [];
 
-        // Require field validation
+        // Required field validation
         if (!addressType?.trim()) validationErrors.push('Address type is required');
         if (!name?.trim()) validationErrors.push('Name is required');
         if (!country?.trim()) validationErrors.push('Country is required');
@@ -226,7 +226,7 @@ const addAddressCheckout = async (req, res) => {
         if (!phone?.trim()) validationErrors.push('Phone number is required');
         if (!email?.trim()) validationErrors.push('Email is required');
 
-        
+        // Format validation
         if (addressType && !validateAddressType(addressType)) {
             validationErrors.push('Address type should contain only letters and spaces');
         }
@@ -255,7 +255,7 @@ const addAddressCheckout = async (req, res) => {
             validationErrors.push('Please enter a valid email address');
         }
 
-        
+        // Country and state validation (for Indian addresses)
         if (country && country.toLowerCase() !== 'india') {
             validationErrors.push('Currently, we only support Indian addresses');
         }
@@ -275,7 +275,7 @@ const addAddressCheckout = async (req, res) => {
             }
         }
 
-        // Return all validation error
+        // Return all validation errors
         if (validationErrors.length > 0) {
             return res.status(400).json({ 
                 success: false, 
@@ -284,7 +284,7 @@ const addAddressCheckout = async (req, res) => {
             });
         }
 
-       
+        // Check address limit
         let addressDoc = await Address.findOne({ userId });
         if (!addressDoc) {
             addressDoc = new Address({ userId, address: [] });
@@ -320,6 +320,7 @@ const addAddressCheckout = async (req, res) => {
             message: 'Address added successfully',
             addressId: addressDoc.address[addressDoc.address.length - 1]._id
         });
+         res.redirect('/checkout')
 
     } catch (error) {
         console.error('Error adding address:', error);
@@ -332,7 +333,9 @@ const addAddressCheckout = async (req, res) => {
 
 
 const postAddAddressCheckout = async (req, res) => {
+ 
     return addAddressCheckout(req, res);
+   
 };
 
 

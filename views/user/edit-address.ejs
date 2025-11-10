@@ -364,7 +364,7 @@
             </div>
         </div>
 
-        <!-- Geolocation Section -->
+        <!-- current-location Section -->
         <div class="row mb-3">
             <div class="col-md-12">
                 <button type="button" id="getCurrentLocation" class="geolocation-btn">
@@ -473,7 +473,7 @@
             </div>
         </div>
 
-        <!-- Submit Button -->
+        
         <button type="submit" id="submitButton" class="btn btn-primary" disabled>
             <span id="buttonText">Update Address</span>
         </button>
@@ -482,8 +482,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// === CONFIGURATION ===
-const GEOCODE_MAPS_CO_API_KEY = 'YOUR_GEOCODE_MAPS_CO_API_KEY'; 
+
+const GEOCODE_MAPS_CO_API_KEY = '68eb69ab749ab618160266qij4cc435'; 
 const USE_PROXY = true; 
 const API_BASE = USE_PROXY ? '/api/geocode' : 'https://geocode.maps.co';
 
@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(' Using proxy:', USE_PROXY);
     console.log(' API Base:', API_BASE);
     
-    // Initialize all components
+    // Initializing all components
     initAutocomplete();
     initializeCharacterCounters();
     initializeValidation();
@@ -620,11 +620,11 @@ async function reverseGeocode(lat, lon) {
         const data = await response.json();
         console.log(' Raw location api response:', data);
         
-        // Handle different response structures
+        
         if (data.address) {
             return data; // geocode.maps.co structure
         } else if (data.results && data.results[0]) {
-            // Google Maps style
+           
             return data.results[0];
         } else if (Array.isArray(data) && data[0]) {
             return data[0];
@@ -825,7 +825,7 @@ function showLocationStatus(message, type) {
     if (type === 'success') setTimeout(() => el.style.display = 'none', 5000);
 }
 
-// Validation System
+// Validation 
 function initializeValidation() {
     const form = document.getElementById('addressForm');
     form.querySelectorAll('input, select').forEach(field => {
@@ -925,7 +925,7 @@ document.getElementById('addressForm').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
     
-    // Your existing form submission logic here
+    
     console.log('Form submitted:', data);
     
     try {
