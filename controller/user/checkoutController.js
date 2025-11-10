@@ -212,7 +212,7 @@ const addAddressCheckout = async (req, res) => {
 
         const { addressType, name, country, state, city, landMark, streetAddress, pincode, phone, email, altPhone } = req.body;
 
-        // Comprehensive server-side validation
+        
         const validationErrors = [];
 
         // Required field validation
@@ -431,6 +431,13 @@ const validateAddressField = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+
 const addCheckoutAddress = async (req,res) => {
     try {
         const user = req.session.user;
@@ -443,6 +450,11 @@ const addCheckoutAddress = async (req,res) => {
         res.redirect("/pageNotFound")
     }
 }
+
+
+
+
+
 
 const postAddAddressCheckout2 = async (req,res) => {
     try {
