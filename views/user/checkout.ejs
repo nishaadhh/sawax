@@ -1039,12 +1039,12 @@
               <% availableCoupons.forEach((coupon, index) => { %>
                 <div class="coupon-item <%= coupon.isPremium ? 'premium' : '' %>" style="animation-delay: <%= index * 0.1 %>s">
                   <div class="coupon-badges">
-                    <% if (coupon.isNew) { %>
+                    <!-- <% if (coupon.isNew) { %>
                       <span class="badge new">New</span>
-                    <% } %>
-                    <% if (coupon.isExpiringSoon) { %>
+                    <% } %>-->
+                    <!-- <% if (coupon.isExpiringSoon) { %>
                       <span class="badge expiring"><%= coupon.daysLeft %> Days</span>
-                    <% } %>
+                    <% } %>  -->
                     <% if (coupon.isPremium) { %>
                       <span class="badge premium">Premium</span>
                     <% } %>
