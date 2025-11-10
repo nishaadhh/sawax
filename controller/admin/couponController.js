@@ -49,11 +49,11 @@ const addCoupon = async (req, res) => {
             return res.status(400).json({ success: false, message: "Discount value must be a positive number and not exceed 100% for percentage discounts" });
         }
 
-        // Optional
+        // 
 
         if (parsedMinOrder !== null) {
             if (isNaN(parsedMinOrder) || parsedMinOrder < 0) {
-                return res.status(400).json({ success: false, message: "Minimum order must be a non-negative number" });
+                return res.status(400).json({ success: false, message: "Minimum order must be more than 1" });
             }
         }
 

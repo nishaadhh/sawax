@@ -13,6 +13,9 @@ const path = require("path");
 const Coupon = require("../models/couponSchema");
 const couponController = require("../controller/user/couponController");
 const referralController = require("../controller/user/referralController");
+
+
+
 // Home & Pages
 router.get("/", userController.loadHomePage);
 router.get("/signup", userController.loadSignUpPage);
@@ -194,7 +197,7 @@ router.get('/order/:id/invoice', userAuth, invoiceController.generateInvoice);
 
 
 
-// Order Status Updates (for auto-refresh)
+// Order Status Updates 
 router.get('/orders/status-update', userAuth, async (req, res) => {
   try {
     const userId = req.session.user;

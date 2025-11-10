@@ -792,7 +792,7 @@
         const cartItem = document.querySelector(`.cart-item[data-product-id="${item.productId}"]`);
 
         if (cartItem) {
-          // Update price and total dynamically
+          // Update price and total 
           const priceElement = cartItem.querySelector(".product-price");
           const totalElement = cartItem.querySelector(".cart-item-price");
           const quantityElement = cartItem.querySelector(".quantity-display");
@@ -841,7 +841,7 @@
         return;
       }
 
-      // If any out-of-stock items found
+      // If any out-of-stock items 
       if (hasOutOfStock) {
         Swal.fire({
           icon: "error",
@@ -856,7 +856,7 @@
         return;
       }
 
-      // If any blocked items found
+      // If any blocked items 
       if (hasBlockedItem) {
         Swal.fire({
           icon: "error",
@@ -904,7 +904,7 @@
           const maxAllowedQuantity = Math.min(stock, 5);
           let newQuantity = currentQuantity + change;
 
-          // Optimistic UI update
+          
           if (newQuantity >= 1 && newQuantity <= maxAllowedQuantity) {
             quantityDisplay.textContent = newQuantity;
             const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
