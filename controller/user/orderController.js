@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 
 const DELIVERY_CHARGE = 50;
+const COD_LIMIT = 50000; // COD limit set to ₹50,000
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
@@ -75,7 +76,7 @@ const calculateCouponDiscount = (coupon, subtotal, cartItems, shippingCharge) =>
   } else if (type === 'bogo') {
     if (cartItems.length > 1) {
       const prices = cartItems.map(item => item.price * item.quantity);
-      discount = Math.min(...prices); 
+      discount = Math.min(...prices);
     } else {
       throw new Error('BOGO coupon requires at least two items in the cart');
     }
@@ -100,7 +101,7 @@ const createOrdersFromPendingData = async (pendingOrder, userId, paymentStatus =
 
   // Create separate orders for each product
   const createdOrders = [];
-  
+
   for (const item of discountedItems) {
     // Check product availability
     const product = await Product.findById(item.product);
@@ -188,7 +189,7 @@ const createCheckoutOrder = async (req, res) => {
       });
     }
 
-    
+
     const address = await Address.findOne({ userId, 'address._id': addressId });
     if (!address) {
       return res.status(400).json({
@@ -233,10 +234,10 @@ const createCheckoutOrder = async (req, res) => {
         console.log('Applied coupon from session:', { couponCode, discount, shippingCharge });
       } else {
         // Validate coupon from db
-        const coupon = await Coupon.findOne({ 
-          code: { $regex: new RegExp("^" + couponCode + "$", "i") }, 
-          isList: true, 
-          expireOn: { $gt: new Date() } 
+        const coupon = await Coupon.findOne({
+          code: { $regex: new RegExp("^" + couponCode + "$", "i") },
+          isList: true,
+          expireOn: { $gt: new Date() }
         });
 
         if (!coupon) {
@@ -300,19 +301,19 @@ const createCheckoutOrder = async (req, res) => {
     // Create Razorpay order with short receipt
     const receiptId = generateReceiptId('order');
     const options = {
-      amount: Math.round(finalAmount * 100), 
+      amount: Math.round(finalAmount * 100),
       currency: "INR",
       receipt: receiptId,
       notes: {
         user_id: userId.toString().slice(-12),
-        address_id: addressId.toString().slice(-12), 
-        coupon_code: couponCode ? couponCode.substring(0, 10) : '', 
+        address_id: addressId.toString().slice(-12),
+        coupon_code: couponCode ? couponCode.substring(0, 10) : '',
         purpose: 'order_payment'
       }
     };
 
     console.log('Creating Razorpay order with options:', {
-      
+
       receipt: options.receipt,
       receipt_length: options.receipt.length
     });
@@ -365,7 +366,7 @@ const handlePaymentFailure = async (req, res) => {
 
     console.log('HandlePaymentFailure request:', { razorpay_order_id, error_description });
 
-    
+
     const pendingOrder = req.session.pendingOrder;
     if (!pendingOrder || pendingOrder.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({
@@ -412,7 +413,7 @@ const handlePaymentFailure = async (req, res) => {
   }
 };
 
-// Retry payment 
+// Retry payment
 const retryPayment = async (req, res) => {
   try {
     const { orderId } = req.body;
@@ -420,8 +421,8 @@ const retryPayment = async (req, res) => {
 
     console.log('RetryPayment request:', { orderId, userId });
 
-    
-    const order = await Order.findOne({ 
+
+    const order = await Order.findOne({
       $or: [{ orderId: orderId }, { _id: orderId }],
       userId: userId,
       paymentStatus: { $in: ['failed', 'pending'] },
@@ -435,7 +436,7 @@ const retryPayment = async (req, res) => {
       });
     }
 
-    
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -609,7 +610,7 @@ const verifyCheckoutPayment = async (req, res) => {
       });
     }
 
-    // pending order details 
+    // pending order details
     const pendingOrder = req.session.pendingOrder;
     if (!pendingOrder || pendingOrder.razorpayOrderId !== razorpay_order_id) {
       return res.status(400).json({
@@ -690,7 +691,7 @@ const placeOrder = async (req, res) => {
       });
     }
 
-   
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -707,7 +708,7 @@ const placeOrder = async (req, res) => {
       });
     }
 
-    
+
     const address = await Address.findOne({ userId, 'address._id': addressId });
     if (!address) {
       return res.status(400).json({
@@ -742,7 +743,7 @@ const placeOrder = async (req, res) => {
 
     // Apply coupon discount if provided
     if (couponCode) {
-     
+
       if (req.session.appliedCoupon && req.session.appliedCoupon.code === couponCode) {
         appliedCoupon = req.session.appliedCoupon;
         const discountResult = calculateCouponDiscount(appliedCoupon, subtotal, cartItems, shippingCharge);
@@ -759,6 +760,17 @@ const placeOrder = async (req, res) => {
     }
 
     const finalAmount = subtotal - discount + shippingCharge;
+
+    // *** COD LIMIT VALIDATION ***
+    if (paymentMethod === 'cod' && finalAmount > COD_LIMIT) {
+      return res.status(400).json({
+        success: false,
+        codLimitExceeded: true,
+        message: `Cash on Delivery is not available for orders above ₹${COD_LIMIT.toLocaleString('en-IN')}. Please choose Online Payment or Wallet.`,
+        finalAmount: finalAmount,
+        codLimit: COD_LIMIT
+      });
+    }
 
     console.log('Order calculation:', {
       subtotal,
@@ -797,7 +809,7 @@ const placeOrder = async (req, res) => {
       console.log('Coupon marked as used:', appliedCoupon.code);
     }
 
-   
+
     const discountedItems = distributeDiscount(cartItems, discount);
 
     // Generate order group ID for multiple orders
@@ -808,7 +820,7 @@ const placeOrder = async (req, res) => {
 
     // Create separate orders for each product (COD and Wallet)
     const createdOrders = [];
-    
+
     for (const item of discountedItems) {
       // Check product availability
       const product = await Product.findById(item.product);
@@ -903,7 +915,7 @@ const getOrders = async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    
+
     const allOrders = await Order.find({ userId })
       .sort({ createdOn: -1 })
       .populate({
@@ -919,18 +931,18 @@ const getOrders = async (req, res) => {
     allOrders.forEach(order => {
       if (order.isGrouped && order.orderGroupId) {
         if (!processedGroups.has(order.orderGroupId)) {
-          
+
           const groupOrders = allOrders.filter(o => o.orderGroupId === order.orderGroupId);
-          
+
           // Calculate group totals
           const groupTotalAmount = groupOrders.reduce((sum, o) => sum + o.finalAmount, 0);
           const groupTotalItems = groupOrders.reduce((sum, o) => sum + o.orderedItems.length, 0);
           const groupTotalDiscount = groupOrders.reduce((sum, o) => sum + (o.discount || 0), 0);
-          
+
           // group status - (all same status or mixed)
           const statuses = [...new Set(groupOrders.map(o => o.status))];
           const groupStatus = statuses.length === 1 ? statuses[0] : 'mixed';
-          
+
           // group payment status
           const paymentStatuses = [...new Set(groupOrders.map(o => o.paymentStatus))];
           const groupPaymentStatus = paymentStatuses.length === 1 ? paymentStatuses[0] : 'mixed';
@@ -948,7 +960,7 @@ const getOrders = async (req, res) => {
             paymentMethod: groupOrders[0].paymentMethod,
             address: groupOrders[0].address
           });
-          
+
           processedGroups.add(order.orderGroupId);
         }
       } else {
@@ -959,7 +971,7 @@ const getOrders = async (req, res) => {
       }
     });
 
-    // grouped and ungrouped orders sort with nokal date 
+    // grouped and ungrouped orders sort with nokal date
     const combinedOrders = [...groupedOrders, ...ungroupedOrders]
       .sort((a, b) => {
         const dateA = a.type === 'group' ? a.createdOn : a.order.createdOn;
@@ -1000,7 +1012,7 @@ const loadOrderDetails = async (req, res) => {
     const userId = req.session.user;
     const orderId = req.params.orderId || req.query.orderId;
 
-    const order = await Order.findOne({ 
+    const order = await Order.findOne({
       $or: [
         { orderId: orderId, userId },
         { _id: orderId, userId }
@@ -1011,7 +1023,7 @@ const loadOrderDetails = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).render('error', { 
+      return res.status(404).render('error', {
         message: 'Order not found',
         user: await User.findById(userId)
       });
@@ -1025,7 +1037,7 @@ const loadOrderDetails = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in loadOrderDetails:", error);
-    res.status(500).render('error', { 
+    res.status(500).render('error', {
       message: "Internal server error",
       user: null
     });
@@ -1038,31 +1050,31 @@ const cancelOrder = async (req, res) => {
     const userId = req.session.user;
 
     if (!orderId || !reason || reason.trim() === "") {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Order ID and cancellation reason are required" 
+      return res.status(400).json({
+        success: false,
+        message: "Order ID and cancellation reason are required"
       });
     }
 
     if (!userId) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "User not logged in" 
+      return res.status(401).json({
+        success: false,
+        message: "User not logged in"
       });
     }
 
     const order = await Order.findOne({ _id: orderId, userId }).populate('orderedItems.product');
     if (!order) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Order not found" 
+      return res.status(404).json({
+        success: false,
+        message: "Order not found"
       });
     }
 
     if (order.status === "cancelled" || order.status === "delivered") {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Order cannot be cancelled" 
+      return res.status(400).json({
+        success: false,
+        message: "Order cannot be cancelled"
       });
     }
 
@@ -1111,16 +1123,16 @@ const cancelOrder = async (req, res) => {
 
     await order.save();
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: "Order cancelled successfully",
       refundAmount: order.paymentMethod !== 'cod' ? order.finalAmount : 0
     });
   } catch (error) {
     console.error("Error in cancelOrder:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Internal server error" 
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
     });
   }
 };
@@ -1131,31 +1143,31 @@ const requestReturn = async (req, res) => {
     const userId = req.session.user;
 
     if (!orderId || !returnReason) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Order ID and return reason are required" 
+      return res.status(400).json({
+        success: false,
+        message: "Order ID and return reason are required"
       });
     }
 
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Invalid order ID" 
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order ID"
       });
     }
 
     if (!userId) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "User not authenticated" 
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated"
       });
     }
 
     const order = await Order.findOne({ _id: orderId, userId });
     if (!order) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Order not found" 
+      return res.status(404).json({
+        success: false,
+        message: "Order not found"
       });
     }
 
@@ -1171,7 +1183,7 @@ const requestReturn = async (req, res) => {
       const deliveryDate = new Date(order.deliveredOn);
       const currentDate = new Date();
       const daysSinceDelivery = Math.floor((currentDate - deliveryDate) / (1000 * 60 * 60 * 24));
-      
+
       if (daysSinceDelivery > 7) {
         return res.status(400).json({
           success: false,
@@ -1217,7 +1229,7 @@ const renderSuccessPage = async (req, res) => {
       });
 
     if (!order) {
-      return res.status(404).render('error', { 
+      return res.status(404).render('error', {
         message: 'Order not found',
         user: await User.findById(userId)
       });
@@ -1231,7 +1243,7 @@ const renderSuccessPage = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in renderSuccessPage:", error);
-    res.status(500).render('error', { 
+    res.status(500).render('error', {
       message: 'Failed to load order success page',
       user: null
     });
@@ -1248,7 +1260,7 @@ const retryGroupPayment = async (req, res) => {
     console.log('RetryGroupPayment request:', { groupId, userId });
 
     // checking all orders in the group that need payment
-    const orders = await Order.find({ 
+    const orders = await Order.find({
       orderGroupId: groupId,
       userId: userId,
       paymentStatus: { $in: ['failed', 'pending'] },
