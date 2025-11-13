@@ -117,18 +117,19 @@
 
 
 .shiny-text {
-  color: #b5b5b5a4; 
+  color: #342c2ca4; 
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0) 40%,
     #ffc400 50%,
     rgba(255, 255, 255, 0) 60%
   );
+  font-family:  "Georgia", serif;
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   display: inline-block;
-  animation: shine 5s linear infinite;
+  animation: shine 12s linear infinite;
 }
 
 @keyframes shine {
@@ -145,23 +146,51 @@
 }
 
 
-
-
-
-
-.sub-text {
-  color: #b5b5b5a4; 
+.sec-sub-text {
+  color: #342c2ca4; 
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0.8) 50%,
+    #ffc400,
     rgba(255, 255, 255, 0) 60%
   );
+  font-family: serif;
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   display: inline-block;
-  animation: shine 5s linear infinite;
+  animation: shine 14s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.sec-sub-text.disabled {
+  animation: none;
+}
+
+
+
+.sub-text {
+  color: #342c2ca4; 
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    #ffc400,
+    rgba(255, 255, 255, 0) 60%
+  );
+  font-family: serif;
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 14s linear infinite;
 }
 
 @keyframes shine {
@@ -209,8 +238,10 @@
 <section class="featured">
     <div class="container">
         <div class="section-title">
-            <h2>Featured Watches</h2>
-            <p>Discover our selection of exquisite timepieces that blend style, innovation, and craftsmanship.</p>
+            <h2 class="sec-sub-text">Featured Watches</h2>
+           <div>
+             <span class="sub-text">Discover our selection of exquisite timepieces that blend style, innovation, and craftsmanship.</span>
+           </div>
         </div>
         <div class="product-grid">
             <% if (products && products.length > 0) { %>
@@ -254,8 +285,10 @@
 <section class="collections">
     <div class="container">
         <div class="section-title">
-            <h2>Our Collections</h2>
-            <p>Discover watches for every occasion and style preference.</p>
+            <h2 class="sec-sub-text">Our Collections</h2>
+            <div>
+                <span class="sub-text">Discover watches for every occasion and style preference.</span>
+            </div>
         </div>
         <div class="collection-grid">
             <div class="collection-card">
@@ -284,8 +317,10 @@
 <section class="features">
     <div class="container">
         <div class="section-title">
-            <h2>Why Choose SAWAX</h2>
-            <p>We are committed to excellence in every aspect of our products and services.</p>
+           <div>
+             <span class="sec-sub-text" style="font-size: 36px;">Why Choose SAWAX</span>
+           </div>
+            <span class="sec-sub-text">We are committed to excellence in every aspect of our products and services.</span>
         </div>
         <div class="features-grid">
             <div class="feature-card">

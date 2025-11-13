@@ -334,12 +334,79 @@
             order: 1;
         }
     }
+
+
+    .sub-text {
+  color: #332c2ca4; 
+  font-family: serif;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    #ffc400,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 8s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.sub-text.disabled {
+  animation: none;
+}
+
+
+.main-text {
+  color: #251b1ba4; 
+  font-weight: 900;
+  font-size: 66px;
+  font-family:  "Georgia", serif;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    #ffc400,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 9s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.main-text.disabled {
+  animation: none;
+}
+
+
 </style>
 
-<section class="page-title">
+<section class="page-title" style="background-color: #000000;">
     <div class="container">
-        <h1>Our Collection</h1>
-        <p>Discover exceptional timepieces crafted for distinction</p>
+        <span class="main-text" >Our Collection</span>
+        <div>
+            <span class="sub-text">Discover exceptional timepieces crafted for distinction</span>
+        </div>
+        
     </div>
 </section>
 
@@ -371,7 +438,7 @@
                             <li class="category-item">
                                 <a class="category-link" data-category="<%= cat._id %>" onclick="filterByCategory('<%= cat._id %>')">
                                     <span><%= cat.name %></span>
-                                    <span class="category-count">(<%= cat.productCount || 0 %>)</span>
+                                    <span class="category-count" >(<%= cat.productCount || 0 %>)</span>
                                 </a>
                             </li>
                         <% }) %>
