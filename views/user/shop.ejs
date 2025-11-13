@@ -1,7 +1,7 @@
 <%- include("../../views/partials/user/header") %>
 
 <link rel="stylesheet" href="/css/shop.css">
-<title>SAWAX | Shop </title>
+<title>SAWAX | Shop Premium Watches</title>
 
 <style>
     :root {
@@ -34,30 +34,31 @@
     }
 
     .out-of-stock-badge {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: rgba(220, 53, 69, 0.9);
-        color: white;
-        padding: 4px 8px;
-        font-size: 12px;
-        font-weight: 600;
-        border-radius: 4px;
-        z-index: 10;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-    .product-image {
-        position: relative;
-    }
+.product-image {
+    position: relative;
+}
 
-    .disabled-btn {
-        background: #ccc !important;
-        color: #666 !important;
-        pointer-events: none;
-        opacity: 0.7;
-    }
+.disabled-btn {
+    background: #ccc !important;
+    color: #666 !important;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
 
     .product-image img {
         width: 100%;
@@ -320,189 +321,6 @@
         gap: 30px;
     }
 
-   
-    .page-title {
-        position: relative;
-        padding: 120px 20px 80px;
-        background: linear-gradient(135deg, #000000 0%, #000000 100%);
-        overflow: hidden;
-        perspective: 1000px;
-        text-align: center;
-    }
-
-    .page-title::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
-        animation: backgroundPulse 8s ease-in-out infinite;
-    }
-
-    @keyframes backgroundPulse {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.1); }
-    }
-
-    .page-title::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        background-image: 
-            radial-gradient(2px 2px at 20% 30%, rgba(212, 175, 55, 0.4), transparent),
-            radial-gradient(2px 2px at 60% 70%, rgba(212, 175, 55, 0.4), transparent),
-            radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.4), transparent),
-            radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.4), transparent);
-        background-size: 200% 200%;
-        animation: particleFloat 20s linear infinite;
-    }
-
-    @keyframes particleFloat {
-        0% { background-position: 0% 0%; }
-        100% { background-position: 100% 100%; }
-    }
-
-    .page-title .container {
-        position: relative;
-        z-index: 2;
-    }
-
-    .page-title h2 {
-        font-size: 4rem;
-        font-weight: 600;
-        background: linear-gradient(135deg, #d4af37 0%, #f8e45f 50%, #d4af37 100%);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 20px;
-        position: relative;
-        animation: gradientShift 4s ease infinite;
-    }
-
-    @keyframes gradientShift {
-        0%, 100% { background-position: 0% center; }
-        50% { background-position: 100% center; }
-    }
-
-    .page-title h2 span {
-        display: inline-block;
-        animation: letterBounce 0.6s ease forwards;
-        opacity: 0;
-    }
-
-    @keyframes letterBounce {
-        0% {
-            opacity: 0;
-            transform: translateY(-100px) scale(0);
-        }
-        50% {
-            transform: translateY(10px) scale(1.1);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-
-    .page-title h2 span:nth-child(1) { animation-delay: 0.1s; }
-    .page-title h2 span:nth-child(2) { animation-delay: 0.15s; }
-    .page-title h2 span:nth-child(3) { animation-delay: 0.2s; }
-    .page-title h2 span:nth-child(4) { animation-delay: 0.25s; }
-    .page-title h2 span:nth-child(5) { animation-delay: 0.3s; }
-    .page-title h2 span:nth-child(6) { animation-delay: 0.35s; }
-    .page-title h2 span:nth-child(7) { animation-delay: 0.4s; }
-    .page-title h2 span:nth-child(8) { animation-delay: 0.45s; }
-    .page-title h2 span:nth-child(9) { animation-delay: 0.5s; }
-    .page-title h2 span:nth-child(10) { animation-delay: 0.55s; }
-    .page-title h2 span:nth-child(11) { animation-delay: 0.6s; }
-    .page-title h2 span:nth-child(12) { animation-delay: 0.65s; }
-    .page-title h2 span:nth-child(13) { animation-delay: 0.7s; }
-    .page-title h2 span:nth-child(14) { animation-delay: 0.75s; }
-    .page-title h2 span:nth-child(15) { animation-delay: 0.8s; }
-    .page-title h2 span:nth-child(16) { animation-delay: 0.85s; }
-    .page-title h2 span:nth-child(17) { animation-delay: 0.9s; }
-    .page-title h2 span:nth-child(18) { animation-delay: 0.95s; }
-    .page-title h2 span:nth-child(19) { animation-delay: 1s; }
-    .page-title h2 span:nth-child(20) { animation-delay: 1.05s; }
-
-    .page-title h2::after {
-        content: '';
-        position: absolute;
-        bottom: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 4px;
-        background: linear-gradient(90deg, transparent, #d4af37, transparent);
-        box-shadow: 0 0 20px #d4af37;
-        animation: underlineExpand 1s 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-
-    @keyframes underlineExpand {
-        to { width: 80%; }
-    }
-
-    .page-title p {
-        font-size: 1.3rem;
-        color: #e0e0e0;
-        opacity: 0;
-        animation: fadeInUp 1s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        transform: translateY(30px);
-        letter-spacing: 1px;
-        position: relative;
-    }
-
-    @keyframes fadeInUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .sparkle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: #d4af37;
-        border-radius: 50%;
-        box-shadow: 0 0 10px #d4af37;
-        animation: sparkleAnimation 2s ease-in-out infinite;
-        pointer-events: none;
-    }
-
-    @keyframes sparkleAnimation {
-        0%, 100% {
-            opacity: 0;
-            transform: scale(0) rotate(0deg);
-        }
-        50% {
-            opacity: 1;
-            transform: scale(1) rotate(180deg);
-        }
-    }
-
-    .page-title:hover h1 {
-        animation: gradientShift 4s ease infinite,
-                   glowPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes glowPulse {
-        0%, 100% {
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
-        }
-        50% {
-            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.9));
-        }
-    }
-
     @media (max-width: 768px) {
         .shop-layout {
             grid-template-columns: 1fr;
@@ -515,55 +333,13 @@
         .shop-products {
             order: 1;
         }
-
-        .page-title {
-            padding: 80px 20px 60px;
-        }
-
-        .page-title h1 {
-            font-size: 2.5rem;
-        }
-
-        .page-title p {
-            font-size: 1rem;
-        }
     }
-
-.sub-text {
-  color: #797979a4; 
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0) 60%
-  );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  display: inline-block;
-  animation: shine 5s linear infinite;
-  font-size: 18px;
-}
-
-@keyframes shine {
-  0% {
-    background-position: 100%;
-  }
-  100% {
-    background-position: -100%;
-  }
-}
-
-.sub-text.disabled {
-  animation: none;
-}
-    
 </style>
 
 <section class="page-title">
     <div class="container">
-        <h2 >Our Collection</h2>
-        <span class="sub-text ">Experience timeless elegance with watches designed to inspire excellence.</span>
+        <h1>Our Collection</h1>
+        <p>Discover exceptional timepieces crafted for distinction</p>
     </div>
 </section>
 
@@ -613,6 +389,26 @@
                     </div>
                 </div>
 
+                <!-- <div class="sidebar-section">
+                    <h3 class="sidebar-title">Alphabetical</h3>
+                    <div class="alpha-filter">
+                        <input type="radio" id="alpha-all" name="alpha" value="" class="alpha-checkbox" <%= !alphaFilter ? 'checked' : '' %>>
+                        <label for="alpha-all" class="alpha-label">All</label>
+                        
+                        <input type="radio" id="alpha-af" name="alpha" value="a-f" class="alpha-checkbox" <%= alphaFilter === 'a-f' ? 'checked' : '' %>>
+                        <label for="alpha-af" class="alpha-label">A-F</label>
+                        
+                        <input type="radio" id="alpha-gl" name="alpha" value="g-l" class="alpha-checkbox" <%= alphaFilter === 'g-l' ? 'checked' : '' %>>
+                        <label for="alpha-gl" class="alpha-label">G-L</label>
+                        
+                        <input type="radio" id="alpha-mr" name="alpha" value="m-r" class="alpha-checkbox" <%= alphaFilter === 'm-r' ? 'checked' : '' %>>
+                        <label for="alpha-mr" class="alpha-label">M-R</label>
+                        
+                        <input type="radio" id="alpha-sz" name="alpha" value="s-z" class="alpha-checkbox" <%= alphaFilter === 's-z' ? 'checked' : '' %>>
+                        <label for="alpha-sz" class="alpha-label">S-Z</label>
+                    </div>
+                </div> -->
+
                 <div class="sidebar-section">
                     <button type="button" class="reset-filters" onclick="resetAllFilters()">Reset All Filters</button>
                 </div>
@@ -627,6 +423,7 @@
                     <div class="shop-actions">
                         <div class="view-options">
                             <button class="view-btn active" data-view="grid">☰</button>
+                            <!-- <button class="view-btn" data-view="list">≡</button> -->
                         </div>
                         <select class="sort-select" id="sort-select">
                             <option value="relevance" <%= sort === 'relevance' ? 'selected' : '' %>>Relevance</option>
@@ -641,40 +438,40 @@
                 <div class="product-grid" id="product-grid">
                     <% if (products.length > 0) { %>
                         <% products.forEach(product => { %>
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
-                                    <% if (product.quantity === 0) { %>
-                                        <div class="out-of-stock-badge">Out of Stock</div>
-                                    <% } %>
-                                </div>
-                                <div class="product-details">
-                                    <h3 class="product-name"><%= product.productName %></h3>
-                                    <p class="product-brand">Brand: <%= product.brand %></p>
-                                    <span style="display: flex; gap: 10px; align-items: center;">
-                                        <% if (product.regularPrice !== product.salePrice) { %>
-                                            <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
-                                        <% } %>
-                                        <p class="product-price">₹ <%= product.salePrice %></p>
-                                    </span>
-                                    <p class="product-color">Color: <%= product.color %></p>
-                                    <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
+    <div class="product-card">
+        <div class="product-image">
+            <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+            <% if (product.quantity === 0) { %>
+                <div class="out-of-stock-badge">Out of Stock</div>
+            <% } %>
+        </div>
+        <div class="product-details">
+            <h3 class="product-name"><%= product.productName %></h3>
+            <p class="product-brand">Brand: <%= product.brand %></p>
+            <span style="display: flex; gap: 10px; align-items: center;">
+                <% if (product.regularPrice !== product.salePrice) { %>
+                    <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
+                <% } %>
+                <p class="product-price">₹ <%= product.salePrice %></p>
+            </span>
+            <p class="product-color">Color: <%= product.color %></p>
+            <p class="product-description"><%= product.description.slice(0, 100) %>...</p>
 
-                                    <% if (product.quantity > 0) { %>
-                                        <a href="/product/<%= product._id %>" class="view-button">View Product</a>
-                                    <% } else { %>
-                                        <a href="/product/<%= product._id %>" class="view-button disabled-btn" 
-                                           style="background: #ccc; cursor: not-allowed; pointer-events: none;">
-                                           Out of Stock
-                                        </a>
-                                    <% } %>
+            <% if (product.quantity > 0) { %>
+                <a href="/product/<%= product._id %>" class="view-button">View Product</a>
+            <% } else { %>
+                <a href="/product/<%= product._id %>" class="view-button disabled-btn" 
+                   style="background: #ccc; cursor: not-allowed; pointer-events: none;">
+                   Out of Stock
+                </a>
+            <% } %>
 
-                                    <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
-                                        <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        <% }) %>
+            <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
+                <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
+            </a>
+        </div>
+    </div>
+<% }) %>
                     <% } else { %>
                         <p style="text-align: center; color: var(--light-text); font-size: 18px;">
                             No products found. Try adjusting your filters.
@@ -690,67 +487,28 @@
 </section>
 
 <script>
-// TITLE ANIMATION SCRIPT
-document.addEventListener('DOMContentLoaded', function() {
-    function splitTextToSpans(element) {
-        const text = element.textContent;
-        element.innerHTML = '';
-        
-        for (let i = 0; i < text.length; i++) {
-            const span = document.createElement('span');
-            span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
-            span.style.opacity = '0';
-            span.style.transform = 'translateY(-100px) scale(0)';
-            element.appendChild(span);
+productCard.innerHTML = `
+    <div class="product-image">
+        <img src="/${product.productImage[0]}" alt="${product.productName}">
+        ${product.quantity === 0 ? '<div class="out-of-stock-badge">Out of Stock</div>' : ''}
+    </div>
+    <div class="product-details">
+        <h3 class="product-name">${product.productName}</h3>
+        <p class="product-brand">Brand: ${product.brand}</p>
+        ${priceHTML}
+        <p class="product-color">Color: ${product.color}</p>
+        <p class="product-description">${product.description.slice(0, 100)}...</p>
+        ${product.quantity > 0 
+            ? `<a href="/product/${product._id}" class="view-button">View Product</a>`
+            : `<a href="/product/${product._id}" class="view-button disabled-btn" style="background:#ccc;color:#666;opacity:0.7;cursor:not-allowed;pointer-events:none;">Out of Stock</a>`
         }
-    }
-
-    function createSparkles() {
-        const pageTitle = document.querySelector('.page-title');
-        const container = document.querySelector('.page-title .container');
-        
-        if (!pageTitle || !container) return;
-        
-        setInterval(() => {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            
-            const rect = container.getBoundingClientRect();
-            const x = Math.random() * rect.width;
-            const y = Math.random() * rect.height;
-            
-            sparkle.style.left = x + 'px';
-            sparkle.style.top = y + 'px';
-            sparkle.style.animationDelay = Math.random() * 2 + 's';
-            
-            pageTitle.appendChild(sparkle);
-            
-            setTimeout(() => sparkle.remove(), 2000);
-        }, 800);
-    }
-
-    // Initialize on page load
-    const titleElement = document.querySelector('.page-title h1');
-    if (titleElement) {
-        splitTextToSpans(titleElement);
-        titleElement.style.animation = 'gradientShift 4s ease infinite';
-        createSparkles();
-        
-        // Add hover effect for letters
-        const letters = titleElement.querySelectorAll('span');
-        letters.forEach((letter) => {
-            letter.addEventListener('mouseenter', () => {
-                letter.style.transform = 'translateY(-10px) scale(1.2)';
-                letter.style.transition = 'transform 0.3s ease';
-            });
-            
-            letter.addEventListener('mouseleave', () => {
-                letter.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-    }
-});
-
+        <a class="wishlist-btn" onclick="addToWishlist('${product._id}')">
+            <i class="fa-solid fa-heart ${userWishlist.includes(product._id) ? 'wishlist-active' : ''}"></i>
+        </a>
+    </div>
+`;
+</script>
+<script>
 // Global state to track current filters
 let currentFilters = {
     query: '<%= searchQuery || "" %>',
@@ -776,12 +534,12 @@ function showLoading() {
 }
 
 function updateActiveCategory() {
-    
+    // Remove active class from all category links
     document.querySelectorAll('.category-link').forEach(link => {
         link.classList.remove('active');
     });
     
-    
+    // Add active class to current category
     const activeLink = document.querySelector(`[data-category="${currentFilters.category}"]`);
     if (activeLink) {
         activeLink.classList.add('active');
@@ -841,47 +599,39 @@ function updateProductGrid(data) {
     const productGrid = document.getElementById('product-grid');
     productGrid.innerHTML = '';
     
-    if (data.products && data.products.length > 0) {
-        data.products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
+   if (data.products && data.products.length > 0) {
+    data.products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
 
-            //  price display
-            const priceHTML = product.regularPrice !== product.salePrice
-                ? `<span style="display: flex; gap: 10px; align-items: center;">
-                     <del><p class="product-price">₹ ${product.regularPrice}</p></del>
-                     <p class="product-price">₹ ${product.salePrice}</p>
-                   </span>`
-                : `<span style="display: flex; gap: 10px; align-items: center;">
-                     <p class="product-price">₹ ${product.salePrice}</p>
-                   </span>`;
+        // conditional price display
+        const priceHTML = product.regularPrice !== product.salePrice
+            ? `<span style="display: flex; gap: 10px; align-items: center;">
+                 <del><p class="product-price">₹ ${product.regularPrice}</p></del>
+                 <p class="product-price">₹ ${product.salePrice}</p>
+               </span>`
+            : `<span style="display: flex; gap: 10px; align-items: center;">
+                 <p class="product-price">₹ ${product.salePrice}</p>
+               </span>`;
 
-            const userWishlist = <%= user && user.wishlist ? JSON.stringify(user.wishlist.map(w => String(w.id))) : '[]' %>;
+        productCard.innerHTML = `
+            <div class="product-image">
+                <img src="/${product.productImage[0]}" alt="${product.productName}">
+            </div>
+            <div class="product-details">
+                <h3 class="product-name">${product.productName}</h3>
+                <p class="product-brand">Brand: ${product.brand}</p>
+                ${priceHTML}
+                <p class="product-color">Color: ${product.color}</p>
+                <p class="product-description">${product.description.slice(0, 100)}...</p>
+                <a href="/product/${product._id}" class="view-button">View Product</a>
+            </div>
+        `;
 
-            productCard.innerHTML = `
-                <div class="product-image">
-                    <img src="/${product.productImage[0]}" alt="${product.productName}">
-                    ${product.quantity === 0 ? '<div class="out-of-stock-badge">Out of Stock</div>' : ''}
-                </div>
-                <div class="product-details">
-                    <h3 class="product-name">${product.productName}</h3>
-                    <p class="product-brand">Brand: ${product.brand}</p>
-                    ${priceHTML}
-                    <p class="product-color">Color: ${product.color}</p>
-                    <p class="product-description">${product.description.slice(0, 100)}...</p>
-                    ${product.quantity > 0 
-                        ? `<a href="/product/${product._id}" class="view-button">View Product</a>`
-                        : `<a href="/product/${product._id}" class="view-button disabled-btn" style="background:#ccc;color:#666;opacity:0.7;cursor:not-allowed;pointer-events:none;">Out of Stock</a>`
-                    }
-                    <a class="wishlist-btn" onclick="addToWishlist('${product._id}')">
-                        <i class="fa-solid fa-heart ${userWishlist.includes(product._id) ? 'wishlist-active' : ''}"></i>
-                    </a>
-                </div>
-            `;
-
-            productGrid.appendChild(productCard);
-        });
-    } else {
+        productGrid.appendChild(productCard);
+    });
+}
+ else {
         productGrid.innerHTML = `
             <p style="text-align: center; color: var(--light-text); font-size: 18px;">
                 No products found. Try adjusting your filters.
@@ -953,39 +703,45 @@ function updatePagination(data) {
     }
 }
 
-// Wishlist
+//wishllist
 async function addToWishlist(productId) {
     try {
-        const response = await fetch(`/addToWishlist/${productId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const data = await response.json();
-        if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Added to Wishlist!',
-                text: 'Product has been added to your wishlist.',
-                confirmButtonColor: '#d4af37',
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Failed to Add!',
-                text: data.message || 'Failed to add product to wishlist.',
-                confirmButtonColor: '#d4af37',
-            });
-        }
-    } catch (error) {
-        console.error('Error adding to wishlist:', error);
+      const response = await fetch(`/addToWishlist/${productId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.success) {
         Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Please login to add to wishlist.',
-            confirmButtonColor: '#d4af37',
+          icon: 'success',
+          title: 'Added to Wishlist!',
+          text: 'Product has been added to your wishlist.',
+          confirmButtonColor: '#d4af37',
+
+         
         });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Add!',
+          text: data.message || 'Failed to add product to wishlist.',
+         confirmButtonColor: '#d4af37',
+        });
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'An error occurred while adding to wishlist.',
+        confirmButtonColor: '#d4af37',
+
+
+      });
     }
-}
+  }
+
+
 
 function updateProductsFound(data) {
     const productsFound = document.getElementById('products-found');
@@ -1038,7 +794,7 @@ function resetAllFilters() {
     performSearch();
 }
 
-
+// Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     // Search input with debounce
     const searchInput = document.getElementById('search-input');
@@ -1092,6 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateActiveCategory();
 });
 
+// Handle browser back/forward buttons
 window.addEventListener('popstate', function(event) {
     if (event.state) {
         currentFilters = event.state;
