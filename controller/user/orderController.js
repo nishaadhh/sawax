@@ -10,6 +10,20 @@ const Razorpay = require('razorpay');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 
+
+const orderdetails =async(req,res)=>{
+    try {
+        res.render("orderdetails")
+    } catch (error) {
+        
+    }
+}
+
+
+
+
+
+
 const DELIVERY_CHARGE = 50;
 const COD_LIMIT = 50000; // COD limit set to ₹50,000
 
@@ -1436,6 +1450,7 @@ const verifyGroupPayment = async (req, res) => {
 };
 
 module.exports = {
+  orderdetails,
   placeOrder,
   createCheckoutOrder,
   verifyCheckoutPayment,

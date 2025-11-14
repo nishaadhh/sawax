@@ -13,6 +13,42 @@ const razorpay = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
+const wallet = async (req, res) => {
+    try {
+        
+        const walletBalance = 1500.50; 
+        const transactions = [
+            { date: new Date(), type: 'Deposit', amount: 1000, description: 'Added funds via UPI' },
+            { date: new Date(), type: 'Purchase', amount: 499.50, description: 'Order #1234' }
+        ];
+
+        res.render('wallet', {
+            walletBalance,
+            transactions
+        });
+    } catch (error) {
+        console.error('Error fetching wallet page:', error);
+        res.status(500).send('Server Error');
+    }
+};
+
+const addFunds = async (req, res) => {
+    try {
+        const { amount } = req.body;
+        const amountNum = parseFloat(amount);
+
+        if (isNaN(amountNum) || amountNum <= 0) {
+            return res.status(500).json({ status: false, message: 'Invalid amount' });
+        }
+
+        
+
+        res.json({ status: true, message: 'Funds added successfully' });
+    } catch (error) {
+        console.error('Error adding funds:', error);
+        res.status(500).json({ status: false, message: 'Server Error' });
+    }
+};
 
 const generateReceiptId = (prefix = 'wallet') => {
   const timestamp = Date.now().toString().slice(-8); 
@@ -272,6 +308,8 @@ const withdrawMoney = async (req, res) => {
 };
 
 module.exports = {
+    wallet,
+    addFunds,
     loadWallet,
     createRazorpayOrder,
     verifyPayment,

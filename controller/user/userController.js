@@ -756,21 +756,9 @@ const filterProduct = async (req, res) => {
     }
 };
 
-const profile =async(req,res)=>{
-    try {
-        res.render("profile")
-    } catch (error) {
-        
-    }
-}
 
-const orderdetails =async(req,res)=>{
-    try {
-        res.render("orderdetails")
-    } catch (error) {
-        
-    }
-}
+
+
 
 const errorpage =async(req,res)=>{
     try {
@@ -1264,42 +1252,7 @@ const removeFromWishlist = async (req, res) => {
     }
 };
 
-const wallet = async (req, res) => {
-    try {
-        
-        const walletBalance = 1500.50; 
-        const transactions = [
-            { date: new Date(), type: 'Deposit', amount: 1000, description: 'Added funds via UPI' },
-            { date: new Date(), type: 'Purchase', amount: 499.50, description: 'Order #1234' }
-        ];
 
-        res.render('wallet', {
-            walletBalance,
-            transactions
-        });
-    } catch (error) {
-        console.error('Error fetching wallet page:', error);
-        res.status(500).send('Server Error');
-    }
-};
-
-const addFunds = async (req, res) => {
-    try {
-        const { amount } = req.body;
-        const amountNum = parseFloat(amount);
-
-        if (isNaN(amountNum) || amountNum <= 0) {
-            return res.status(500).json({ status: false, message: 'Invalid amount' });
-        }
-
-        
-
-        res.json({ status: true, message: 'Funds added successfully' });
-    } catch (error) {
-        console.error('Error adding funds:', error);
-        res.status(500).json({ status: false, message: 'Server Error' });
-    }
-};
 
 // Load referral page
 const loadReferralPage = async (req, res) => {
@@ -1389,8 +1342,6 @@ module.exports = {
     // checkout,
     shop,
     loadShoppingPage,
-    profile,
-    orderdetails,
     wishlistpage,
     addToWishlist,
     removeFromWishlist,
@@ -1402,9 +1353,6 @@ module.exports = {
     removeFromCart,
     loadCart,
     addAddress,
-    // placeOrder,
-    wallet,
-    addFunds,
     resetPassword,
     renderForgotPassword, 
     forgotPassword,

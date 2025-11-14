@@ -8,6 +8,17 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
+
+
+const profile =async(req,res)=>{
+    try {
+        res.render("profile")
+    } catch (error) {
+        
+    }
+}
+
+
 // Default profile image path 
 const DEFAULT_PROFILE_IMAGE = '/images/default-avatar.png';
 
@@ -925,6 +936,7 @@ const logout = async (req, res) => {
 };
 
 module.exports = {
+  profile,
   userProfile,
   updateProfile,
   uploadProfileImage,

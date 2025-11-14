@@ -97,7 +97,7 @@ router.delete('/remove-profile-image',userAuth, profileController.removeProfileI
 
 // router.post("/upload-profile-image", userAuth, profileController.upload.single('profileImage'), profileController.uploadProfileImage);
 router.get("/check-username", userAuth, profileController.checkUsernameAvailability);
-router.get("/orderdetails", userAuth, userController.orderdetails);
+router.get("/orderdetails", userAuth, orderController.orderdetails);
 router.get("/change-email", userAuth, profileController.changeEmail);
 router.post("/send-current-email-otp", userAuth, profileController.sendCurrentEmailOtp);
 router.get("/verify-current-email-otp-page", userAuth, profileController.verifyCurrentEmailOtpPage);
