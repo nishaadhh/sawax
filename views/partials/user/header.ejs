@@ -347,15 +347,15 @@
     <!-- Mobile Navigation -->
     <div class="mobile-nav" id="mobile-nav">
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/shop">Shop</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="/"><i class="fa-solid fa-house"></i>   Home</a></li>
+            <li><a href="/shop"><i class="fa-solid fa-shop"></i>   Shop</a></li>
+            <li><a href="/about"><i class="fa-regular fa-copyright"></i> About</a></li>
 
             <li class="mobile-dropdown">
-                <a href="#" class="mobile-sign-in-link" onclick="toggleMobileDropdown(event)">YOU</a>
+                <a href="#" class="mobile-sign-in-link" onclick="toggleMobileDropdown(event)" style="color: #fabf00;"> <i class="fa-solid fa-circle-user"></i>   <%= user.name %></a>
                 <div class="mobile-dropdown-content">
-                    <a href="/profile">Profile</a>
-                    <a href="#" onclick="confirmLogout()">Logout</a>
+                    <a href="/profile"> Profile</a>
+                    <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i>  Logout</a>
                 </div>
             </li>
         </ul>

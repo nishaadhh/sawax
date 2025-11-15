@@ -141,6 +141,7 @@ const renderResetPassword = async (req, res) => {
             return res.redirect('/forgot-password');
         }
         res.render('reset-password');
+        console.log('\n\n USER TRYING TO CHANGE PASSWORD\n\n')
     } catch (error) {
         res.redirect('/pagenotfound');
     }
@@ -178,6 +179,7 @@ const resetPassword = async (req, res) => {
     req.session.otpVerified = null;
 
     res.json({ status: true, message: 'Password updated successfully.' });
+    console.log('\n\nUSER CHANGED CURRENT PASSWORD\n\n')
   } catch (error) {
     console.error('Error in resetPassword:', error);
     res.status(500).json({ status: false, message: 'Server Error' });
