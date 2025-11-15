@@ -655,7 +655,7 @@ select.form-control {
     <div class="form-row mb-50">
       <div class="form-group">
         <select class="form-control" id="addressType" name="addressType" required>
-          <option value="">Select Address Type</option>
+          
           <option value="Home">Home</option>
           <option value="Work">Work</option>
           <option value="Other">Other</option>
@@ -876,7 +876,6 @@ async function handleGeolocationClick() {
     }
 }
 
-// Enhanced Reverse Geocoding
 async function reverseGeocode(lat, lon) {
     const url = USE_PROXY 
         ? `${API_BASE}/reverse?lat=${lat}&lon=${lon}` 
@@ -917,7 +916,7 @@ async function reverseGeocode(lat, lon) {
     }
 }
 
-// === ENHANCED AUTOCOMPLETE FUNCTIONALITY ===
+
 function initAutocomplete() {
     const input = document.getElementById('streetAddress');
     if (!input) {
@@ -992,7 +991,7 @@ function showSuggestions(places) {
     dropdown.style.display = 'block';
 }
 
-// === ENHANCED ADDRESS PARSING ===
+//  ADDRESS PARSING 
 function selectPlace(place) {
     const fields = {
         streetAddress: document.getElementById('streetAddress'),
@@ -1006,7 +1005,7 @@ function selectPlace(place) {
     };
     
     const addr = place.address || place;
-    console.log('🏠 Full address data:', addr);
+    console.log(' Full address data:', addr);
     
     function getAddressComponent(components, possibleNames) {
         for (const name of possibleNames) {
@@ -1043,7 +1042,7 @@ function selectPlace(place) {
     
     fields.streetAddress.value = streetValue.trim();
     
-    // Enhanced City with multiple fallbacks
+    // City with multiple 
     const cityCandidates = [
         'city', 'city_district', 'district', 'town', 'municipality', 'administrative', 
         'hamlet', 'suburb', 'county', 'region', 'local_administrity', 'place', 
@@ -1144,7 +1143,7 @@ function showLocationStatus(message, type) {
     }
 }
 
-// === FORM VALIDATION ===
+// FORM VALIDATION 
 document.getElementById("addressForm").addEventListener("submit", function (event) {
     if (!validateForm()) {
         event.preventDefault();
@@ -1158,7 +1157,7 @@ document.getElementById("addressForm").addEventListener("submit", function (even
 function validateForm() {
     let isValid = true;
     
-    // Clear previous errors
+    
     document.querySelectorAll(".text-danger").forEach((error) => error.remove());
     
     const requiredFields = [

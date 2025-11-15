@@ -52,14 +52,11 @@ app.use('/admin',adminRouter );
 
 
 
-//ADMIN SIDE
+
 
 app.use('/admin',adminRouter)
 
-// Install axios: npm install axios
 
-// Proxy endpoint for geocode.maps.co (bypasses CORS)
-// FIXED: Separate endpoints for search and reverse geocoding
 app.get('/api/geocode/search', async (req, res) => {
     try {
         const { q } = req.query;
@@ -94,21 +91,21 @@ app.get('/api/geocode/reverse', async (req, res) => {
 
         const apiUrl = `https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}&api_key=${apiKey}`;
         
-        console.log('🔍 Reverse geocoding for:', lat, lon);
+        console.log(' Location getting geocoding for:', lat, lon);
         
         const response = await axios.get(apiUrl, { 
             timeout: 10000,
             headers: { 'User-Agent': 'YourApp/1.0' }
         });
         
-        console.log('📍 Reverse geocode response structure:', Object.keys(response.data));
+        console.log(' Reverse geocode response structure:', Object.keys(response.data));
         if (response.data.address) {
-            console.log('🏠 Address components:', Object.keys(response.data.address));
+            console.log(' Address components:', Object.keys(response.data.address));
         }
         
         res.json(response.data);
     } catch (error) {
-        console.error('❌ Reverse proxy error:', error.response?.status, error.message);
+        console.error(' location finding error:', error.response?.status, error.message);
         res.status(error.response?.status || 500).json({ 
             error: 'Reverse geocoding failed',
             details: error.response?.data || error.message 
@@ -129,11 +126,4 @@ module.exports = app;
 
 
 
-// Error handling middleware
 
-//app.get('/test', (req, res, next) => {
-//   const err = new Error('Test error');
-//   next(err); // Pass the error to the error handling middleware
-// });
-
-// app.listen(3000, () => console.log('Server running on port 3000'));
