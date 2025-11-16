@@ -966,17 +966,18 @@
             cartItem.querySelector(".cart-item-price").textContent = `₹${newTotalPrice.toFixed(2)}`;
             quantityDisplay.setAttribute("data-stock", stock - change); 
             updateCartTotal();
-            Swal.fire({
-              icon: "success",
-              title: "Quantity Updated!",
-              text: "Cart quantity has been successfully updated.",
-              confirmButtonColor: "#d4af37",
-              background: "#f8f8f8",
-              timer: 1000,
-              timerProgressBar: true,
-              showConfirmButton: false
-            });
-          } else {
+          //   Swal.fire({
+          //     icon: "success",
+          //     title: "Quantity Updated!",
+          //     text: "Cart quantity has been successfully updated.",
+          //     confirmButtonColor: "#d4af37",
+          //     background: "#f8f8f8",
+          //     timer: 1000,
+          //     timerProgressBar: true,
+          //     showConfirmButton: false
+          //   });
+          } 
+          else {
             // Revert UI if API call fails
             quantityDisplay.textContent = currentQuantity;
             const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
