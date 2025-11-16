@@ -98,10 +98,16 @@
         background: linear-gradient(135deg,#e6ba2b, #ffc20a);
     }
 
-    .wishlist-btn:hover{
-        color:red
-    }
-    .wishlist-btn i.wishlist-active{ color:red; }
+ .wishlist-btn i {
+    transition: color .15s ease, transform .12s ease;
+}
+.wishlist-btn i.wishlist-active {
+    color: red;
+    transform: scale(1.08);
+}
+.wishlist-btn:hover {
+    color: red;
+}
 
     .shop-sidebar {
         background: #fff;
@@ -533,9 +539,10 @@
                 </a>
             <% } %>
 
-            <a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>')">
-                <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
-            </a>
+<a class="wishlist-btn" onclick="addToWishlist('<%= product._id %>', this)">
+    <i class="fa-solid fa-heart <%= (user && user.wishlist && user.wishlist.some(w => String(w.id) === String(product._id))) ? 'wishlist-active' : '' %>"></i>
+</a>
+
         </div>
     </div>
 <% }) %>
@@ -557,23 +564,21 @@
 productCard.innerHTML = `
     <div class="product-image">
         <img src="/${product.productImage[0]}" alt="${product.productName}">
-        ${product.quantity === 0 ? '<div class="out-of-stock-badge">Out of Stock</div>' : ''}
+        <a class="wishlist-btn" onclick="addToWishlist('${product._id}', this)">
+            <i class="fa-solid fa-heart ${product.inWishlist ? 'wishlist-active' : ''}"></i>
+        </a>
     </div>
+
     <div class="product-details">
         <h3 class="product-name">${product.productName}</h3>
         <p class="product-brand">Brand: ${product.brand}</p>
         ${priceHTML}
         <p class="product-color">Color: ${product.color}</p>
         <p class="product-description">${product.description.slice(0, 100)}...</p>
-        ${product.quantity > 0 
-            ? `<a href="/product/${product._id}" class="view-button">View Product</a>`
-            : `<a href="/product/${product._id}" class="view-button disabled-btn" style="background:#ccc;color:#666;opacity:0.7;cursor:not-allowed;pointer-events:none;">Out of Stock</a>`
-        }
-        <a class="wishlist-btn" onclick="addToWishlist('${product._id}')">
-            <i class="fa-solid fa-heart ${userWishlist.includes(product._id) ? 'wishlist-active' : ''}"></i>
-        </a>
+        <a href="/product/${product._id}" class="view-button">View Product</a>
     </div>
 `;
+
 </script>
 <script>
 // Global state to track current filters
@@ -771,42 +776,50 @@ function updatePagination(data) {
 }
 
 //wishllist
-async function addToWishlist(productId) {
+async function addToWishlist(productId, el) {
+    const icon = el.querySelector('i');
+    el.style.pointerEvents = 'none';
+
     try {
-      const response = await fetch(`/addToWishlist/${productId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const data = await response.json();
-      if (data.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Added to Wishlist!',
-          text: 'Product has been added to your wishlist.',
-          confirmButtonColor: '#d4af37',
+        const response = await fetch(`/addToWishlist/${productId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
 
-         
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Failed to Add!',
-          text: data.message || 'Failed to add product to wishlist.',
-         confirmButtonColor: '#d4af37',
-        });
-      }
+        const data = await response.json();
+
+        if (data.success) {
+            if (typeof data.added !== 'undefined') {
+                icon.classList.toggle('wishlist-active', data.added);
+            } else {
+                icon.classList.toggle('wishlist-active');
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: data.added ? 'Added to Wishlist!' : data.removed ? 'Removed from Wishlist!' : 'Wishlist Updated',
+                text: data.message || '',
+                confirmButtonColor: '#d4af37'
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed!',
+                text: data.message || '',
+                confirmButtonColor: '#d4af37'
+            });
+        }
     } catch (error) {
-      console.error('Error adding to wishlist:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'An error occurred while adding to wishlist.',
-        confirmButtonColor: '#d4af37',
-
-
-      });
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred.',
+            confirmButtonColor: '#d4af37'
+        });
+    } finally {
+        el.style.pointerEvents = '';
     }
-  }
+}
 
 
 
