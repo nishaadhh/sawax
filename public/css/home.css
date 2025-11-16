@@ -98,24 +98,93 @@
             cursor: pointer;
         }
         
-        /* Hero Section */
-        .hero {
-            position: relative;
-            height: 90vh;
-            background-color:#000000;;
-            color: #b6b2b2; /* Changed to a   white color for contrast */
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-        }
+       
         
-        .hero-content {
-            width: 50%;
-            padding-left: 5%;
-            position: relative;
-            z-index: 2;
-        }
-        
+
+
+.hero {
+    position: relative;
+    height: 90vh;
+    min-height: 600px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.hero-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); 
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    max-width: 90%;
+    padding: 20px;
+}
+
+.hero-content .shiny-text {
+    font-size: 62px;
+    font-weight: 300;
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+.hero-content .sub-text {
+    font-size: 20px;
+    margin-bottom: 40px;
+    opacity: 0.95;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .hero-content .shiny-text {
+        font-size: 42px;
+    }
+    .hero-content .sub-text {
+        font-size: 16px;
+    }
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn-explore {
+        width: 200px;
+    }
+}
+
+
         .hero h1 {
             font-size: 56px;
             font-weight: 300;
@@ -134,17 +203,7 @@
             opacity: 0.9;
         }
         
-.hero-image {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
 
-.hero-image video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 
         
