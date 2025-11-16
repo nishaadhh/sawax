@@ -389,8 +389,8 @@ window.addEventListener('load', () => {
             loadingScreen.style.opacity = '0';
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
-            }, 300); // Matches transition duration
-        }, 100); // Display for 1 miliseconds
+            }, 300); 
+        }, 100); 
     }
 });
 async function addToCart(productId) {
@@ -436,7 +436,7 @@ async function addToCart(productId) {
 
 async function addToWishlist(productId) {
     try {
-        // Log productId to ensure it's correct
+       
         console.log('Adding product to wishlist:', productId);
 
         if (!productId) {
