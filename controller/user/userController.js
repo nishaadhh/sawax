@@ -27,8 +27,16 @@ const loadHomePage = async (req, res) => {
         const products = await Product.find({isBlocked:0}).limit(8).populate('category').sort({createdAt:-1})
 
         if(user){
+            const client = await User.findOne({ _id: user },{ name: 1 ,email :1 , googleId:1 , referId:1 });
+            console.log(`\n\n   USER : [ ' ${client.name} ' ] IS ENTERED TO HOME PAGE`);
+            console.log(`\n   USER-EMAIL : [ ' ${client.email} ' ] `);
+            console.log(`\n   USER GOOGLE-ID : [ ' ${client.googleId} ' ]`);
+            console.log(`\n   USER REFER-ID : [ ' ${client.referId} ' ]  \n\n`);
             res.render("home",{user:userData,products})
-            console.log(userData);
+            
+            
+
+            // console.log(userData);
         }else{
             res.render('home',{
                 user:userData,
@@ -50,7 +58,7 @@ const loadSignUpPage = async (req, res) => {
     }
 }
 
-// Render the forgot password page (GET /forgot-password)
+
 const renderForgotPassword = (req, res) => {
   res.render('forgot-password', { message: '' });
 };
