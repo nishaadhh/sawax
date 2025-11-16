@@ -134,14 +134,19 @@
             opacity: 0.9;
         }
         
-        .hero-image {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 50%;
-            width: 36%;
-            background: linear-gradient(90deg, rgba(26,26,26,0.8) 0%, rgba(26,26,26,0) 30%), url('/api/placeholder/600/400') center/cover;
-        }
+.hero-image {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.hero-image video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
         
         .btn {
             display: inline-block;
@@ -611,13 +616,7 @@
                 font-size: 40px;
             }
             
-            .hero-image {
-                position: relative;
-                width: 100%;
-                height: 300px;
-                margin-top: 40px;
-                background: url('/api/placeholder/600/400') center/cover;
-            }
+           
             
             .collection-grid {
                 grid-template-columns: 1fr;

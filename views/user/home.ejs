@@ -85,12 +85,14 @@
 }
 
 .btn-explore {
+    position: relative;
+    overflow: hidden;
     background: transparent;
     border: 2px solid #d4af37;
-    color: #a58827;
+    color: #ffc400;
     font-weight: 600;
     border-radius: 4px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -99,12 +101,41 @@
     padding: 12px 30px;
 }
 
+/* Shiny moving effect */
+.btn-explore::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0) 40%,
+        #000000 50%,
+        rgba(255, 255, 255, 0) 60%
+    );
+    opacity: 0.6;
+    background-size: 200% 100%;
+    animation: buttonShine 4s linear infinite;
+}
+
+@keyframes buttonShine {
+    0% {
+        left: -150%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+/* Hover styling */
 .btn-explore:hover {
     transform: translateY(-3px);
-    /* box-shadow: 0 10px 25px rgba(212, 55, 55, 0.4); */
-    background: linear-gradient(135deg, #000000, #000000);
-    color: #ffc400;
+    background: #00000000;
+    color: #ffc400c4;
 }
+
 
 .wishlist i {
     color: #000; 
@@ -221,6 +252,13 @@
 
 
 <section class="hero">
+
+    <div class="hero-image">
+    <video autoplay muted loop playsinline>
+        <source src="/videos/banner.mp4" type="video/mp4">
+    </video>
+</div>
+
     <div class="hero-content">
         <h1 style="color: #ffffff;"><div class="shiny-text">CHOOSE THE BEST</div></h1>
         <p  class="sub-text">Discover our collection of premium timepieces crafted with precision and designed for distinction.</p>
@@ -229,9 +267,8 @@
             <a href="/about" class="btn-explore">Explore</a>
         </div>
     </div>
-    <div class="hero-image">
-        <img src="/img/banner.png" alt="Hero Banner">
-    </div>
+
+
 </section>
 
 <!-- Featured Products -->
