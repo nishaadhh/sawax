@@ -1017,78 +1017,75 @@
         }
       }
 
-      async function removeFromCart(productId) {
-        try {
-          const result = await Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d4af37",
-            cancelButtonColor: "#e74c3c",
-            confirmButtonText: "Yes, remove it!",
-            background: "#f8f8f8"
-          });
+  async function removeFromCart(productId) {
+  try {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d4af37",
+      cancelButtonColor: "#e74c3c",
+      confirmButtonText: "Yes, remove it!",
+      background: "#f8f8f8"
+    });
 
-          if (result.isConfirmed) {
-            const response = await fetch("/deleteItem", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ productId })
-            });
+    if (!result.isConfirmed) return;
+    const response = await fetch("/deleteItem", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId })
+    });
 
-            if (!response.ok) {
-              const text = await response.text();
-              if (text.startsWith("<!DOCTYPE")) {
-                throw new Error("Received HTML instead of JSON. Possible authentication issue.");
-              }
-              const data = await response.json();
-              if (data.redirect) {
-                window.location.href = data.redirect;
-                return;
-              }
-              throw new Error(data.message || `HTTP error: ${response.status}`);
-            }
+    // Read once only
+    const rawText = await response.text();
 
-            const data = await response.json();
-            if (data.status) {
-              Swal.fire({
-                icon: "success",
-                title: "Removed!",
-                text: data.message || "Product removed from cart successfully.",
-                confirmButtonColor: "#d4af37",
-                background: "#f8f8f8",
-                timer: 1000,
-                timerProgressBar: true,
-                showConfirmButton: false
-              })
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: data.message || "Failed to remove product from cart.",
-                confirmButtonColor: "#d4af37",
-                background: "#f8f8f8",
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false
-              });
-            }
-          }
-        } catch (error) {
-          console.error("Error removing product:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: error.message || "Failed to remove product from cart.",
-            confirmButtonColor: "#d4af37",
-            background: "#f8f8f8",
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false
-          });
-        }
-      }
+    
+    if (rawText.startsWith("<!DOCTYPE")) {
+      throw new Error("Received HTML instead of JSON. Possible authentication issue.");
+    }
+
+    const data = JSON.parse(rawText); // safe
+
+    // Handle redirect issues
+    if (data.redirect) {
+      window.location.href = data.redirect;
+      return;
+    }
+
+    // Handle success swal
+    if (response.ok && data.status) {
+      Swal.fire({
+        icon: "success",
+        title: "Removed!",
+        text: data.message || "Product removed successfully.",
+        confirmButtonColor: "#d4af37",
+        background: "#f8f8f8",
+        timer: 1000,
+        showConfirmButton: false
+      });
+      window.location.reload();
+
+    } else {  
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: data.message || "Failed to remove product.",
+        confirmButtonColor: "#d4af37",
+        background: "#f8f8f8",
+      });
+    }
+  } catch (error) {
+    console.error("Error removing product:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message || "Failed to remove product.",
+      confirmButtonColor: "#d4af37",
+      background: "#f8f8f8",
+    });
+  }
+}
 
       // Initialize cart
       window.addEventListener("load", refreshCart);
