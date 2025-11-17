@@ -356,7 +356,7 @@
       <h4 class="card-title mb-0">Search Customers</h4>
     </div>
     <div class="card-body">
-      <form action="/admin/users/" method="get">
+     <form onsubmit="event.preventDefault(); searchCustomers();" class="mb-0">
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Search customers..." name="search">
           <button class="btn btn-primary" type="submit">Search</button>
@@ -413,6 +413,23 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function searchCustomers() {
+    const query = document.querySelector('input[name="search"]').value.trim();
+    const baseUrl = '/admin/users';
+    const url = query ? `${baseUrl}?search=${encodeURIComponent(query)}` : baseUrl;
+    window.location.href = url;
+}
+
+
+let searchTimer;
+document.querySelector('input[name="search"]').addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(searchCustomers, 600);
+});
+</script>
+
 <script>
   function confirmBlock(event, userId) {
     event.preventDefault();
