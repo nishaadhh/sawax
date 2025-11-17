@@ -21,6 +21,7 @@ const customerInfo = async (req, res) => {
                 {name:{$regex:".*"+search+".*"}},
                 {email:{$regex:".*"+search+".*"}},
              ]})
+             .sort({ createOn: -1 })
              .limit(limit * 1)
              .skip((page-1) * limit)
              .exec();
