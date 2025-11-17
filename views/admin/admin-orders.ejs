@@ -141,7 +141,7 @@
     <h1 class="mt-4">Order Management </h1>
     <div class="card mb-4">
         <div class="card-body" style="background: linear-gradient(90deg, #a855f7, #3b0764);">
-            <form action="/admin/orders" method="GET" class="row g-3 align-items-end">
+            <form onsubmit="event.preventDefault(); searchOrders();" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label for="product" class="form-label">Product Name</label>
                     <input type="text" class="form-control" id="product" name="product" 
@@ -411,6 +411,41 @@ function buildPaginationUrl(page, searchParams) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+
+function searchOrders() {
+    const product = document.getElementById('product').value.trim();
+    const status = document.getElementById('status').value;
+    const date = document.getElementById('date').value;
+
+    let url = '/admin/orders?';
+    const params = new URLSearchParams();
+
+    if (product) params.set('product', product);
+    if (status) params.set('status', status);
+    if (date) params.set('date', date);
+
+    window.location.href = url + params.toString();
+}
+
+
+let searchTimer;
+document.querySelectorAll('#product, #status, #date').forEach(input => {
+    input.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(searchOrders, 600);
+    });
+    input.addEventListener('change', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(searchOrders, 600);
+    });
+});
+</script>
+
+
+
 <script>
 let currentOrderId = null;
 
