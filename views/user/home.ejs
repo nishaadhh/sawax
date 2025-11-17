@@ -59,10 +59,6 @@
     padding: 12px 30px;
 }
 
-
-
-
-
 .add-to-cart {
     display: inline-flex;
     align-items: center;
@@ -136,7 +132,6 @@
     color: #ffc400c4;
 }
 
-
 .wishlist i {
     color: #000; 
     cursor: pointer;
@@ -145,7 +140,6 @@
 .wishlist i.wishlist-active {
     color: red !important; 
 }
-
 
 .shiny-text {
   color: #342c2ca4; 
@@ -176,7 +170,6 @@
   animation: none;
 }
 
-
 .sec-sub-text {
   color: #342c2ca4; 
   background: linear-gradient(
@@ -205,8 +198,6 @@
 .sec-sub-text.disabled {
   animation: none;
 }
-
-
 
 .sub-text {
   color: #342c2ca4; 
@@ -237,6 +228,33 @@
   animation: none;
 }
 
+.offer-badge {
+    position: absolute;
+    top: 42px;
+    right: 19px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* animation: pulse 2s infinite; */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.discount-info {
+    font-size: 12px;
+    color: #e74c3c;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.product-image {
+    position: relative;
+}
 </style>
 
 <%- include("../../views/partials/user/header") %>
@@ -249,7 +267,6 @@
 <div id="loading-screen" class="loading-screen">
     <div class="loading-spinner"></div>
 </div>
-
 
 <section class="hero">
     <!-- Fullscreen Video Background -->
@@ -291,6 +308,14 @@
                             <% } else { %>
                                 <span class="product-badge">Bestseller</span>
                             <% } %>
+                            <%
+                                const categoryOffer = product.category ? product.category.categoryOffer : 0;
+                                const productOffer = product.productOffer || 0;
+                                const maxOffer = Math.max(categoryOffer, productOffer);
+                            %>
+                            <% if (maxOffer > 0) { %>
+                                <span class="offer-badge"><%= maxOffer %>% OFF</span>
+                            <% } %>
                         </div>
                         <div class="product-info">
                             <h3 class="product-name"><%= product.productName %></h3>
@@ -300,6 +325,9 @@
                                           <del><p class="product-price">₹ <%= product.regularPrice %></p></del>
                                                      <% } %>
                                              <p class="product-price">₹ <%= product.salePrice %></p>
+                                            <% if (maxOffer > 0) { %>
+                                                <span class="discount-info">(<%= maxOffer %>% OFF)</span>
+                                            <% } %>
                                                     </span>
 
                             <div class="product-actions" onclick="event.stopPropagation();">
@@ -379,8 +407,6 @@
     </div>
 </section>
 
-
-
 <script>
 window.addEventListener('load', () => {
     const loadingScreen = document.getElementById('loading-screen');
@@ -432,7 +458,6 @@ async function addToCart(productId) {
         });
     }
 }
-
 
 async function addToWishlist(productId) {
     try {
