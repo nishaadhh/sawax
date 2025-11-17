@@ -326,7 +326,7 @@
     <% if (typeof error !== 'undefined' && error) { %>
         <div class="error-message"><%- error %></div>
     <% } %>
-    <form action="" method="get" class="search-form text-center mb-4">
+    <form action="" method="get" class="search-form text-center mb-4" onsubmit="event.preventDefault(); searchNow();" >
         <div class="input-group">
             <input type="text" class="form-control search-input" placeholder="Search products or brands" name="search">
             <button class="btn search-button" type="submit">Search</button>
@@ -448,6 +448,20 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+// Super simple live search - NO controller change needed
+function searchNow() {
+    const query = document.querySelector('.search-input').value.trim();
+    window.location.href = `/admin/products?search=${encodeURIComponent(query)}`;
+}
+
+// Live search while typing (600ms delay)
+let timer;
+document.querySelector('.search-input').addEventListener('input', function() {
+    clearTimeout(timer);
+    timer = setTimeout(searchNow, 600);
+});
+</script>
 <script>
 async function addOffer(productId) {
     const { value: percentage } = await Swal.fire({
