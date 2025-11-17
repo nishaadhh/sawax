@@ -19,7 +19,6 @@
       font-family: 'Inter', sans-serif;
       background: linear-gradient(145deg, #0f172a, #1e293b);
       color: #e2e8f0;
-      /* animation: fadeIn 1.2s ease-in-out; */
       margin: 0;
       overflow-x: hidden;
     }
@@ -462,7 +461,7 @@
         <h4 class="card-title mb-0">Search Categories</h4>
       </div>
       <div class="card-body">
-        <form action="/admin/category/" method="get" class="mb-0">
+        <form onsubmit="event.preventDefault(); searchCategories();" class="mb-0">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Search categories" name="search"/>
             <input type="number" class="form-control" placeholder="Min offer %" name="minOffer" min="0" max="99"/>
@@ -586,6 +585,36 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+
+function searchCategories() {
+    const search = document.querySelector('input[name="search"]').value.trim();
+    const minOffer = document.querySelector('input[name="minOffer"]').value || '';
+    const maxOffer = document.querySelector('input[name="maxOffer"]').value || '';
+    
+    let url = '/admin/category?';
+    if (search) url += `search=${encodeURIComponent(search)}&`;
+    if (minOffer) url += `minOffer=${minOffer}&`;
+    if (maxOffer) url += `maxOffer=${maxOffer}&`;
+    
+    
+    url = url.replace(/&$/, '');
+    
+    window.location.href = url || '/admin/category';
+}
+
+
+let timer;
+document.querySelectorAll('input[name="search"], input[name="minOffer"], input[name="maxOffer"]').forEach(input => {
+    input.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(searchCategories, 600);
+    });
+});
+</script>
+
+
 
   <script>
     // Add Category Form Submission
