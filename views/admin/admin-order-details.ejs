@@ -261,29 +261,64 @@
                     </div>
 
                     <!-- Order Actions -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="mb-0">Order Actions</h5>
-                        </div>
-                        <div class="card-body">
-                            <% if (!['cancelled', 'returned', 'return_requested', 'returning'].includes(order.status)) { %>
-                                <div class="mb-4">
-                                    <h6>Order Management</h6>
-                                    <button onclick="updateStatus('<%= order._id %>')" 
-                                            class="btn btn-primary me-2" id="updateStatusBtn">
-                                        <i class="fas fa-edit"></i> Update Status
-                                    </button>
+                    <!-- <div class="card mb-4"> -->
+                        <!-- <div class="card-header"> -->
+                            <!-- <h5 class="mb-0">Order Actions</h5> -->
+                        <!-- </div> -->
+                        <!-- <div class="card-body"> -->
+                            <!-- <% if (!['cancelled', 'returned', 'return_requested', 'returning'].includes(order.status)) { %> -->
+                                <!-- <div class="mb-4"> -->
+                                    <!-- <h6>Order Management</h6> -->
+                                    <!-- <button onclick="updateStatus('<%= order._id %>')"  -->
+                                            <!-- class="btn btn-primary me-2" id="updateStatusBtn"> -->
+                                        <!-- <i class="fas fa-edit"></i> Update Status -->
+                                    <!-- </button> -->
                                     <!-- <button onclick="cancelOrder('<%= order._id %>')" 
                                             class="btn btn-danger" id="cancelOrderBtn">
                                         <i class="fas fa-ban"></i> Cancel Order
                                     </button> -->
-                                </div>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
+                                <!-- </div> -->
+                            <!-- <% } %> -->
+                        <!-- </div> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+            <!-- </div> -->
+        <!-- </div> -->
+
+<!-- Order Actions -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Order Actions</h5>
+    </div>
+    <div class="card-body">
+        <!-- Show Update Status button only for pending → confirmed → shipped (NOT delivered or final states) -->
+        <% 
+            const allowedForUpdate = ['pending', 'confirmed', 'shipped'];
+            if (allowedForUpdate.includes(order.status)) { 
+        %>
+            <div class="mb-4">
+                <h6>Order Management</h6>
+                <button onclick="updateStatus('<%= order._id %>')" 
+                        class="btn btn-primary me-2" id="updateStatusBtn">
+                    <i class="fas fa-edit"></i> Update Status
+                </button>
             </div>
-        </div>
+        <% } else { %>
+            <!-- Optional: Show message when no actions available -->
+            <p class="text-muted mb-0">
+                <% if (order.status === 'delivered') { %>
+                    <i class="fas fa-check-circle text-success"></i> Order has been delivered. No further status updates required.
+                <% } else if (order.status === 'returned') { %>
+                    <i class="fas fa-undo text-secondary"></i> Order has been returned and refunded.
+                <% } else if (order.status === 'cancelled') { %>
+                    <i class="fas fa-ban text-danger"></i> Order was cancelled.
+                <% } %>
+            </p>
+        <% } %>
+    </div>
+</div>
+
+
 
         <div class="col-xl-4">
             <!-- Customer Details -->
