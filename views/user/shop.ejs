@@ -403,6 +403,33 @@
   animation: none;
 }
 
+.offer-badge {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* animation: pulse 2s infinite; */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.discount-info {
+    font-size: 12px;
+    color: #e74c3c;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.product-image {
+    position: relative;
+}
 
 </style>
 
@@ -512,12 +539,39 @@
                     <% if (products.length > 0) { %>
                         <% products.forEach(product => { %>
     <div class="product-card">
-        <div class="product-image">
-            <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
-            <% if (product.quantity === 0) { %>
-                <div class="out-of-stock-badge">Out of Stock</div>
+    <div class="product-image">
+        <img src="/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+            <%
+                const categoryOffer = product.category ? product.category.categoryOffer : 0;
+                const productOffer = product.productOffer || 0;
+                const maxOffer = Math.max(categoryOffer, productOffer);
+
+                const isPriceDrop = product.regularPrice > product.salePrice;
+                let priceDropPercentage = 0;
+
+                if (isPriceDrop) {
+                priceDropPercentage = Math.round(
+                ((product.regularPrice - product.salePrice) / product.regularPrice) * 100
+                 );
+                }
+            %>
+
+            <!-- Offer / Discount  -->
+            <% if (maxOffer > 0) { %>
+                 <span class="offer-badge"><%= maxOffer %>% OFF</span>
+
+            <% } else if (isPriceDrop) { %>
+                <span class="offer-badge"><%= priceDropPercentage %>% OFF</span>
             <% } %>
+
+            <!-- Out of Stock  -->
+            <% if (product.quantity === 0) { %>
+              <div class="out-of-stock-badge">Out of Stock</div>
+            <% } %>
+
         </div>
+
+
         <div class="product-details">
             <h3 class="product-name"><%= product.productName %></h3>
             <p class="product-brand">Brand: <%= product.brand %></p>
@@ -670,45 +724,83 @@ function performSearch(resetPage = true) {
 function updateProductGrid(data) {
     const productGrid = document.getElementById('product-grid');
     productGrid.innerHTML = '';
-    
-   if (data.products && data.products.length > 0) {
-    data.products.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card';
 
-        // conditional price display
-        const priceHTML = product.regularPrice !== product.salePrice
-            ? `<span style="display: flex; gap: 10px; align-items: center;">
-                 <del><p class="product-price">₹ ${product.regularPrice}</p></del>
-                 <p class="product-price">₹ ${product.salePrice}</p>
-               </span>`
-            : `<span style="display: flex; gap: 10px; align-items: center;">
-                 <p class="product-price">₹ ${product.salePrice}</p>
-               </span>`;
+    if (data.products && data.products.length > 0) {
+        data.products.forEach(product => {
 
-        productCard.innerHTML = `
-            <div class="product-image">
-                <img src="/${product.productImage[0]}" alt="${product.productName}">
-            </div>
-            <div class="product-details">
-                <h3 class="product-name">${product.productName}</h3>
-                <p class="product-brand">Brand: ${product.brand}</p>
-                ${priceHTML}
-                <p class="product-color">Color: ${product.color}</p>
-                <p class="product-description">${product.description.slice(0, 100)}...</p>
-                <a href="/product/${product._id}" class="view-button">View Product</a>
-            </div>
-        `;
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
 
-        productGrid.appendChild(productCard);
-    });
-}
- else {
+            // Offer logic
+            const categoryOffer = product.category ? product.category.categoryOffer : 0;
+            const productOffer = product.productOffer || 0;
+            const maxOffer = Math.max(categoryOffer, productOffer);
+
+            const isPriceDrop = product.regularPrice > product.salePrice;
+            let priceDropPercentage = 0;
+            if (isPriceDrop) {
+                priceDropPercentage = Math.round(
+                  ((product.regularPrice - product.salePrice) / product.regularPrice) * 100
+                );
+            }
+
+            const offerBadgeHTML =
+                maxOffer > 0
+                    ? `<span class="offer-badge">${maxOffer}% OFF</span>`
+                    : isPriceDrop
+                        ? `<span class="offer-badge">${priceDropPercentage}% OFF</span>`
+                        : '';
+
+            // Price display
+            const priceHTML =
+                product.regularPrice !== product.salePrice
+                    ? `<span style="display: flex; gap: 10px; align-items: center;">
+                         <del><p class="product-price">₹ ${product.regularPrice}</p></del>
+                         <p class="product-price">₹ ${product.salePrice}</p>
+                       </span>`
+                    : `<span><p class="product-price">₹ ${product.salePrice}</p></span>`;
+
+            // Out of stock badge
+            const stockBadge =
+                product.quantity === 0
+                    ? `<div class="out-of-stock-badge">Out of Stock</div>`
+                    : '';
+
+            // Wishlist state
+            const wishlistIcon = product.inWishlist ? "wishlist-active" : "";
+
+            productCard.innerHTML = `
+                <div class="product-image">
+                    <img src="/${product.productImage[0]}" alt="${product.productName}">
+                    ${offerBadgeHTML}
+                    ${stockBadge}
+                    <a class="wishlist-btn" onclick="addToWishlist('${product._id}', this)">
+                        <i class="fa-solid fa-heart ${wishlistIcon}"></i>
+                    </a>
+                </div>
+
+                <div class="product-details">
+                    <h3 class="product-name">${product.productName}</h3>
+                    <p class="product-brand">Brand: ${product.brand}</p>
+                    ${priceHTML}
+                    <p class="product-color">Color: ${product.color}</p>
+                    <p class="product-description">${product.description.slice(0, 100)}...</p>
+
+                    ${
+                        product.quantity > 0
+                            ? `<a href="/product/${product._id}" class="view-button">View Product</a>`
+                            : `<a class="view-button disabled-btn" style="pointer-events:none;background:#ccc;">Out of Stock</a>`
+                    }
+                </div>
+            `;
+
+            productGrid.appendChild(productCard);
+        });
+    } else {
         productGrid.innerHTML = `
-            <p style="text-align: center; color: var(--light-text); font-size: 18px;">
+            <p style="text-align:center;color:var(--light-text);font-size:18px;">
                 No products found. Try adjusting your filters.
-            </p>
-        `;
+            </p>`;
     }
 }
 
