@@ -543,6 +543,51 @@
   <div class="product-info">
     <h1 class="product-title"><%= product.productName %></h1>
     <div class="brand">Brand: <%= product.brand %></div>
+    <h1 class="product-title"><%= product.productName %></h1>
+<div class="brand">Brand: <%= product.brand %></div>
+
+<% 
+  const categoryOffer = product.category ? product.category.categoryOffer : 0;
+  const productOffer = product.productOffer || 0;
+  const maxOffer = Math.max(categoryOffer, productOffer);
+
+  const isPriceDrop = product.regularPrice > product.salePrice;
+  let priceDropPercentage = 0;
+
+  if (isPriceDrop) {
+    priceDropPercentage = Math.round(
+      ((product.regularPrice - product.salePrice) / product.regularPrice) * 100
+    );
+  }
+%>
+
+<!-- Show Offer Badge -->
+<div style="display: flex; width: 100%; margin: 8px 0;">
+  <% if (maxOffer > 0) { %>
+    <span style="
+        background:#e01600;
+        color:white;
+        padding:6px 12px;
+        border-radius:10px;
+        font-size:14px;
+        font-weight:600;
+        white-space: nowrap;">
+      <%= maxOffer %>% OFF
+    </span>
+  <% } else if (isPriceDrop) { %>
+    <span style="
+        background:#e01600;
+        color:white;
+        padding:6px 12px;
+        border-radius:6px;
+        font-size:14px;
+        font-weight:600;
+        white-space: nowrap;">
+      <%= priceDropPercentage %>% OFF
+    </span>
+  <% } %>
+</div>
+
 
     <span style="display: flex; gap: 10px; align-items: center;">
   <% if (product.regularPrice !== product.salePrice) { %>
