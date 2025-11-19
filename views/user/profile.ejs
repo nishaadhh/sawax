@@ -255,13 +255,17 @@
         }
 
         
-        .profile-header {
-            background: var(--gradient-primary);
-            padding: 48px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+.profile-header {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    padding: 48px 40px;
+    text-align: center;
+
+    /* Add your background image */
+    background: url('/images/profile-bg.jpg') center/cover no-repeat;
+}
 
         .profile-header::before {
             content: '';
@@ -324,7 +328,7 @@
             position: absolute;
             bottom: 4px;
             right: 2px;
-            background:transparent;
+            background:#f8f8f8;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -334,23 +338,22 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 3;
-            /* border: 2px solid rgb(0, 0, 0); */
-            box-shadow: var(--shadow-md);
         }
 
         .image-upload-overlay:hover {
-            transform: scale(1.1);
+                    transform: scale(1.1);
             box-shadow: var(--shadow-lg);
         }
 
         .image-upload-overlay i {
-            color: white;
+            color:#ffc400;
             font-size: 16px;
+            padding:12px
         }
 
         .image-remove-overlay {
             position: absolute;
-            top: 0px;
+            top: -7px;
             right: 0px;
             background: transparent;
             border-radius: 50%;
@@ -368,7 +371,7 @@
             box-shadow: var(--shadow-md);
         }
 
-        .profile-image-container:hover .image-remove-overlay {
+        .profile-image-container .image-remove-overlay {
             opacity: 1;
             transform: scale(1);
         }
@@ -379,12 +382,12 @@
         }
 
         .image-remove-overlay i {
-            color: white;
+            color: #ffc400;
             font-size: 15px;
         }
 
         .user-info h3 {
-            color: white;
+            color: #ffc400;
             font-size: 32px;
             font-weight: 800;
             margin-bottom: 8px;
@@ -394,7 +397,7 @@
         }
 
         .user-email {
-            color: rgba(255, 255, 255, 0.9);
+            color:#ffc400;
             font-size: 16px;
             font-weight: 400;
             position: relative;
@@ -1237,7 +1240,7 @@
                             <input type="file" id="image-upload" accept="image/*" style="display: none;">
                         </div>
                         <div class="user-info">
-                            <h3><%= user.name %></h3>
+                            <span style="font-family: Georgia, 'Times New Roman', Times, serif; font-size: 50px;"><%= user.name %></span>
                             <p class="user-email"><%= user.email %></p>
                         </div>
                         <div class="upload-progress" id="upload-progress">
