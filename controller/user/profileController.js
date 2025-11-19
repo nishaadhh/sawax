@@ -495,9 +495,16 @@ const verifyCurrentEmailOtpPage = async (req, res) => {
     if (!req.session.pendingEmailVerification) {
       return res.redirect("/change-email?message=Session+expired");
     }
+        // Get logged-in user id
+    const userId = req.session.user;
+
+    // Fetch user data
+    const userData = await User.findById(userId);
+
     res.render("otp-verification-email", { 
       message: req.query.message || null,
-      currentEmail: req.session.pendingEmailVerification.currentEmail
+      currentEmail: req.session.pendingEmailVerification.currentEmail,
+      user: userData || null
     });
   } catch (err) {
     console.error("verifyCurrentEmailOtpPage error:", err);
@@ -593,10 +600,13 @@ const newEmailPage = async (req, res) => {
     }
 
     const { currentEmail } = req.session.pendingEmailVerification;
-    
+    const userId = req.session.user;
+    const userData = await User.findById(userId);
+
     res.render("new-email", { 
       message: null,
-      currentEmail: currentEmail
+      currentEmail: currentEmail,
+      user: userData || null
     });
   } catch (error) {
     console.error("Error rendering new email page:", error);
