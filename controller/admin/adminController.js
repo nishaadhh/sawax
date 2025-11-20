@@ -3,7 +3,7 @@ const Product = require('../../models/productSchema');
 const Order = require('../../models/orderSchema');
 const path = require("path");
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 const pageError = async (req, res) => {
