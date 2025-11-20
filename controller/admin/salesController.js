@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 const Order = require("../../models/orderSchema");
 const moment = require('moment');
 const ExcelJS = require('exceljs');
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
 const path = require('path');
+const html_to_pdf = require("html-pdf-node");
+
 
 const getSalesReport = async (req, res) => {
   try {
@@ -372,83 +374,86 @@ const downloadSalesReportExcel = async (req, res) => {
 
 const downloadSalesReportPDF = async (req, res) => {
   try {
-    const { startDate, endDate, period = 'all' } = req.query;
-    
+    const { startDate, endDate, period = "all" } = req.query;
+
     let dateFilter = {};
-    let reportTitle = 'Sales Report';
+    let reportTitle = "Sales Report";
     let fromDate, toDate;
 
     
-    if (period === 'today') {
-      fromDate = moment().startOf('day');
-      toDate = moment().endOf('day');
-      reportTitle = 'Daily Sales Report';
-    } else if (period === 'week') {
-      fromDate = moment().startOf('week');
-      toDate = moment().endOf('week');
-      reportTitle = 'Weekly Sales Report';
-    } else if (period === 'month') {
-      fromDate = moment().startOf('month');
-      toDate = moment().endOf('month');
-      reportTitle = 'Monthly Sales Report';
-    } else if (period === 'year') {
-      fromDate = moment().startOf('year');
-      toDate = moment().endOf('year');
-      reportTitle = 'Yearly Sales Report';
-    } else if (period === 'custom' && startDate && endDate) {
-      fromDate = moment(startDate).startOf('day');
-      toDate = moment(endDate).endOf('day');
-      reportTitle = `Custom Sales Report (${fromDate.format('DD/MM/YYYY')} - ${toDate.format('DD/MM/YYYY')})`;
+    if (period === "today") {
+      fromDate = moment().startOf("day");
+      toDate = moment().endOf("day");
+      reportTitle = "Daily Sales Report";
+    } else if (period === "week") {
+      fromDate = moment().startOf("week");
+      toDate = moment().endOf("week");
+      reportTitle = "Weekly Sales Report";
+    } else if (period === "month") {
+      fromDate = moment().startOf("month");
+      toDate = moment().endOf("month");
+      reportTitle = "Monthly Sales Report";
+    } else if (period === "year") {
+      fromDate = moment().startOf("year");
+      toDate = moment().endOf("year");
+      reportTitle = "Yearly Sales Report";
+    } else if (period === "custom" && startDate && endDate) {
+      fromDate = moment(startDate).startOf("day");
+      toDate = moment(endDate).endOf("day");
+      reportTitle = `Custom Sales Report (${fromDate.format(
+        "DD/MM/YYYY"
+      )} - ${toDate.format("DD/MM/YYYY")})`;
     }
 
     if (fromDate && toDate) {
       dateFilter.createdOn = {
         $gte: fromDate.toDate(),
-        $lte: toDate.toDate()
+        $lte: toDate.toDate(),
       };
     }
 
     const baseQuery = {
-      status: { $in: ['delivered', 'returned'] },
-      paymentStatus: 'completed',
-      ...dateFilter
+      status: { $in: ["delivered", "returned"] },
+      paymentStatus: "completed",
+      ...dateFilter,
     };
 
-    // Get orders and summary for PDF
+  
     const orders = await Order.find(baseQuery)
       .populate({
-        path: 'userId',
-        select: 'name email'
+        path: "userId",
+        select: "name email",
       })
       .populate({
-        path: 'orderedItems.product',
-        select: 'productName brand'
+        path: "orderedItems.product",
+        select: "productName brand",
       })
       .sort({ createdOn: -1 })
       .limit(100);
 
+   
     const summaryPipeline = [
       { $match: baseQuery },
       {
         $group: {
           _id: null,
           totalOrders: { $sum: 1 },
-          totalRevenue: { $sum: '$finalAmount' },
-          totalDiscount: { $sum: '$discount' },
-          totalDeliveryCharges: { $sum: '$deliveryCharge' },
-          totalGrossAmount: { $sum: '$totalPrice' },
-          averageOrderValue: { $avg: '$finalAmount' },
+          totalRevenue: { $sum: "$finalAmount" },
+          totalDiscount: { $sum: "$discount" },
+          totalDeliveryCharges: { $sum: "$deliveryCharge" },
+          totalGrossAmount: { $sum: "$totalPrice" },
+          averageOrderValue: { $avg: "$finalAmount" },
           totalRefunds: {
-            $sum: { $cond: [{ $eq: ['$status', 'returned'] }, '$finalAmount', 0] }
-          }
-        }
-      }
+            $sum: { $cond: [{ $eq: ["$status", "returned"] }, "$finalAmount", 0] },
+          },
+        },
+      },
     ];
 
     const summaryResult = await Order.aggregate(summaryPipeline);
     const summary = summaryResult[0] || {};
 
-    // PENDING : puppter is for Generating HTML for PDF
+    
     const html = `
       <!DOCTYPE html>
       <html>
@@ -479,37 +484,37 @@ const downloadSalesReportPDF = async (req, res) => {
       <body>
         <div class="header">
           <h1>${reportTitle}</h1>
-          <p>Generated on ${moment().format('DD/MM/YYYY HH:mm:ss')}</p>
-          ${fromDate && toDate ? `<p>Period: ${fromDate.format('DD/MM/YYYY')} - ${toDate.format('DD/MM/YYYY')}</p>` : ''}
+          <p>Generated on ${moment().format("DD/MM/YYYY HH:mm:ss")}</p>
+          ${
+            fromDate && toDate
+              ? `<p>Period: ${fromDate.format("DD/MM/YYYY")} - ${toDate.format(
+                  "DD/MM/YYYY"
+                )}</p>`
+              : ""
+          }
         </div>
 
         <div class="summary">
           <h2>Summary</h2>
           <div class="summary-grid">
-            <div class="summary-item">
-              <h3>Total Orders</h3>
-              <p>${summary.totalOrders || 0}</p>
-            </div>
-            <div class="summary-item">
-              <h3>Total Revenue</h3>
-              <p>₹${(summary.totalRevenue || 0).toFixed(2)}</p>
-            </div>
-            <div class="summary-item">
-              <h3>Total Discount</h3>
-              <p>₹${(summary.totalDiscount || 0).toFixed(2)}</p>
-            </div>
-            <div class="summary-item">
-              <h3>Average Order Value</h3>
-              <p>₹${(summary.averageOrderValue || 0).toFixed(2)}</p>
-            </div>
-            <div class="summary-item">
-              <h3>Total Refunds</h3>
-              <p>₹${(summary.totalRefunds || 0).toFixed(2)}</p>
-            </div>
-            <div class="summary-item">
-              <h3>Net Revenue</h3>
-              <p>₹${((summary.totalRevenue || 0) - (summary.totalRefunds || 0)).toFixed(2)}</p>
-            </div>
+            <div class="summary-item"><h3>Total Orders</h3><p>${
+              summary.totalOrders || 0
+            }</p></div>
+            <div class="summary-item"><h3>Total Revenue</h3><p>₹${(
+              summary.totalRevenue || 0
+            ).toFixed(2)}</p></div>
+            <div class="summary-item"><h3>Total Discount</h3><p>₹${(
+              summary.totalDiscount || 0
+            ).toFixed(2)}</p></div>
+            <div class="summary-item"><h3>Average Order Value</h3><p>₹${(
+              summary.averageOrderValue || 0
+            ).toFixed(2)}</p></div>
+            <div class="summary-item"><h3>Total Refunds</h3><p>₹${(
+              summary.totalRefunds || 0
+            ).toFixed(2)}</p></div>
+            <div class="summary-item"><h3>Net Revenue</h3><p>₹${(
+              (summary.totalRevenue || 0) - (summary.totalRefunds || 0)
+            ).toFixed(2)}</p></div>
           </div>
         </div>
 
@@ -529,61 +534,64 @@ const downloadSalesReportPDF = async (req, res) => {
             </tr>
           </thead>
           <tbody>
-            ${orders.map(order => `
+            ${orders
+              .map(
+                (order) => `
               <tr>
                 <td>${order.orderId}</td>
-                <td>${moment(order.createdOn).format('DD/MM/YYYY')}</td>
-                <td>${order.userId?.name || 'N/A'}</td>
-                <td>${order.orderedItems.map(item => item.productName).join(', ')}</td>
+                <td>${moment(order.createdOn).format("DD/MM/YYYY")}</td>
+                <td>${order.userId?.name || "N/A"}</td>
+                <td>${order.orderedItems
+                  .map((i) => i.productName)
+                  .join(", ")}</td>
                 <td>${order.paymentMethod.toUpperCase()}</td>
-                <td><span class="status ${order.status}">${order.status.toUpperCase()}</span></td>
+                <td><span class="status ${
+                  order.status
+                }">${order.status.toUpperCase()}</span></td>
                 <td class="amount">₹${order.totalPrice.toFixed(2)}</td>
                 <td class="amount">₹${order.discount.toFixed(2)}</td>
                 <td class="amount">₹${order.finalAmount.toFixed(2)}</td>
               </tr>
-            `).join('')}
+            `
+              )
+              .join("")}
           </tbody>
         </table>
 
         <div class="footer">
-          <p>This report contains ${orders.length} orders${orders.length >= 100 ? ' (limited to 100 for PDF)' : ''}</p>
-          <p>Generated by Admin Panel - Sales Report System</p>
+          <p>This report contains ${orders.length} orders${
+      orders.length >= 100 ? " (limited to 100 for PDF)" : ""
+    }</p>
         </div>
       </body>
       </html>
     `;
 
-    // Launch puppeteer and generate PDF
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    
-    const pdf = await page.pdf({
-      format: 'A4',
+   
+    const file = { content: html };
+
+    const pdfBuffer = await html_to_pdf.generatePdf(file, {
+      format: "A4",
+      margin: { top: 20, right: 20, bottom: 20, left: 20 },
       printBackground: true,
-      margin: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px'
-      }
     });
 
-    await browser.close();
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${reportTitle.replace(
+        /\s+/g,
+        "_"
+      )}_${moment().format("DD_MM_YYYY")}.pdf"`
+    );
 
-    // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${reportTitle.replace(/\s+/g, '_')}_${moment().format('DD_MM_YYYY')}.pdf"`);
-
-    res.send(pdf);
-
+    res.send(pdfBuffer);
   } catch (error) {
-    console.error('Error generating PDF report:', error);
-    res.status(500).json({ success: false, message: 'Failed to generate PDF report' });
+    console.error("Error generating PDF:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate PDF report",
+    });
   }
 };
 
