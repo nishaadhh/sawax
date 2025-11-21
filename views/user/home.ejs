@@ -255,6 +255,54 @@
 .product-image {
     position: relative;
 }
+
+.collection-card {
+    position: relative;
+    width: 100%;
+    height: 380px; /* set same height for men/women */
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+/* Video wrapper */
+.collection-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* FIX: Perfect video fit */
+.collection-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* makes it perfect */
+    object-position: center;
+    display: block;
+}
+
+/* Overlay */
+.collection-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 2;
+}
+
+/* Text content */
+.collection-content {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    z-index: 3;
+    color: white;
+}
+
+
+
+
 </style>
 
 <%- include("../../views/partials/user/header") %>
@@ -356,24 +404,39 @@
             </div>
         </div>
         <div class="collection-grid">
+
             <div class="collection-card">
-                <div class="collection-image"><img src="/img/newcollectionforMen.jpg" alt="Men's Collection"></div>
-                <div class="collection-overlay"></div>
-                <div class="collection-content">
-                    <h3 class="collection-title">Men's Collection</h3>
-                    <p class="collection-subtitle">Bold designs for the modern gentleman</p>
-                    <a href="/filter?category=681cbcbf63d543710ba5b852" class="btn-explore">Explore</a>
-                </div>
-            </div>
-            <div class="collection-card">
-                <div class="collection-image"><img src="/img/womenCollecionBanner.jpeg" alt="Women's Collection"></div>
-                <div class="collection-overlay"></div>
-                <div class="collection-content">
-                    <h3 class="collection-title">Women's Collection</h3>
-                    <p class="collection-subtitle">Elegant timepieces for every moment</p>
-                    <a href="/filter?category=681cbcd163d543710ba5b86a" class="btn-explore" s">Explore</a>
-                </div>
-            </div>
+    <div class="collection-video">
+        <video autoplay muted loop playsinline>
+            <source src="/videos/men-video.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="collection-content">
+        <h3 class="collection-title">Men's Collection</h3>
+        <p class="collection-subtitle">Bold designs for the modern gentleman</p>
+        <a href="/filter?category=MEN_ID" class="btn-explore">Explore</a>
+    </div>
+</div>
+
+
+
+
+
+<div class="collection-card">
+    <div class="collection-video">
+        <video autoplay muted loop playsinline>
+            <source src="/videos/women-video.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="collection-content">
+        <h3 class="collection-title">Women's Collection</h3>
+        <p class="collection-subtitle">Elegant timepieces for every moment</p>
+        <a href="/filter?category=681cbcd163d543710ba5b86a" class="btn-explore">Explore</a>
+    </div>
+</div>
+
         </div>
     </div>
 </section>
