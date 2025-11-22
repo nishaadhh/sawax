@@ -179,7 +179,6 @@ const orderSchema = new mongoose.Schema({
   // Order grouping 
   orderGroupId: {
     type: String,
-    index: true,
   },
   isGrouped: {
     type: Boolean,
@@ -191,7 +190,6 @@ const orderSchema = new mongoose.Schema({
 
 
 orderSchema.index({ userId: 1, createdOn: -1 });
-orderSchema.index({ orderId: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ paymentMethod: 1 });
 orderSchema.index({ paymentStatus: 1 });

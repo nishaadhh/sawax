@@ -15,7 +15,7 @@ const referralSchema = new Schema({
     referralCode: {
         type: String,
         required: true,
-        index: true
+       
     },
     rewardAmount: {
         type: Number,
