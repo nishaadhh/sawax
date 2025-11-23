@@ -10,7 +10,7 @@
         :root {
             --primary: #1a1a1a;
             --secondary: #f8f8f8;
-            --accent: #d4af37;
+            --accent: #ffc400;
             --text: #333;
             --light-text: #777;
             --border: #e0e0e0;
@@ -89,7 +89,7 @@
 
         .otp-icon {
             font-size: 60px;
-            color: var(--accent);
+            color: #ffc400;
             margin-bottom: 20px;
         }
 
@@ -143,8 +143,8 @@
         .btn {
             display: inline-block;
             padding: 12px 30px;
-            background-color: var(--accent);
-            color: var(--primary);
+            background-color: #ffc400;
+            color: white;
             font-weight: 600;
             border-radius: 8px;
             transition: all 0.3s;
@@ -500,7 +500,7 @@
                         icon: 'success',
                         title: 'OTP Resent',
                         text: 'A new verification code has been sent to your email.',
-                        confirmButtonColor: '#d4af37',
+                        confirmButtonColor: '#ffc400',
                         timer: 3000,
                         timerProgressBar: true
                     });
@@ -525,7 +525,7 @@
                         icon: 'error',
                         title: 'Error',
                         text: data.message || 'Failed to resend OTP. Please try again.',
-                        confirmButtonColor: '#d4af37'
+                        confirmButtonColor: '#ffc400'
                     });
                 }
             } catch (error) {
