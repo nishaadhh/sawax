@@ -428,7 +428,7 @@
                 <a href="#" class="mobile-sign-in-link" onclick="toggleMobileDropdown(event)" style="color: #fabf00;"> <i class="fa-solid fa-circle-user"></i><%= user ? user.name : "" %> </a>
                 <div class="mobile-dropdown-content">
                     <a href="/profile"> Profile</a>
-                    <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i>  Logout</a>
+                    <a href="#" style="color: red;" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i>  Logout</a>
                 </div>
             </li>
         </ul>
