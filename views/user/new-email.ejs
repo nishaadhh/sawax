@@ -188,13 +188,14 @@
             display: grid;
             grid-template-columns: 1fr 3fr;
             gap: 30px;
+            background-color: transparent;
         }
 
         .profile-sidebar {
-            background-color: white;
+            background-color: #f8f8f8;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            
         }
 
         .profile-sidebar h3 {
@@ -265,8 +266,8 @@
         .btn {
             display: inline-block;
             padding: 12px 30px;
-            background-color: var(--accent);
-            color: var(--primary);
+            background-color: #ffc400 ;
+            color: white;
             font-weight: 600;
             border-radius: 4px;
             transition: all 0.3s;
@@ -466,13 +467,13 @@
             </div>
             <div class="new-email-content">
                 <div class="profile-sidebar">
-                    <h3>Account Menu</h3>
+                    
                     <ul>
-                        <li><a href="/profile">Edit Profile</a></li>
-                        <li><a href="/orders">Order History</a></li>
-                        <li><a href="/wishlist">Wishlist</a></li>
-                        <li><a href="/addAddress">Add Address</a></li>
-                        <li><a href="/logout">Logout</a></li>
+                        <li><a href="#" style="color: transparent;">Edit Profile</a></li>
+                        <li><a href="#" style="color: transparent;">Order History</a></li>
+                        <li><a href="#" style="color: transparent;">Wishlist</a></li>
+                        <li><a href="#" style="color: transparent;">Add Address</a></li>
+                        <li><a href="#" style="color: transparent;">Logout</a></li>
                     </ul>
                 </div>
                 <div class="new-email-main">
@@ -487,7 +488,7 @@
                                 <label for="confirm-email">Confirm New Email Address</label>
                                 <input type="email" id="confirm-email" name="confirmEmail" placeholder="Confirm new email address" required>
                             </div>
-                            <button type="submit" class="btn">Update Email</button>
+                            <button type="submit" class="btn" >Update Email</button>
                         </form>
                     </div>
                 </div>
