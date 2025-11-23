@@ -110,7 +110,7 @@
 }
 
     .shop-sidebar {
-        background: #fff;
+        background: #ffffff00;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -123,7 +123,7 @@
     .sidebar-title {
         font-size: 18px;
         font-weight: 600;
-        color: var(--primary);
+        color: #2c2c2c;
         margin-bottom: 10px;
     }
 
@@ -167,7 +167,7 @@
     }
 
     .category-link {
-        color: var(--text);
+        color: #333;
         font-size: 14px;
         text-decoration: none;
         display: flex;
@@ -615,6 +615,71 @@
 </section>
 
 <script>
+    // Toggle mobile sidebar for search filter
+document.addEventListener('DOMContentLoaded', function() {
+    // Create filter toggle button if it doesn't exist
+    const shopActions = document.querySelector('.shop-actions');
+    if (!document.querySelector('.filter-toggle')) {
+        const filterToggle = document.createElement('button');
+        filterToggle.className = 'filter-toggle';
+        filterToggle.innerHTML = '<i class="fa-solid fa-filter"></i> Filters';
+        filterToggle.onclick = toggleSidebar;
+        shopActions.insertBefore(filterToggle, shopActions.firstChild);
+    }
+
+    // Create overlay if it doesn't exist
+    if (!document.querySelector('.sidebar-overlay')) {
+        const overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        overlay.onclick = closeSidebar;
+        document.body.appendChild(overlay);
+    }
+
+    // close button if it doesn't exist
+    const sidebar = document.querySelector('.shop-sidebar');
+    if (!sidebar.querySelector('.sidebar-close')) {
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'sidebar-close';
+        closeBtn.innerHTML = '×';
+        closeBtn.onclick = closeSidebar;
+        sidebar.insertBefore(closeBtn, sidebar.firstChild);
+    }
+});
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.shop-sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Prevent body scroll when sidebar is open
+    if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.querySelector('.shop-sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close sidebar when clicking on a filter choosing
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.category-link') || e.target.closest('.apply-filter')) {
+        if (window.innerWidth < 992) {
+            setTimeout(closeSidebar, 300); // Small delay to see the filter applied
+        }
+    }
+});
+</script>
+<script>
 productCard.innerHTML = `
     <div class="product-image">
         <img src="/${product.productImage[0]}" alt="${product.productName}">
@@ -635,7 +700,7 @@ productCard.innerHTML = `
 
 </script>
 <script>
-// Global state to track current filters
+// all current filters 
 let currentFilters = {
     query: '<%= searchQuery || "" %>',
     category: '<%= selectedCategory || "" %>',
@@ -682,7 +747,6 @@ function performSearch(resetPage = true) {
     
     const queryParams = new URLSearchParams();
     
-    // Only add non-empty parameters
     Object.keys(currentFilters).forEach(key => {
         if (currentFilters[key] && currentFilters[key] !== '') {
             queryParams.append(key, currentFilters[key]);
@@ -952,7 +1016,7 @@ function resetAllFilters() {
         page: 1
     };
     
-    // Reset form inputs
+    // Reset button
     document.getElementById('search-input').value = '';
     document.getElementById('minPriceInput').value = '';
     document.getElementById('maxPriceInput').value = '';
@@ -983,13 +1047,13 @@ document.addEventListener('DOMContentLoaded', function() {
         performSearch();
     });
 
-    // Sort select change
+    // Sort select change 
     document.getElementById('sort-select').addEventListener('change', (e) => {
         currentFilters.sort = e.target.value;
         performSearch();
     });
 
-    // Alpha filter change
+    // Alphabet filter change
     document.querySelectorAll('.alpha-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
@@ -999,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Price input changes
+    // Price sort changes
     document.getElementById('minPriceInput').addEventListener('change', () => {
         currentFilters.minPrice = document.getElementById('minPriceInput').value;
         performSearch();
@@ -1010,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function() {
         performSearch();
     });
 
-    // Initialize pagination for current page
+    //  pagination for current page
     const initialData = {
         currentPage: <%= currentPage || 1 %>,
         totalPages: <%= totalPages || 1 %>,
