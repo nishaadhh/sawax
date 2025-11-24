@@ -49,7 +49,7 @@ header {
 }
 
 .logo {
-  font-size: 32px;
+  font-size: clamp(24px, 5vw, 32px);
   font-weight: 700;
   letter-spacing: 3px;
   color: var(--primary);
@@ -108,6 +108,7 @@ nav ul li a:hover {
   display: flex;
   list-style: none;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .breadcrumb ul li {
@@ -137,11 +138,11 @@ nav ul li a:hover {
 
 /* About Section */
 .about-section {
-  padding: 60px 0;
+  padding: clamp(40px, 8vw, 60px) 0;
 }
 
 .section-title {
-  font-size: 28px;
+  font-size: clamp(24px, 4vw, 28px);
   font-weight: 600;
   margin-bottom: 30px;
   text-align: center;
@@ -174,7 +175,7 @@ nav ul li a:hover {
 }
 
 .about-text h2 {
-  font-size: 36px;
+  font-size: clamp(28px, 5vw, 36px);
   font-weight: 600;
   color: var(--primary);
   margin-bottom: 20px;
@@ -184,15 +185,17 @@ nav ul li a:hover {
   line-height: 1.8;
   color: var(--text);
   margin-bottom: 20px;
+  font-size: clamp(14px, 2vw, 16px);
 }
 
 .about-image {
   position: relative;
+  width: 100%;
 }
  
 .about-image img {
   width: 100%;
-  height: 680px;
+  height: clamp(300px, 111vw, 680px);
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
@@ -200,13 +203,13 @@ nav ul li a:hover {
 
 /* Team Section */
 .team-section {
-  padding: 60px 0;
+  padding: clamp(40px, 8vw, 60px) 0;
   background-color: white;
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
 }
 
@@ -216,38 +219,38 @@ nav ul li a:hover {
 
 .team-member img {
   width: 100%;
-  height: 300px;
+  height: clamp(250px, 52vw, 300px);
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 15px;
 }
 
 .team-member h3 {
-  font-size: 20px;
+  font-size: clamp(18px, 3vw, 20px);
   font-weight: 600;
   color: var(--primary);
   margin-bottom: 10px;
 }
 
 .team-member p {
-  font-size: 14px;
+  font-size: clamp(13px, 2vw, 14px);
   color: var(--light-text);
 }
 
 /* Mission & Values */
 .mission-values {
-  padding: 60px 0;
+  padding: clamp(40px, 8vw, 60px) 0;
 }
 
 .values-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
 }
 
 .value-item {
   text-align: center;
-  padding: 20px;
+  padding: 30px 20px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.05);
@@ -259,14 +262,14 @@ nav ul li a:hover {
 }
 
 .value-item h3 {
-  font-size: 18px;
+  font-size: clamp(16px, 3vw, 18px);
   font-weight: 600;
   color: var(--primary);
   margin-bottom: 10px;
 }
 
 .value-item p {
-  font-size: 14px;
+  font-size: clamp(13px, 2vw, 14px);
   line-height: 1.6;
   color: var(--text);
 }
@@ -275,19 +278,19 @@ nav ul li a:hover {
 footer {
   background-color: #111;
   color: white;
-  padding: 60px 0 30px;
+  padding: clamp(40px, 8vw, 60px) 0 30px;
   margin-top: 80px;
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 40px;
   margin-bottom: 40px;
 }
 
 .footer-logo {
-  font-size: 28px;
+  font-size: clamp(24px, 4vw, 28px);
   font-weight: 700;
   letter-spacing: 2px;
   margin-bottom: 20px;
@@ -306,6 +309,7 @@ footer {
 .social-icons {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .social-icon {
@@ -324,7 +328,7 @@ footer {
 }
 
 .footer-links h4 {
-  font-size: 18px;
+  font-size: clamp(16px, 3vw, 18px);
   font-weight: 600;
   margin-bottom: 20px;
   position: relative;
@@ -352,6 +356,7 @@ footer {
 .footer-links ul li a {
   opacity: 0.7;
   transition: opacity 0.3s, color 0.3s;
+  font-size: clamp(13px, 2vw, 14px);
 }
 
 .footer-links ul li a:hover {
@@ -364,77 +369,73 @@ footer {
   padding-top: 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   opacity: 0.7;
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 14px);
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 /* Responsive Design */
 @media (max-width: 992px) {
   nav ul {
-      display: none;
+    display: none;
   }
 
   .mobile-menu {
-      display: block;
+    display: block;
   }
 
   .about-content {
-      grid-template-columns: 1fr;
-      gap: 40px;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 
   .team-grid {
-      grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 
   .values-grid {
-      grid-template-columns: 1fr;
-  }
-
-  .footer-content {
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
-  .about-image img {
-      height: 300px;
+  .container {
+    padding: 0 15px;
   }
 
-  .about-text h2 {
-      font-size: 28px;
-  }
-
-  .team-grid {
-      grid-template-columns: 1fr;
+  .about-content {
+    gap: 30px;
   }
 
   .footer-bottom {
-      flex-direction: column;
-      gap: 10px;
-      text-align: center;
+    flex-direction: column;
+    text-align: center;
   }
 }
 
 @media (max-width: 576px) {
-  .section-title {
-      font-size: 24px;
+  .header-content {
+    padding: 15px 0;
   }
 
-  .about-text h2 {
-      font-size: 24px;
+  .about-section,
+  .team-section,
+  .mission-values {
+    padding: 30px 0;
   }
 
-  .about-text p {
-      font-size: 14px;
+  .about-content {
+    gap: 25px;
+    margin-bottom: 40px;
   }
 
-  .team-member img {
-      height: 250px;
+  .value-item {
+    padding: 25px 15px;
   }
 
-  .footer-content {
-      grid-template-columns: 1fr;
+  footer {
+    margin-top: 60px;
   }
 }
