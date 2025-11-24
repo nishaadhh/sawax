@@ -19,7 +19,7 @@
 body {
     color: var(--text);
     overflow-x: hidden;
-    background-color: var(--secondary);
+    background-color: black;
 }
 
 a {
@@ -371,7 +371,7 @@ nav ul li a:hover {
     align-items: center;
     margin-bottom: 30px;
     padding: 15px;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     gap: 15px;
@@ -436,7 +436,7 @@ nav ul li a:hover {
 .filter-toggle {
     display: none;
     padding: 12px 20px;
-    background-image: linear-gradient(135deg, #1a1a1a, #2c3e50);
+    background-color: black;
     color: #ffffff;
     border: none;
     border-radius: 4px;
@@ -448,7 +448,8 @@ nav ul li a:hover {
 }
 
 .filter-toggle:hover {
-    background-color: #333;
+    background-color: #000000;
+    color: #ffc400;
 }
 
 .filter-toggle i {
@@ -537,37 +538,42 @@ nav ul li a:hover {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: white;
-    width: 36px;
-    height: 36px;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(4px);
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 5;
-    transition: all 0.3s;
-}
-
-.wishlist-btn i {
-    transition: color 0.15s ease, transform 0.12s ease;
-    font-size: 18px;
-}
-
-.wishlist-btn i.wishlist-active {
-    color: red;
-    transform: scale(1.08);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    z-index: 11;
+    transition: all 0.25s ease;
+    opacity: 1 !important;           /* Always visible */
+    transform: none !important;
 }
 
 .wishlist-btn:hover {
+    background: rgba(255, 255, 255, 0);
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.wishlist-btn i {
+    font-size: 19px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.wishlist-btn i.wishlist-active {
+    color: red !important;
     transform: scale(1.1);
 }
 
-.wishlist-btn:hover i {
+.wishlist-btn:hover i:not(.wishlist-active) {
     color: red;
 }
-
 .product-quick-actions {
     position: absolute;
     bottom: 15px;
