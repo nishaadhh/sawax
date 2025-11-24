@@ -307,9 +307,9 @@
                 <!-- Add search functionality if needed -->
             </div>
             <div class="col-nav">
-                <!-- <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> 
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> 
                     <i class="fas fa-bars"></i>
-                </button> -->
+                </button>
                 <ul class="nav">
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> 
@@ -332,39 +332,81 @@
         </header>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            function confirmAdminLogout(event) {
-                event.preventDefault();
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You will be logged out of the admin panel!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, Logout!",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "/admin/logout";
-                    }
-                });
+       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Mobile Menu Toggle + Disable Body Scroll
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('offcanvas_aside');
+    const overlay = document.querySelector('.screen-overlay');
+    const body = document.body;
+
+    mobileMenuBtn?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        const isOpening = !sidebar.classList.contains('active');
+        
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+
+        if (isOpening) {
+            // Disable scrolling
+            body.style.overflow = 'hidden';
+        } else {
+            // Re-enable scrolling
+            body.style.overflow = '';
+        }
+    });
+
+    // Close sidebar when clicking overlay
+    overlay?.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        body.style.overflow = ''; // Re-enable scroll
+    });
+
+    // Optional: Close sidebar on link click (improves UX)
+    document.querySelectorAll('.menu-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 576) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                body.style.overflow = '';
             }
+        });
+    });
 
-            // Toggle sidebar on mobile
-            document.querySelector('.btn-mobile').addEventListener('click', () => {
-                document.querySelector('.navbar-aside').classList.toggle('active');
-            });
+    // Desktop minimize button (your existing feature)
+    document.querySelector('.btn-aside-minimize')?.addEventListener('click', () => {
+        document.querySelector('.navbar-aside').classList.toggle('minimized');
+        document.querySelector('.main-wrap').classList.toggle('expanded');
+    });
 
-            // Close sidebar when clicking overlay
-            document.querySelector('.screen-overlay').addEventListener('click', () => {
-                document.querySelector('.navbar-aside').classList.remove('active');
-            });
+    // Logout confirmation
+    function confirmAdminLogout(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You will be logged out of the admin panel!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, Logout!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/admin/logout";
+            }
+        });
+    }
 
-            // Toggle sidebar width on desktop
-            document.querySelector('.btn-aside-minimize').addEventListener('click', () => {
-                document.querySelector('.navbar-aside').classList.toggle('minimized');
-                document.querySelector('.main-wrap').classList.toggle('expanded');
-            });
-        </script>
+    // Prevent sidebar from staying open on resize (desktop → mobile)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 576) {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            body.style.overflow = '';
+        }
+    });
+</script>
 </body>
 </html>
