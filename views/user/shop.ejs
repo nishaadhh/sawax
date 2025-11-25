@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!document.querySelector('.filter-toggle')) {
         const filterToggle = document.createElement('button');
         filterToggle.className = 'filter-toggle';
-        filterToggle.innerHTML = '<i class="fa-solid fa-filter"></i> Filters';
+        filterToggle.innerHTML = '<i class="fa-solid fa-sliders"></i> Filters';
         filterToggle.onclick = toggleSidebar;
         shopActions.insertBefore(filterToggle, shopActions.firstChild);
     }
