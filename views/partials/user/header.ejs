@@ -297,6 +297,10 @@
         .mobile-menu { font-size: 20px; }
         .mobile-nav { padding: 15px; }
     }
+
+    .mobile-dropdown.active .mobile-dropdown-content { display: block; }
+.mobile-dropdown-content { display: none; background: white; margin-top: 10px; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.mobile-dropdown-content a { padding: 12px 20px; display: block; }
 </style>
 
 </head>
@@ -351,14 +355,26 @@
             <li><a href="/"><i class="fa-solid fa-house"></i>   Home</a></li>
             <li><a href="/shop"><i class="fa-solid fa-shop"></i>   Shop</a></li>
             <li><a href="/about"><i class="fa-regular fa-copyright"></i> About</a></li>
-
-            <li class="mobile-dropdown">
-                <a href="#" class="mobile-sign-in-link" onclick="toggleMobileDropdown(event)" style="color: #fabf00;"> <i class="fa-solid fa-circle-user"></i><%= user ? user.name : "" %> </a>
-                <div class="mobile-dropdown-content">
-                    <a href="/profile"> Profile</a>
-                    <a href="#" onclick="confirmLogout()" style="color: red;"><i class="fas fa-sign-out-alt"></i>  Logout</a>
-                </div>
-            </li>
+                       <!-- Mobile Account Dropdown<li> -->
+<li class="mobile-dropdown">
+    <% if (user) { %>
+        <a href="#" onclick="toggleMobileDropdown(event)" style="color: #fabf00;">
+            <i class="fa-solid fa-circle-user"></i> <%= user.name %>
+        </a>
+        <div class="mobile-dropdown-content">
+            <a href="/profile">Profile</a>
+            <a href="#" onclick="confirmLogout()" style="color: red;">Logout</a>
+        </div>
+    <% } else { %>
+        <a href="#" onclick="toggleMobileDropdown(event)" style="color: #fabf00;">
+            <i class="fa-solid fa-circle-user"></i> Account
+        </a>
+        <div class="mobile-dropdown-content">
+            <a href="/login" style="color: #DF8A00">Login</a>
+            <a href="/signup" style="color: #DF8A00">Signup</a>
+        </div>
+    <% } %>
+</li>
         </ul>
     </div>
 </header>
@@ -372,6 +388,14 @@
     mobileMenu.addEventListener('click', () => {
         mobileNav.classList.toggle('active');
     });
+
+
+function toggleMobileDropdown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const dropdown = e.target.closest('.mobile-dropdown');
+    document.querySelectorAll('.mobile-dropdown').forEach(d => d.classList.toggle('active', d === dropdown));
+}
 
     function toggleMobileDropdown(event) {
         event.preventDefault();
