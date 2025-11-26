@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 const path = require("path");
 const crypto = require("crypto");
 const Cart = require("../../models/cartSchema");
-
+// -----------------------------------------------
 const pageNotFound = async (req, res) => {
     try {
         res.render('page-404')
