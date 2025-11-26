@@ -14,7 +14,7 @@ const Cart = require("../../models/cartSchema");
 // -----------------------------------------------
 const pageNotFound = async (req, res) => {
     try {
-        res.render('page-404')
+        res.send('page-404')
     } catch (error) {
         res.redirect('/pagenotfound')
     }
