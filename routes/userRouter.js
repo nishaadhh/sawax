@@ -16,7 +16,7 @@ const referralController = require("../controller/user/referralController");
 
 
 
-// Home & Pages
+// Home & Page
 router.get("/", userController.loadHomePage);
 router.get("/signup", userController.loadSignUpPage);
 router.post("/signup", userController.signUp);
